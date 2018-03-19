@@ -2,21 +2,19 @@
 namespace SaiGonWeb\Core;
 
 class Utils {
-  private static $_CONFIG_INI_NAME = './config.ini';
-
-  public static function write_php_ini($assoc_arr) {
+  public static function write_php_ini($assoc_arr, $filename) {
     $content = "";
 
     foreach ($assoc_arr as $section => $ini) {
-      $content .= " [" . $section . "]\n";
+      $content .= "[" . $section . "]\n";
 
       foreach ($ini as $key => $val) {
-        $content .= $key . " = \"" . $val . "\"\n";
+        $content .= $key . " = " . $val . "\n";
       }
     }
 
     try {
-      $handle = fopen(Utils::$_CONFIG_INI_NAME, 'w');
+      $handle = fopen($filename, 'w');
       $success = fwrite($handle, $content);
       fclose($handle);
 
