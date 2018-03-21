@@ -1,7 +1,6 @@
 import React from 'react';
 import { Navbar, Nav, NavItem } from 'reactstrap';
 import FontAwesome from '@fortawesome/react-fontawesome';
-import { faBars } from '@fortawesome/fontawesome-free-solid';
 import logo from '../../../assets/img/logo.png';
 import AdminTopbarProfileComponent from './admin-topbar-profile/admin-topbar-profile';
 import styles from './admin-topbar.css';
@@ -21,7 +20,7 @@ export default class AdminTopbarComponent extends React.Component {
         <Navbar className={[styles.navbar, 'navbar-static-top'].join(' ')}>
           <NavItem className={styles.navItem}>
             <a href="#" className="sidebar-toggle" data-toggle="push-menu" role="button">
-              <FontAwesome icon={faBars} />
+              <FontAwesome icon='bars' />
             </a>
           </NavItem>
           <NavItem className={[styles.navItem, 'navbar-custom-menu'].join(' ')}>
