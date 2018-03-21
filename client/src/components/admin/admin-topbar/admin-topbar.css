@@ -1,0 +1,15 @@
+.logo-img-lg, .logo-img-mini {
+  height: 80%;
+}
+
+.navbar {
+  padding: 0 !important;
+}
+
+.nav-item {
+  list-style-type: none;
+}
+
+.navbar-nav {
+  display: block !important;
+}

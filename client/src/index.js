@@ -1,8 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
+import RouterComponent from './router';
 import registerServiceWorker from './registerServiceWorker';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+import './index.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './assets/css/fontawesome.min.css';
+import './assets/css/fa-regular.min.css';
+import './assets/css/AdminLTE.css';
+import './assets/css/skin-green.css';
+
+ReactDOM.render(<RouterComponent />, document.getElementById('root'));
 registerServiceWorker();
