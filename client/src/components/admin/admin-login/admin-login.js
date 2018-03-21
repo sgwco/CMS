@@ -1,16 +1,16 @@
 import React from 'react';
 import { Form, FormGroup, Input, Label, Button } from 'reactstrap';
-import './admin-login.css';
+import styles from './admin-login.css';
 import logo from '../../../assets/img/logo.png';
 
 export default class AdminLoginComponent extends React.Component {
   render() {
     return (
-      <div className="login-wrapper">
-        <div className="login-container">
-          <img src={logo} alt="logo" className="logo" />
+      <div className={styles.loginWrapper}>
+        <div className={styles.loginContainer}>
+          <img src={logo} alt="logo" className={styles.logo} />
           <div className="login-form">
-            <div className="login-header">
+            <div className={styles.loginHeader}>
               <h3 className="text-center">Đăng nhập</h3>
             </div>
             <div className="login-form">
@@ -29,7 +29,7 @@ export default class AdminLoginComponent extends React.Component {
                 <div className="text-center">
                   <Button color="primary">Đăng nhập</Button>
                 </div>
-                <div className="text-center forget-password">
+                <div className={[styles.forgetPassword, 'text-center'].join(' ')}>
                   <a href="#">Quên mật khẩu?</a>
                 </div>
               </Form>

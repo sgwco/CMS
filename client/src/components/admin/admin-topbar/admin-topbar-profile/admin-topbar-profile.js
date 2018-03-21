@@ -1,7 +1,6 @@
 import React from 'react';
-import { Dropdown, DropdownToggle, DropdownMenu } from 'reactstrap';
-
-import './admin-topbar-profile.css';
+import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import styles from './admin-topbar-profile.css';
 
 export default class AdminTopbarProfileComponent extends React.Component {
   constructor(props) {
@@ -20,21 +19,21 @@ export default class AdminTopbarProfileComponent extends React.Component {
 
   render() {
     return (
-      <Dropdown className="user user-menu" styleName="user-menu" isOpen={this.state.dropdownOpen} toggle={this.toggle}>
+      <UncontrolledDropdown className={[styles.userMenu, 'user user-menu'].join(' ')} nav inNavbar>
         <DropdownToggle nav caret>
-          <img src="https://graph.facebook.com/100006945288953/picture?type=square" class="user-image" alt="User Image" />
-          <span class="hidden-xs">Vo Hoai Son</span>
+          <img src="https://graph.facebook.com/100006945288953/picture?type=square" className="user-image" alt="User Image" />
+          <span className="hidden-xs">Vo Hoai Son</span>
         </DropdownToggle>
-        <DropdownMenu>
-          <li className="user-header">
-            <img src="https://graph.facebook.com/100006945288953/picture?type=square" class="img-circle" alt="User Image" />
+        <DropdownMenu className={styles.dropdown}>
+          <DropdownItem className="user-header">
+            <img src="https://graph.facebook.com/100006945288953/picture?type=square" className="rounded-circle" alt="User Image" />
             <p>
               Vo Hoai Son - Web Developer
               <small>Member since Nov. 2012</small>
             </p>
-          </li>
+          </DropdownItem>
         </DropdownMenu>
-      </Dropdown>
+      </UncontrolledDropdown>
     );
   }
 }
