@@ -1,4 +1,8 @@
-.logo-img-lg, .logo-img-mini {
+.logo-img-lg {
+  height: 80%;
+}
+
+.logo-img-mini {
   height: 80%;
 }
 

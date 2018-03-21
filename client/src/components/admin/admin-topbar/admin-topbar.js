@@ -1,21 +1,19 @@
 import React from 'react';
 import { Navbar, Nav, NavItem } from 'reactstrap';
 import logo from '../../../assets/img/logo.png';
-
 import AdminTopbarProfileComponent from './admin-topbar-profile/admin-topbar-profile';
-
-import './admin-topbar.css';
+import styles from './admin-topbar.css';
 
 export default class AdminTopbarComponent extends React.Component {
   render() {
     return (
       <header class="main-header">
-        <a href="index2.html" class="logo">
+        <a href="index2.html" className="logo">
           <span class="logo-mini">
-            <img src={logo} alt="logo" class="logo-img-mini" />
+            <img src={logo} alt="logo" className={[styles.logoImgMini, 'logo-img-mini'].join(' ')} />
           </span>
           <span class="logo-lg">
-            <img src={logo} alt="logo" class="logo-img-lg" /> Sai Gon Web
+            <img src={logo} alt="logo" className={[styles.logoImgLg, 'logo-img-lg'].join(' ')} /> Sai Gon Web
           </span>
         </a>
         <Navbar className="navbar-static-top">
