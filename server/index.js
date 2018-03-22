@@ -20,7 +20,7 @@ else {
   indexPath = path.resolve(__dirname, '..', 'client', 'build', 'index.html');
 }
 
-server.use('/graphql', bodyParser.json(), graphqlExpress({ schema }));
+server.use('/api', bodyParser.json(), graphqlExpress({ schema }));
 server.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
 
 
