@@ -1,0 +1,297 @@
+.row-wrapper {
+  padding: 10px 10px 10px 0;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.row {
+  height: 100%;
+  white-space: nowrap;
+  display: flex;
+}
+.row > * {
+  box-sizing: border-box;
+}
+
+/**
+ * The outline of where the element will go if dropped, displayed while dragging
+ */
+.row-landing-pad,
+.row-cancel-pad {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+.row-landing-pad > *,
+.row-cancel-pad > * {
+  opacity: 0 !important;
+}
+.row-landing-pad::before,
+.row-cancel-pad::before {
+  background-color: lightblue;
+  border: 3px dashed white;
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+}
+
+/**
+ * Alternate appearance of the landing pad when the dragged location is invalid
+ */
+.row-cancel-pad::before {
+  background-color: #e6a8ad;
+}
+
+/**
+ * Nodes matching the search conditions are highlighted
+ */
+.row-search-match {
+  outline: solid 3px #0080ff;
+}
+
+/**
+ * The node that matches the search conditions and is currently focused
+ */
+.row-search-focus {
+  outline: solid 3px #fc6421;
+}
+
+.row-contents,
+.row-label,
+.row-toolbar,
+.move-handle,
+.toolbar-button {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.row-contents {
+  position: relative;
+  height: 100%;
+  border: solid #bbb 1px;
+  border-left: none;
+  box-shadow: 0 2px 2px -2px;
+  padding: 0 5px 0 10px;
+  border-radius: 2px;
+  min-width: 150px;
+  overflow-wrap: break-word;
+  flex: 1 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: white;
+}
+
+.row-contents-drag-disabled {
+  border-left: solid #bbb 1px;
+}
+
+.row-label {
+  flex: 0 1 auto;
+  padding-right: 20px;
+}
+
+.row-toolbar {
+  flex: 0 1 auto;
+  display: flex;
+}
+
+.move-handle,
+.loading-handle {
+  height: 100%;
+  width: 44px;
+  background: #d9d9d9
+    url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiI+PGcgc3Ryb2tlPSIjRkZGIiBzdHJva2Utd2lkdGg9IjIuOSIgPjxwYXRoIGQ9Ik0xNCAxNS43aDE0LjQiLz48cGF0aCBkPSJNMTQgMjEuNGgxNC40Ii8+PHBhdGggZD0iTTE0IDI3LjFoMTQuNCIvPjwvZz4KPC9zdmc+')
+    no-repeat center;
+  border: solid #aaa 1px;
+  box-shadow: 0 2px 2px -2px;
+  cursor: move;
+  border-radius: 1px;
+  z-index: 1;
+}
+
+.loading-handle {
+  cursor: default;
+  background: #d9d9d9;
+}
+
+@keyframes pointFade {
+  0%,
+  19.999%,
+  100% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+}
+
+.loading-circle {
+  width: 80%;
+  height: 80%;
+  margin: 10%;
+  position: relative;
+}
+
+.loading-circle-point {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.loading-circle-point::before {
+  content: '';
+  display: block;
+  margin: 0 auto;
+  width: 11%;
+  height: 30%;
+  background-color: #fff;
+  border-radius: 30%;
+  animation: pointFade 800ms infinite ease-in-out both;
+}
+.loading-circle-point:nth-of-type(1) {
+  transform: rotate(0deg);
+}
+.loading-circle-point:nth-of-type(7) {
+  transform: rotate(180deg);
+}
+.loading-circle-point:nth-of-type(1)::before,
+.loading-circle-point:nth-of-type(7)::before {
+  animation-delay: -800ms;
+}
+.loading-circle-point:nth-of-type(2) {
+  transform: rotate(30deg);
+}
+.loading-circle-point:nth-of-type(8) {
+  transform: rotate(210deg);
+}
+.loading-circle-point:nth-of-type(2)::before,
+.loading-circle-point:nth-of-type(8)::before {
+  animation-delay: -666ms;
+}
+.loading-circle-point:nth-of-type(3) {
+  transform: rotate(60deg);
+}
+.loading-circle-point:nth-of-type(9) {
+  transform: rotate(240deg);
+}
+.loading-circle-point:nth-of-type(3)::before,
+.loading-circle-point:nth-of-type(9)::before {
+  animation-delay: -533ms;
+}
+.loading-circle-point:nth-of-type(4) {
+  transform: rotate(90deg);
+}
+.loading-circle-point:nth-of-type(10) {
+  transform: rotate(270deg);
+}
+.loading-circle-point:nth-of-type(4)::before,
+.loading-circle-point:nth-of-type(10)::before {
+  animation-delay: -400ms;
+}
+.loading-circle-point:nth-of-type(5) {
+  transform: rotate(120deg);
+}
+.loading-circle-point:nth-of-type(11) {
+  transform: rotate(300deg);
+}
+.loading-circle-point:nth-of-type(5)::before,
+.loading-circle-point:nth-of-type(11)::before {
+  animation-delay: -266ms;
+}
+.loading-circle-point:nth-of-type(6) {
+  transform: rotate(150deg);
+}
+.loading-circle-point:nth-of-type(12) {
+  transform: rotate(330deg);
+}
+.loading-circle-point:nth-of-type(6)::before,
+.loading-circle-point:nth-of-type(12)::before {
+  animation-delay: -133ms;
+}
+.loading-circle-point:nth-of-type(7) {
+  transform: rotate(180deg);
+}
+.loading-circle-point:nth-of-type(13) {
+  transform: rotate(360deg);
+}
+.loading-circle-point:nth-of-type(7)::before,
+.loading-circle-point:nth-of-type(13)::before {
+  animation-delay: 0ms;
+}
+
+.row-title {
+  font-weight: bold;
+}
+
+.row-title-with-subtitle {
+  font-size: 85%;
+  display: block;
+  height: 0.8rem;
+}
+
+.row-subtitle {
+  font-size: 70%;
+  line-height: 1;
+}
+
+.collapse-button,
+.expand-button {
+  appearance: none;
+  border: none;
+  position: absolute;
+  border-radius: 100%;
+  box-shadow: 0 0 0 1px #000;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+}
+.collapse-button:focus,
+.expand-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 1px #000, 0 0 1px 3px #83bef9;
+}
+.collapse-button:hover:not(:active),
+.expand-button:hover:not(:active) {
+  background-size: 24px;
+  height: 20px;
+  width: 20px;
+}
+
+.collapse-button {
+  background: #fff
+    url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCI+PGNpcmNsZSBjeD0iOSIgY3k9IjkiIHI9IjgiIGZpbGw9IiNGRkYiLz48ZyBzdHJva2U9IiM5ODk4OTgiIHN0cm9rZS13aWR0aD0iMS45IiA+PHBhdGggZD0iTTQuNSA5aDkiLz48L2c+Cjwvc3ZnPg==')
+    no-repeat center;
+}
+
+.expand-button {
+  background: #fff
+    url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCI+PGNpcmNsZSBjeD0iOSIgY3k9IjkiIHI9IjgiIGZpbGw9IiNGRkYiLz48ZyBzdHJva2U9IiM5ODk4OTgiIHN0cm9rZS13aWR0aD0iMS45IiA+PHBhdGggZD0iTTQuNSA5aDkiLz48cGF0aCBkPSJNOSA0LjV2OSIvPjwvZz4KPC9zdmc+')
+    no-repeat center;
+}
+
+/**
+ * Line for under a node with children
+ */
+.line-children {
+  height: 100%;
+  display: inline-block;
+  position: absolute;
+}
+.line-children::after {
+  content: '';
+  position: absolute;
+  background-color: black;
+  width: 1px;
+  left: 50%;
+  bottom: 0;
+  height: 10px;
+}

@@ -3,15 +3,60 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { Breadcrumb, BreadcrumbItem, Row, Col } from 'reactstrap';
 import FontAwesome from '@fortawesome/react-fontawesome';
+import SortableTree from 'react-sortable-tree';
+import 'react-sortable-tree/style.css';
+
 // import styles from './admin-content-posts.css';
 
 import DataTable from '../../../../commons/dataTable';
+import InlineFormEditor from '../../../../commons/inline-form-editor';
+import CategoryNode from '../../../../commons/category-node/category-node';
 import { contentPost } from '../../../../data';
 
 export default class AdminContentPostsComponent extends React.Component {
   static propTypes = {
     title: PropTypes.string.isRequired,
     href: PropTypes.string.isRequired
+  }
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      message: '',
+      searchString: '',
+      searchFocusIndex: 0,
+      searchFoundCount: null,
+      treeData: [
+        {
+          title: (
+            <InlineFormEditor text='Test' />
+          ),
+          children: [
+            {
+              title: 'Child Node'
+            },
+            {
+              title: 'Nested structure is rendered virtually'
+            },
+          ],
+        },
+        {
+          expanded: true,
+          title: 'Any node can be the parent or child of any other node',
+          children: [
+            {
+              expanded: true,
+              title: 'Chicken',
+              children: [{ title: 'Egg' }],
+            },
+          ],
+        },
+        {
+          title: 'Button(s) can be added to the node',
+        }
+      ],
+    };
   }
 
   renderRow = (item, index) => {
@@ -25,6 +70,11 @@ export default class AdminContentPostsComponent extends React.Component {
         <td>{item.date.format('DD/MM/YYYY')}</td>
       </tr>
     );
+  }
+
+  treeviewToggle = (node, toggled) => {
+    node.active = true;
+    if(node.children){ node.toggled = toggled; }
   }
   
   render() {
@@ -50,7 +100,8 @@ export default class AdminContentPostsComponent extends React.Component {
                 <div className="box-body">
                   <DataTable striped bordered hover
                     header={contentPost.header}
-                    data={contentPost.data} />
+                    data={contentPost.data}
+                  />
                 </div>
               </div>
             </Col>
@@ -60,7 +111,11 @@ export default class AdminContentPostsComponent extends React.Component {
                   <div className="box-title">Categories</div>
                 </div>
                 <div className="box-body">
-                  
+                  <SortableTree
+                    treeData={this.state.treeData}
+                    onChange={treeData => this.setState({ treeData })}
+                    nodeContentRenderer={CategoryNode}
+                  />
                 </div>
               </div>
             </Col>
