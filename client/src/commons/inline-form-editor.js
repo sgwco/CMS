@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Form } from 'reactstrap';
+import FontAwesome from '@fortawesome/react-fontawesome';
+import { InputGroup, InputGroupAddon, Button } from 'reactstrap';
 
 export default class InlineFormEditor extends React.Component {
   static propTypes = {
@@ -19,8 +20,14 @@ export default class InlineFormEditor extends React.Component {
     this.setState({ showInput: true });
   }
 
-  cancelInput = () => {
+  saveCategory = () => {
     this.setState({ showInput: false });
+  }
+
+  detectEscape = (event) => {
+    if (event.keyCode === 27) {
+      this.setState({ showInput: false });
+    }
   }
 
   changeText = () => {
@@ -32,21 +39,21 @@ export default class InlineFormEditor extends React.Component {
     return (
       <span>
         {this.state.showInput ? (
-          <Form inline>
+          <InputGroup>
             <input
               autoFocus
+              className='form-control'
               type='text'
               value={text}
+              onKeyDown={this.detectEscape}
               onChange={this.changeText}
-              onBlur={this.cancelInput}
             />
-            {/* <Input
-              type='text'
-              value={text}
-              onBlur={this.cancelInput}
-              onChange={this.changeText}
-            /> */}
-          </Form>
+            <InputGroupAddon addonType="append">
+              <Button color="primary" onClick={this.saveCategory}>
+                <FontAwesome icon="save" />
+              </Button>
+            </InputGroupAddon>
+          </InputGroup>
         ) : (
           <span
             className='inline-text'

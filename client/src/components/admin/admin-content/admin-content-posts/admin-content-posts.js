@@ -1,13 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { Breadcrumb, BreadcrumbItem, Row, Col } from 'reactstrap';
+import { Breadcrumb, BreadcrumbItem, Row, Col, Button, Form, InputGroup, InputGroupAddon, Input } from 'reactstrap';
 import FontAwesome from '@fortawesome/react-fontawesome';
 import SortableTree from 'react-sortable-tree';
 import 'react-sortable-tree/style.css';
 
-// import styles from './admin-content-posts.css';
-
+import styles from './admin-content-posts.css';
 import DataTable from '../../../../commons/dataTable';
 import InlineFormEditor from '../../../../commons/inline-form-editor';
 import CategoryNode from '../../../../commons/category-node/category-node';
@@ -72,9 +71,17 @@ export default class AdminContentPostsComponent extends React.Component {
     );
   }
 
-  treeviewToggle = (node, toggled) => {
-    node.active = true;
-    if(node.children){ node.toggled = toggled; }
+  generateNodeProps = () => {
+    return {
+      buttons: [
+        <Button color="link">
+          <FontAwesome icon='plus' />
+        </Button>,
+        <Button color="link" className={styles.btnRemoveCategory}>
+          <FontAwesome icon='trash' />
+        </Button>
+      ]
+    };
   }
   
   render() {
@@ -110,11 +117,24 @@ export default class AdminContentPostsComponent extends React.Component {
                 <div className="box-header">
                   <div className="box-title">Categories</div>
                 </div>
-                <div className="box-body">
+                <div className={[styles.boxCategories, 'box-body'].join(' ')}>
+                  <Form>
+                    <InputGroup>
+                      <Input type='text' placeholder='Search...' />
+                      <InputGroupAddon addonType='append'>
+                        <Button color='primary'>&lt;</Button>
+                      </InputGroupAddon>
+                      <InputGroupAddon addonType='append'>
+                        <Button color='primary'>&gt;</Button>
+                      </InputGroupAddon>
+                    </InputGroup>
+                  </Form>
                   <SortableTree
                     treeData={this.state.treeData}
                     onChange={treeData => this.setState({ treeData })}
                     nodeContentRenderer={CategoryNode}
+                    generateNodeProps={this.generateNodeProps}
+                    className={styles.categoryTree}
                   />
                 </div>
               </div>
