@@ -1,21 +1,21 @@
 import { GraphQLList, GraphQLNonNull, GraphQLID } from 'graphql';
-import { User } from '../models/user';
-import userData from '../data/user';
+import { Post } from '../models/post';
+import postData from '../data/post';
 
 export default {
-  users: {
-    type: new GraphQLList(User),
+  posts: {
+    type: new GraphQLList(Post),
     resolve: () => {
-      return userData;
+      return postData;
     }
   },
-  user: {
-    type: User,
+  post: {
+    type: Post,
     args: {
       id: { type: new GraphQLNonNull(GraphQLID) }
     },
     resolve: (source, { id }) => {
-      return userData.find(item => item.id === id);
+      return postData.find(item => item.id === id);
     }
   }
 }

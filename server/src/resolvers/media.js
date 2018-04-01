@@ -1,21 +1,21 @@
 import { GraphQLList, GraphQLNonNull, GraphQLID } from 'graphql';
-import { User } from '../models/user';
-import userData from '../data/user';
+import { Media } from '../models/media';
+import mediaData from '../data/media';
 
 export default {
-  users: {
-    type: new GraphQLList(User),
+  medias: {
+    type: new GraphQLList(Media),
     resolve: () => {
-      return userData;
+      return mediaData;
     }
   },
-  user: {
-    type: User,
+  media: {
+    type: Media,
     args: {
       id: { type: new GraphQLNonNull(GraphQLID) }
     },
     resolve: (source, { id }) => {
-      return userData.find(item => item.id === id);
+      return mediaData.find(item => item.id === id);
     }
   }
 }
