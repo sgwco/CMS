@@ -2,7 +2,7 @@ import express from 'express';
 import path from 'path';
 import { graphiqlExpress, graphqlExpress } from 'graphql-server-express';
 import bodyParser from 'body-parser';
-
+import { initDatabase, connection } from './src/config/database';
 import Schema from './src/schema';
 
 const PORT = 8000;
@@ -10,6 +10,8 @@ const server = express();
 
 let publicPath = null;
 let indexPath = null;
+
+initDatabase(connection);
 
 if (process.env.NODE_ENV === 'production') {
   publicPath = path.resolve(__dirname, '..', '..', 'client', 'build');

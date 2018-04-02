@@ -1,8 +1,9 @@
 import { GraphQLSchema } from 'graphql';
-import { Query } from './resolvers';
+import { Query, Mutation } from './resolvers';
 
 const Schema = new GraphQLSchema({
-  query: Query
+  query: Query,
+  mutation: Mutation
 });
 
 export default Schema;

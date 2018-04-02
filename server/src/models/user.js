@@ -11,11 +11,12 @@ export const UserStatus = new GraphQLEnumType({
 
 export const User = new GraphQLObjectType({
   name: 'User',
-  fields: () => ({
+  fields: {
     id: { type: GraphQLNonNull(GraphQLID) },
     username: { type: GraphQLNonNull(GraphQLString) },
     password: { type: GraphQLNonNull(GraphQLString) },
     fullname: { type: GraphQLNonNull(GraphQLString) },
+    email: { type: GraphQLNonNull(GraphQLString) },
     registrationDate: {
       type: GraphQLNonNull(GraphQLString),
       resolve: ({ registration_date }) => {
@@ -26,5 +27,5 @@ export const User = new GraphQLObjectType({
     address: { type: GraphQLString },
     phone: { type: GraphQLString },
     userStatus: { type: UserStatus }
-  })
+  }
 });

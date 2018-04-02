@@ -1,7 +1,7 @@
 import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLInt, GraphQLList } from 'graphql';
 import { Media } from './media';
 import { User } from './user';
-import { PostCategory, ProductCategory } from './category';
+import { Category } from './category';
 import userData from '../data/user';
 import categoryData from '../data/category';
 
@@ -20,7 +20,7 @@ export const Post = new GraphQLObjectType({
     },
     slug: { type: GraphQLNonNull(GraphQLString) },
     category: {
-      type: GraphQLList(PostCategory),
+      type: GraphQLList(Category),
       resolve: ({ category }) => {
         return categoryData.filter(item => item.id === category);
       }
@@ -41,7 +41,7 @@ export const Product = new GraphQLObjectType({
     longDescription: { type: GraphQLString },
     thumbnail: { type: Media },
     gallery: { type: GraphQLList(Media) },
-    category: { type: GraphQLList(ProductCategory) },
+    category: { type: GraphQLList(Category) },
     price: { type: GraphQLNonNull(GraphQLFloat) },
     salePrice: { type: GraphQLFloat },
     saleDuration: { type: GraphQLString },
