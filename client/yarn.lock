@@ -1554,7 +1554,7 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-classnames@^2.2.3, classnames@^2.2.5:
+classnames@2.2.5, classnames@^2.2.3, classnames@^2.2.5:
   version "2.2.5"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.5.tgz#fb3801d453467649ef3603c7d61a02bd129bde6d"
 
@@ -5846,6 +5846,16 @@ react-apollo@^2.1.1:
     invariant "^2.2.2"
     lodash "4.17.5"
     prop-types "^15.6.0"
+
+react-bootstrap-table-next@^0.1.6:
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/react-bootstrap-table-next/-/react-bootstrap-table-next-0.1.6.tgz#715f746e2df0075a0453050d69ba07d6e4ee5481"
+  dependencies:
+    classnames "2.2.5"
+
+react-bootstrap-table2-filter@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/react-bootstrap-table2-filter/-/react-bootstrap-table2-filter-0.1.4.tgz#fae4630478c2c892a07967a17ea1604de86db990"
 
 react-dev-utils@^5.0.0:
   version "5.0.0"

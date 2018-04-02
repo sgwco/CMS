@@ -1,7 +1,16 @@
-.filter-section {
-  margin-bottom: 10px;
+.content-header-title {
+  display: flex;
+  align-items: center;
 }
 
-.margin-input {
-  margin-left: 10px;
+.content-header-title button {
+  margin-left: 15px;
+}
+
+.user-status-cell {
+  text-transform: lowercase;
+}
+
+.user-status-cell::first-letter {
+  text-transform: uppercase;
 }

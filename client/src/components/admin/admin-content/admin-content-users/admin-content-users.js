@@ -1,11 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import moment from 'moment';
 import FontAwesome from '@fortawesome/react-fontawesome';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
-import { Breadcrumb, BreadcrumbItem, Form, Input } from 'reactstrap';
+import { Breadcrumb, BreadcrumbItem, Button } from 'reactstrap';
+import BootstrapTable from 'react-bootstrap-table-next';
+import filterFactory, { textFilter, selectFilter } from 'react-bootstrap-table2-filter';
 
-import { DataTable } from '../../../../commons/dataTable';
 import styles from './admin-content-users.css';
 
 const fetchUsers = gql`
@@ -22,13 +24,18 @@ const fetchUsers = gql`
   }
 `;
 
+const userStatusFilterEnum = {
+  'ACTIVE': 'Active',
+  'DEACTIVE': 'Deactive'
+};
+
 const tableHeaders = [
-  { title: 'User Name', value: 'username' },
-  { title: 'Full Name', value: 'fullname' },
-  { title: 'Email', value: 'email' },
-  { title: 'Registration Date', value: 'registrationDate' },
-  { title: 'Access Permission', value: 'accessPermission' },
-  { title: 'User Status', value: 'userStatus' }
+  { text: 'User Name', dataField: 'username', filter: textFilter({ delay: 0 }) },
+  { text: 'Full Name', dataField: 'fullname', filter: textFilter({ delay: 0 }) },
+  { text: 'Email', dataField: 'email', filter: textFilter({ delay: 0 }) },
+  { text: 'Registration Date', dataField: 'registrationDate', formatter: (cell) => moment(cell).format('DD/MM/YYYY') },
+  { text: 'Access Permission', dataField: 'accessPermission' },
+  { text: 'User Status', dataField: 'userStatus', filter: selectFilter({ options: userStatusFilterEnum }), classes: styles.userStatusCell }
 ];
 
 export default class AdminContentUsersComponent extends React.Component {
@@ -36,7 +43,12 @@ export default class AdminContentUsersComponent extends React.Component {
     return (
       <div>
         <section className="content-header">
-          <h1>Users</h1>
+          <h1 className={styles.contentHeaderTitle}>
+            <span>Users</span>
+            <Button color="primary" size="sm">
+              <FontAwesome icon="plus" /> Add new user
+            </Button>
+          </h1>
           <Breadcrumb>
             <BreadcrumbItem>
               <Link to='/admin'><FontAwesome icon="home" /> Home</Link>
@@ -45,14 +57,6 @@ export default class AdminContentUsersComponent extends React.Component {
           </Breadcrumb>
         </section>
         <section className="content">
-          <Form className={styles.filterSection} inline>
-            <span>Tìm kiếm theo</span>
-            <Input type="select" className={styles.marginInput}>
-              <option value="">-- Vai trò --</option>
-              <option value="admin">Admin</option>
-              <option value="khachhang">Khách hàng</option>
-            </Input>
-          </Form>
           <div className="box">
             <div className="box-header">
               <div className="box-title">List Users</div>
@@ -64,7 +68,14 @@ export default class AdminContentUsersComponent extends React.Component {
                   if (error) return `Error! ${error.message}`;
                   
                   return (
-                    <DataTable striped bordered hover isLoading={loading} headers={tableHeaders} data={data.users} />
+                    <BootstrapTable
+                      keyField='username'
+                      data={data.users}
+                      columns={tableHeaders}
+                      filter={filterFactory()}
+                      striped
+                      hover
+                    />
                   );
                 }}
               </Query>

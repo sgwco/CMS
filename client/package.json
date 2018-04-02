@@ -51,6 +51,8 @@
     "raf": "3.4.0",
     "react": "^16.2.0",
     "react-apollo": "^2.1.1",
+    "react-bootstrap-table-next": "^0.1.6",
+    "react-bootstrap-table2-filter": "^0.1.4",
     "react-dev-utils": "^5.0.0",
     "react-dom": "^16.2.0",
     "react-router": "^4.2.0",
