@@ -18,19 +18,19 @@ server.use(cors());
 server.options('*', cors());
 
 if (process.env.NODE_ENV === 'production') {
-  publicPath = path.resolve(__dirname, '..', '..', 'client', 'build');
-  indexPath = path.resolve(__dirname, '..', '..', 'client', 'build', 'index.html');
+  publicPath = path.resolve(__dirname, '..', 'src', 'client', 'build');
+  indexPath = path.resolve(__dirname, '..', 'src', 'client', 'build', 'index.html');
 }
 else {
-  publicPath = path.resolve(__dirname, '..', 'client', 'build');
-  indexPath = path.resolve(__dirname, '..', 'client', 'build', 'index.html');
+  publicPath = path.resolve(__dirname, 'src', 'client', 'build');
+  indexPath = path.resolve(__dirname, 'src', 'client', 'build', 'index.html');
 
   server.use('/graphiql', graphiqlExpress({ endpointURL: '/api' }));
 }
 
 server.use('/api', bodyParser.json(), graphqlExpress({ schema: Schema }));
-server.use('/public', express.static(publicPath));
-server.get('*', (req, res, next) => {
+server.use(express.static(publicPath));
+server.get('*', (req, res) => {
   res.sendFile(indexPath);
 });
 
