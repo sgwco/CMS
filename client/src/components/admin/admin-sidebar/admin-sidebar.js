@@ -17,18 +17,23 @@ const data = [
     ]
   },
   {
-    header: 'CONTENTS',
+    header: 'MANAGEMENT',
     menus: [
       {
-        title: 'Post',
+        title: 'Posts',
         href: 'post',
         icon: 'file'
       },
       {
-        title: 'Product',
+        title: 'Products',
         href: 'product',
         icon: 'shopping-cart',
         badgePrimary: '4'
+      },
+      {
+        title: 'Users',
+        href: 'user',
+        icon: 'user'
       }
     ]
   }

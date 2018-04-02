@@ -5,12 +5,11 @@ import AdminContentContainer from './admin-content/admin-content';
 
 export default class AdminComponent extends React.Component {
   render() {
-    const { match } = this.props;
     return (
       <div className="wrapper">
         <AdminTopBarComponent />
         <AdminSidebarContainer />
-        <AdminContentContainer match={match} />
+        <AdminContentContainer />
       </div>
     );
   }

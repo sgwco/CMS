@@ -1,10 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router';
 import { Badge } from 'reactstrap';
 import FontAwesome from '@fortawesome/react-fontawesome';
 import styles from './admin-sidebar-menu.css';
 
-export default class AdminSidebarMenuComponent extends React.Component {
+class AdminSidebarMenuComponent extends React.Component {
   static propTypes = {
     isActive: PropTypes.bool.isRequired,
     title: PropTypes.string.isRequired,
@@ -21,10 +23,10 @@ export default class AdminSidebarMenuComponent extends React.Component {
   }
 
   render() {
-    const { isActive, title, badgePrimary, icon, onClick, href } = this.props;
+    const { isActive, title, badgePrimary, icon, onClick, href, match } = this.props;
     return (
       <li className={`treeview ${isActive && 'active'}`} data-menu={href} onClick={onClick}>
-        <a href='#'>
+        <Link to={`${match.url}/${href}`}>
           <FontAwesome icon={icon} className={styles.icon} />
           <span className={styles.title}>{title}</span>
           {badgePrimary && (
@@ -32,8 +34,10 @@ export default class AdminSidebarMenuComponent extends React.Component {
               <Badge color='primary' className='float-right'>4</Badge>
             </span>
           )}
-        </a>
+        </Link>
       </li>
     );
   }
 }
+
+export default withRouter(AdminSidebarMenuComponent);

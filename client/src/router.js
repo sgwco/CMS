@@ -8,7 +8,7 @@ import AdminComponent from './components/admin/admin';
 import AdminLoginComponent from './components/admin/admin-login/admin-login';
 
 const client = new ApolloClient({
-  link: new HttpLink({ uri: '/api' }),
+  link: new HttpLink({ uri: 'http://localhost:8000/api' }),
   cache: new InMemoryCache()
 });
 

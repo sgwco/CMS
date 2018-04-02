@@ -7,10 +7,10 @@ import SortableTree from 'react-sortable-tree';
 import 'react-sortable-tree/style.css';
 
 import styles from './admin-content-posts.css';
-import DataTable from '../../../../commons/dataTable';
+// import DataTable from '../../../../commons/dataTable';
 import InlineFormEditor from '../../../../commons/inline-form-editor';
 import CategoryNode from '../../../../commons/category-node/category-node';
-import { contentPost } from '../../../../data';
+// import { contentPost } from '../../../../data';
 
 export default class AdminContentPostsComponent extends React.Component {
   static propTypes = {
@@ -105,10 +105,10 @@ export default class AdminContentPostsComponent extends React.Component {
                   <div className="box-title">List {title}</div>
                 </div>
                 <div className="box-body">
-                  <DataTable striped bordered hover
+                  {/* <DataTable striped bordered hover
                     header={contentPost.header}
                     data={contentPost.data}
-                  />
+                  /> */}
                 </div>
               </div>
             </Col>

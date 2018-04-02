@@ -23,9 +23,19 @@ export const User = new GraphQLObjectType({
         return registration_date;
       }
     },
-    accessPermission: { type: GraphQLNonNull(GraphQLInt) },
+    accessPermission: {
+      type: GraphQLNonNull(GraphQLInt),
+      resolve: ({ access_permission }) => {
+        return access_permission;
+      }
+    },
     address: { type: GraphQLString },
     phone: { type: GraphQLString },
-    userStatus: { type: UserStatus }
+    userStatus: {
+      type: UserStatus,
+      resolve: ({ user_status }) => {
+        return user_status;
+      }
+    }
   }
 });

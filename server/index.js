@@ -1,5 +1,6 @@
 import express from 'express';
 import path from 'path';
+import cors from 'cors';
 import { graphiqlExpress, graphqlExpress } from 'graphql-server-express';
 import bodyParser from 'body-parser';
 import { initDatabase, connection } from './src/config/database';
@@ -12,6 +13,9 @@ let publicPath = null;
 let indexPath = null;
 
 initDatabase(connection);
+
+server.use(cors());
+server.options('*', cors());
 
 if (process.env.NODE_ENV === 'production') {
   publicPath = path.resolve(__dirname, '..', '..', 'client', 'build');
