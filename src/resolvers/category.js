@@ -1,6 +1,5 @@
 import { GraphQLList, GraphQLNonNull, GraphQLID } from 'graphql';
 import { Category } from '../models';
-import categoryData from '../data/category';
 
 export default {
   categories: {

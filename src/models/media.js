@@ -1,6 +1,5 @@
 import { GraphQLEnumType, GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLList } from 'graphql';
 import { User } from './user';
-import userData from '../data/user';
 
 export const MediaType = new GraphQLEnumType({
   name: 'MediaType',

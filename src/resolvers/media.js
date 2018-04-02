@@ -1,6 +1,5 @@
 import { GraphQLList, GraphQLNonNull, GraphQLID } from 'graphql';
 import { Media } from '../models';
-import mediaData from '../data/media';
 
 export default {
   medias: {

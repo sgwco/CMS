@@ -84,5 +84,12 @@ export async function initDatabase(conn) {
       name VARCHAR(1000) NOT NULL,
       value VARCHAR(2000)
     )`);
+
+    // Role table
+    promiseQuery(`CREATE TABLE IF NOT EXISTS ${PREFIX}role (
+      id VARCHAR(50) NOT NULL UNIQUE,
+      name VARCHAR(200) NOT NULL,
+      access_permission BIGINT UNSIGNED NOT NULL
+    )`);
   });
 }

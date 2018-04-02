@@ -1,6 +1,5 @@
 import { GraphQLList, GraphQLNonNull, GraphQLID } from 'graphql';
 import { Post } from '../models';
-import postData from '../data/post';
 
 export default {
   posts: {

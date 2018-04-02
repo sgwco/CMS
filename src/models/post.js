@@ -2,8 +2,6 @@ import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLInt
 import { Media } from './media';
 import { User } from './user';
 import { Category } from './category';
-import userData from '../data/user';
-import categoryData from '../data/category';
 
 export const Post = new GraphQLObjectType({
   name: 'Post',
