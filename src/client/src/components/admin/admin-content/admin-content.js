@@ -3,7 +3,7 @@ import { Route, withRouter } from 'react-router-dom';
 
 import AdminContentPostsComponent from './admin-content-posts/admin-content-posts';
 import AdminContentUsersComponent from './admin-content-users/admin-content-users';
-// import styles from './admin-content.css';
+import AdminContentUsersFormComponent from './admin-content-users-form/admin-content-users-form';
 
 const adminContent = [
   {
@@ -26,6 +26,7 @@ class AdminContentComponent extends React.Component {
       <div className="content-wrapper">
         {adminContent.map(this.renderRoute)}
         <Route exact path={`${match.url}/user`} render={() => <AdminContentUsersComponent />} />
+        <Route exact path={`${match.url}/user/add-new`} render={() => <AdminContentUsersFormComponent />} />
       </div>
     );
   }

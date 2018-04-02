@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment';
 import FontAwesome from '@fortawesome/react-fontawesome';
 import { Query } from 'react-apollo';
@@ -38,16 +38,19 @@ const tableHeaders = [
   { text: 'User Status', dataField: 'userStatus', filter: selectFilter({ options: userStatusFilterEnum }), classes: styles.userStatusCell }
 ];
 
-export default class AdminContentUsersComponent extends React.Component {
+class AdminContentUsersComponent extends React.Component {
   render() {
+    const { match } = this.props;
     return (
       <div>
         <section className="content-header">
           <h1 className={styles.contentHeaderTitle}>
             <span>Users</span>
-            <Button color="primary" size="sm">
-              <FontAwesome icon="plus" /> Add new user
-            </Button>
+            <Link to={`${match.url}/add-new`}>
+              <Button color="primary" size="sm">
+                <FontAwesome icon="plus" /> Add new user
+              </Button>
+            </Link>
           </h1>
           <Breadcrumb>
             <BreadcrumbItem>
@@ -73,6 +76,7 @@ export default class AdminContentUsersComponent extends React.Component {
                       data={data.users}
                       columns={tableHeaders}
                       filter={filterFactory()}
+                      noDataIndication="Table is Empty"
                       striped
                       hover
                     />
@@ -87,3 +91,5 @@ export default class AdminContentUsersComponent extends React.Component {
     );
   }
 }
+
+export default withRouter(AdminContentUsersComponent);
