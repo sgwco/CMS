@@ -18,7 +18,9 @@ const fetchUsers = gql`
       fullname
       email
       registrationDate
-      accessPermission
+      role {
+        name
+      }
       userStatus
     }
   }
@@ -34,7 +36,7 @@ const tableHeaders = [
   { text: 'Full Name', dataField: 'fullname', filter: textFilter({ delay: 0 }) },
   { text: 'Email', dataField: 'email', filter: textFilter({ delay: 0 }) },
   { text: 'Registration Date', dataField: 'registrationDate', formatter: (cell) => moment(cell).format('DD/MM/YYYY') },
-  { text: 'Access Permission', dataField: 'accessPermission' },
+  { text: 'Role', dataField: 'role.name' },
   { text: 'User Status', dataField: 'userStatus', filter: selectFilter({ options: userStatusFilterEnum }), classes: styles.userStatusCell }
 ];
 

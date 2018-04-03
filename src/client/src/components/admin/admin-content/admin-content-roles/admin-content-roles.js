@@ -5,7 +5,6 @@ import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import { Breadcrumb, BreadcrumbItem, Button } from 'reactstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
-import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
 
 import styles from './admin-content-roles.css';
 
@@ -20,8 +19,8 @@ const fetchUsers = gql`
 `;
 
 const tableHeaders = [
-  { text: 'Name', dataField: 'name', filter: textFilter({ delay: 0 }) },
-  { text: 'Access Permission', dataField: 'accessPermission', filter: textFilter({ delay: 0 }) }
+  { text: 'Name', dataField: 'name' },
+  { text: 'Allowed Permission', dataField: 'accessPermission' }
 ];
 
 class AdminContentRolesComponent extends React.Component {
@@ -58,10 +57,9 @@ class AdminContentRolesComponent extends React.Component {
                   
                   return (
                     <BootstrapTable
-                      keyField='username'
+                      keyField='id'
                       data={data.roles}
                       columns={tableHeaders}
-                      filter={filterFactory()}
                       noDataIndication="Table is Empty"
                       striped
                       hover

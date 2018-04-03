@@ -5,6 +5,7 @@ import AdminContentPostsComponent from './admin-content-posts/admin-content-post
 import AdminContentUsersComponent from './admin-content-users/admin-content-users';
 import AdminContentUsersFormComponent from './admin-content-users-form/admin-content-users-form';
 import AdminContentRolesComponent from './admin-content-roles/admin-content-roles';
+import AdminContentRolesFormComponent from './admin-content-roles-form/admin-content-roles-form';
 
 const adminContent = [
   {
@@ -29,6 +30,7 @@ class AdminContentComponent extends React.Component {
         <Route exact path={`${match.url}/user`} render={() => <AdminContentUsersComponent />} />
         <Route exact path={`${match.url}/user/add-new`} render={() => <AdminContentUsersFormComponent />} />
         <Route exact path={`${match.url}/role`} render={() => <AdminContentRolesComponent />} />
+        <Route exact path={`${match.url}/role/add-new`} render={() => <AdminContentRolesFormComponent />} />
       </div>
     );
   }

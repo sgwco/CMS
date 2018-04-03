@@ -1,4 +1,4 @@
-import { GraphQLList, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLInt } from 'graphql';
+import { GraphQLList, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLInt, GraphQLError } from 'graphql';
 import uuid from 'uuid';
 import moment from 'moment';
 import { Role } from '../models';
@@ -32,6 +32,14 @@ export const Mutation = {
       accessPermission: { type: GraphQLNonNull(GraphQLInt) }
     },
     resolve: async (source, args) => {
+      if (!args.name) {
+        throw new GraphQLError('Name cannot be null');
+      }
+
+      if (args.accessPermission <= 0) {
+        throw new GraphQLError('Role Capabilities invalid');
+      }
+      
       const id = uuid.v1();
       await promiseQuery(`INSERT INTO ${PREFIX}role VALUES (
         '${id}',

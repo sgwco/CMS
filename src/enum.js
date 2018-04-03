@@ -1,4 +1,4 @@
-export const roleCapacities = {
+export const roleCapabilities = {
   create_users: { title: 'Create users', value: Math.pow(2, 1) },
   edit_users: { title: 'Edit users', value: Math.pow(2, 2) },
   delete_users: { title: 'Delete users', value: Math.pow(2, 3) },
