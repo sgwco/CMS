@@ -1,4 +1,5 @@
 import { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLNonNull, GraphQLInt, GraphQLEnumType } from 'graphql';
+import { Role } from './role';
 
 export const UserStatus = new GraphQLEnumType({
   name: 'UserStatus',
@@ -23,10 +24,10 @@ export const User = new GraphQLObjectType({
         return registration_date;
       }
     },
-    accessPermission: {
-      type: GraphQLNonNull(GraphQLInt),
-      resolve: ({ access_permission }) => {
-        return access_permission;
+    role: {
+      type: GraphQLNonNull(Role),
+      resolve: ({ role }, _, context) => {
+        return context.dataloaders.rolesByIds.load(role);
       }
     },
     address: { type: GraphQLString },

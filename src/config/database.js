@@ -38,7 +38,7 @@ export async function initDatabase(conn) {
       fullname VARCHAR(100) NOT NULL,
       email VARCHAR(200) NOT NULL UNIQUE,
       registration_date DATETIME NOT NULL,
-      access_permission INT(10) UNSIGNED NOT NULL DEFAULT 0,
+      role VARCHAR(50) NOT NULL,
       address VARCHAR(200) DEFAULT '',
       phone VARCHAR(50) DEFAULT '',
       user_status VARCHAR(20) NOT NULL DEFAULT 'active'

@@ -5,6 +5,7 @@ import { graphiqlExpress, graphqlExpress } from 'graphql-server-express';
 import bodyParser from 'body-parser';
 import { initDatabase, connection } from './src/config/database';
 import Schema from './src/schema';
+import dataLoaders from './src/config/dataLoaders'
 
 const PORT = 8000;
 const server = express();
@@ -28,7 +29,7 @@ else {
   server.use('/graphiql', graphiqlExpress({ endpointURL: '/api' }));
 }
 
-server.use('/api', bodyParser.json(), graphqlExpress({ schema: Schema }));
+server.use('/api', bodyParser.json(), graphqlExpress({ schema: Schema, context: { dataloaders: dataLoaders } }));
 server.use(express.static(publicPath));
 server.get('*', (req, res) => {
   res.sendFile(indexPath);
