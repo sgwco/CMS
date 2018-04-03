@@ -4,6 +4,7 @@ import { Route, withRouter } from 'react-router-dom';
 import AdminContentPostsComponent from './admin-content-posts/admin-content-posts';
 import AdminContentUsersComponent from './admin-content-users/admin-content-users';
 import AdminContentUsersFormComponent from './admin-content-users-form/admin-content-users-form';
+import AdminContentRolesComponent from './admin-content-roles/admin-content-roles';
 
 const adminContent = [
   {
@@ -27,6 +28,7 @@ class AdminContentComponent extends React.Component {
         {adminContent.map(this.renderRoute)}
         <Route exact path={`${match.url}/user`} render={() => <AdminContentUsersComponent />} />
         <Route exact path={`${match.url}/user/add-new`} render={() => <AdminContentUsersFormComponent />} />
+        <Route exact path={`${match.url}/role`} render={() => <AdminContentRolesComponent />} />
       </div>
     );
   }

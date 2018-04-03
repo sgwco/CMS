@@ -1,0 +1,8 @@
+.content-header-title {
+  display: flex;
+  align-items: center;
+}
+
+.content-header-title button {
+  margin-left: 15px;
+}

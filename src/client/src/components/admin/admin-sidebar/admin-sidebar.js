@@ -36,6 +36,16 @@ const data = [
         icon: 'user'
       }
     ]
+  },
+  {
+    header: 'CONFIGURATIONS',
+    menus: [
+      {
+        title: 'Roles',
+        href: 'role',
+        icon: 'users'
+      }
+    ]
   }
 ];
 

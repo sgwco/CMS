@@ -6,6 +6,7 @@
 
 # build
 /server/dist
+/dist
 
 # testing
 /coverage
