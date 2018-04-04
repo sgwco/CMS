@@ -29,8 +29,10 @@ class AdminContentComponent extends React.Component {
         {adminContent.map(this.renderRoute)}
         <Route exact path={`${match.url}/user`} render={() => <AdminContentUsersComponent />} />
         <Route exact path={`${match.url}/user/add-new`} render={() => <AdminContentUsersFormComponent />} />
-        <Route exact path={`${match.url}/role`} render={() => <AdminContentRolesComponent />} />
-        <Route exact path={`${match.url}/role/add-new`} render={() => <AdminContentRolesFormComponent />} />
+
+        <Route exact path={`${match.url}/role`} component={AdminContentRolesComponent} />
+        <Route exact path={`${match.url}/role/add-new`} component={AdminContentRolesFormComponent} />
+        <Route exact path={`${match.url}/role/edit/:id`} render={(props) => <AdminContentRolesFormComponent {...props} isEditedUser={true} />} />
       </div>
     );
   }

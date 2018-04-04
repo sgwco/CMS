@@ -19,7 +19,10 @@ export const Query = {
     },
     resolve: async (source, { id }) => {
       const rows = await promiseQuery(`SELECT * FROM ${PREFIX}role WHERE id='${id}'`);
-      return rows;
+      if (rows.length > 0) {
+        return rows[0];
+      }
+      else throw new GraphQLError('Role does not exist');
     }
   }
 }
@@ -46,10 +49,12 @@ export const Mutation = {
         '${args.name}',
         '${args.accessPermission}'
       )`);
-
-      const result = Object.assign({}, args);
-      result.id = id;
-      return result;
+      
+      return {
+        id,
+        name: args.name,
+        access_permission: args.accessPermission
+      };
     }
   },
   removeRole: {

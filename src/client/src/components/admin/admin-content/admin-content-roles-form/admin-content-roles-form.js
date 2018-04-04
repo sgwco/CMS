@@ -2,22 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import FontAwesome from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
-import { Mutation } from 'react-apollo';
+import { Mutation, withApollo } from 'react-apollo';
 import gql from 'graphql-tag';
 import { Breadcrumb, BreadcrumbItem, Row, Col, Form, Input, FormGroup, Label, Button, Alert } from 'reactstrap';
 
 import { roleCapabilities, ALERT_STATUS } from '../../../../commons/enum';
 import styles from './admin-content-roles-form.css';
 
-const createRole = gql`
-  mutation createRole($name: String!, $accessPermission: Int!) {
-    createRole(name: $name, accessPermission: $accessPermission) {
-      id
-    }
-  }
-`;
-
-export default class AdminContentRolesFormComponent extends React.Component {
+class AdminContentRolesFormComponent extends React.Component {
   static propTypes = {
     isEditedUser: PropTypes.bool
   }
@@ -25,6 +17,36 @@ export default class AdminContentRolesFormComponent extends React.Component {
   static defaultProps = {
     isEditedUser: false
   }
+
+  fetchRoles = gql`
+    {
+      roles {
+        id
+        name
+        accessPermission
+      }
+    }
+  `;
+
+  createRole = gql`
+    mutation createRole($name: String!, $accessPermission: Int!) {
+      createRole(name: $name, accessPermission: $accessPermission) {
+        id
+        name
+        accessPermission
+      }
+    }
+  `;
+
+  getRoleById = gql`
+    query role($id: ID!) {
+      role(id: $id) {
+        id
+        name
+        accessPermission
+      }
+    }
+  `;
 
   listRoles = Object.keys(roleCapabilities);
 
@@ -34,9 +56,42 @@ export default class AdminContentRolesFormComponent extends React.Component {
     this.state = {
       roleName: '',
       roleCapabilities: {},
+      alertVisible: ALERT_STATUS.HIDDEN,
       checkboxSelectAll: false,
-      alertVisible: ALERT_STATUS.HIDDEN
     };
+  }
+
+  async componentWillMount() {
+    const { isEditedUser, client, match, history } = this.props;
+    if (isEditedUser) {
+      try {
+        const { data } = await client.query({
+          query: this.getRoleById,
+          variables: { id: match.params.id }
+        });
+        const roles = {};
+        let checkboxSelectAll = false;
+
+        for (let index = 0; index < this.listRoles.length; index += 1) {
+          if (this.checkRoleAllowed(data.role.accessPermission, roleCapabilities[this.listRoles[index]].value)) {
+            roles[this.listRoles[index]] = true;
+          }
+        }
+
+        if (Object.keys(roles).length === this.listRoles.length) {
+          checkboxSelectAll = true;
+        }
+
+        this.setState({ roleName: data.role.name, roleCapabilities: roles, checkboxSelectAll });
+      }
+      catch (e) {
+        history.push('/admin/role');
+      }
+    }
+  }
+
+  checkRoleAllowed = (permission, role) => {
+    return permission & role;
   }
 
   renderTopTitle = () => this.props.isEditedUser ? 'Edit Role' : 'Add New Role';
@@ -82,6 +137,17 @@ export default class AdminContentRolesFormComponent extends React.Component {
     createRole({ variables: { name: this.state.roleName, accessPermission }});
   }
 
+  updateRoleCache = (cache, { data: { createRole } }) => {
+    try {
+      const { roles } = cache.readQuery({ query: this.fetchRoles });
+      roles.push(createRole);
+      cache.writeQuery({ query: this.fetchRoles, data: { roles } });
+    }
+    catch (e) {
+      // Do nothing
+    }
+  }
+
   renderRole = (item, index) => {
     return (
       <Col key={index} md={4} sm={12}>
@@ -101,9 +167,10 @@ export default class AdminContentRolesFormComponent extends React.Component {
   render() {
     return (
       <Mutation
-        mutation={createRole}
+        mutation={this.createRole}
         onError={this.triggerErrorCallback}
         onCompleted={this.triggerSuccessCallback}
+        update={this.updateRoleCache}
       >
         {(createRole, { error }) => (
           <Form onSubmit={e => { e.preventDefault(); this.saveRole(createRole); }}>
@@ -173,8 +240,9 @@ export default class AdminContentRolesFormComponent extends React.Component {
             </section>
           </Form>
         )}
-        
       </Mutation>
     );
   }
 }
+
+export default withApollo(AdminContentRolesFormComponent);

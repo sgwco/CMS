@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import FontAwesome from '@fortawesome/react-fontawesome';
 import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
@@ -17,6 +17,7 @@ class AdminContentRolesComponent extends React.Component {
       alertVisible: ALERT_STATUS.HIDDEN
     };
   }
+
   fetchRoles = gql`
     {
       roles {
@@ -45,11 +46,14 @@ class AdminContentRolesComponent extends React.Component {
   }
 
   functionFormatter = (cell, row) => {
+    const { match } = this.props;
     return (
       <div className={styles.functionBtn}>
-        <Button color="warning">
-          <FontAwesome icon='edit' className="text-white" />
-        </Button>
+        <Link to={`${match.url}/edit/${row.id}`}>
+          <Button color="warning">
+            <FontAwesome icon='edit' className="text-white" />
+          </Button>
+        </Link>
         <Button color="danger" onClick={() => this.onRemoveRole(row.id)}>
           <FontAwesome icon='trash' className="text-white" />
         </Button>
@@ -149,4 +153,4 @@ class AdminContentRolesComponent extends React.Component {
   }
 }
 
-export default withRouter(AdminContentRolesComponent);
+export default AdminContentRolesComponent;
