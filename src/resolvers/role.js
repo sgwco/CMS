@@ -57,6 +57,34 @@ export const Mutation = {
       };
     }
   },
+  editRole: {
+    type: Role,
+    args: {
+      id: { type: GraphQLNonNull(GraphQLID) },
+      name: { type: GraphQLString },
+      accessPermission: { type: GraphQLInt }
+    },
+    resolve: async (source, args, context) => {
+      if (!args.id) {
+        throw new GraphQLError('Edit role must have id');
+      }
+      
+      const listArgs = Object.keys(args).filter(item => item !== 'id');
+      const setStatement = listArgs.map(item => {
+        switch (item) {
+          case 'name':
+            return `${item}='${args[item]}'`;
+          case 'accessPermission':
+            return `access_permission=${args[item]}`;
+        }
+      }).join(',');
+
+      await promiseQuery(`UPDATE ${PREFIX}role SET ${setStatement} WHERE id='${args.id}'`);
+      context.dataloaders.rolesByIds.clear(args.id);
+
+      return context.dataloaders.rolesByIds.load(args.id);
+    }
+  },
   removeRole: {
     type: GraphQLString,
     args: {

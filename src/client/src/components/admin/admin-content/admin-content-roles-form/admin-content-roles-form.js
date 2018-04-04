@@ -38,6 +38,16 @@ class AdminContentRolesFormComponent extends React.Component {
     }
   `;
 
+  editRole = gql`
+    mutation editRole($id: ID!, $name: String, $accessPermission: Int) {
+      editRole(id: $id, name: $name, accessPermission: $accessPermission) {
+        id
+        name
+        accessPermission
+      }
+    }
+  `;
+
   getRoleById = gql`
     query role($id: ID!) {
       role(id: $id) {
@@ -128,19 +138,37 @@ class AdminContentRolesFormComponent extends React.Component {
     this.setState({ checkboxSelectAll: !this.state.checkboxSelectAll, roleCapabilities });
   }
 
-  saveRole = async (createRole) => {
+  saveRole = async (roleMutation) => {
+    const { isEditedUser, match } = this.props;
     let accessPermission = 0;
+
     for (let index = 0; index < this.listRoles.length; index += 1) {
       if (this.state.roleCapabilities[this.listRoles[index]])
         accessPermission += roleCapabilities[this.listRoles[index]].value;
     }
-    createRole({ variables: { name: this.state.roleName, accessPermission }});
+    const variables = {
+      name: this.state.roleName,
+      accessPermission
+    };
+
+    if (isEditedUser) variables.id = match.params.id;
+
+    roleMutation({ variables });
   }
 
-  updateRoleCache = (cache, { data: { createRole } }) => {
+  updateRoleCache = (cache, { data }) => {
     try {
       const { roles } = cache.readQuery({ query: this.fetchRoles });
-      roles.push(createRole);
+      
+      if (this.props.isEditedUser) {
+        console.log(data);
+        const index = roles.findIndex(item => item.id === data.editRole.id);
+        roles[index] = data.editRole;
+      }
+      else {
+        roles.push(data.createRole);
+      }
+      
       cache.writeQuery({ query: this.fetchRoles, data: { roles } });
     }
     catch (e) {
@@ -165,9 +193,10 @@ class AdminContentRolesFormComponent extends React.Component {
   }
 
   render() {
+    const { isEditedUser } = this.props;
     return (
       <Mutation
-        mutation={this.createRole}
+        mutation={!isEditedUser ? this.createRole : this.editRole}
         onError={this.triggerErrorCallback}
         onCompleted={this.triggerSuccessCallback}
         update={this.updateRoleCache}
@@ -193,7 +222,7 @@ class AdminContentRolesFormComponent extends React.Component {
                 Error: {error && error.graphQLErrors.length > 0 && error.graphQLErrors[0].message}
               </Alert>
               <Alert color="success" isOpen={this.state.alertVisible === ALERT_STATUS.SUCCESS} toggle={this.onDismissAlert}>
-                Create new role successfully!
+                {this.renderTopTitle()} successfully!
               </Alert>
               <div className="box box-primary">
                 <div className="box-header">
