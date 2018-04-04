@@ -6,3 +6,17 @@
 .content-header-title button {
   margin-left: 15px;
 }
+
+.role-badge {
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+
+.function-column {
+  width: 150px;
+}
+
+.function-btn {
+  display: flex;
+  justify-content: space-around;
+}

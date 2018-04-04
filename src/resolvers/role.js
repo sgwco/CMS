@@ -51,5 +51,19 @@ export const Mutation = {
       result.id = id;
       return result;
     }
+  },
+  removeRole: {
+    type: GraphQLString,
+    args: {
+      id: { type: GraphQLNonNull(GraphQLID) }
+    },
+    resolve: async (source, args) => {
+      if (!args.id) {
+        throw new GraphQLError('Id cannot be null');
+      }
+
+      const result = await promiseQuery(`DELETE FROM ${PREFIX}role WHERE id='${args.id}'`);
+      return args.id;
+    }
   }
 }

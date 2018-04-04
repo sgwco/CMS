@@ -26,12 +26,15 @@ export default class AdminContentRolesFormComponent extends React.Component {
     isEditedUser: false
   }
 
+  listRoles = Object.keys(roleCapabilities);
+
   constructor(props) {
     super(props);
 
     this.state = {
       roleName: '',
       roleCapabilities: {},
+      checkboxSelectAll: false,
       alertVisible: ALERT_STATUS.HIDDEN
     };
   }
@@ -43,23 +46,38 @@ export default class AdminContentRolesFormComponent extends React.Component {
   triggerSuccessCallback = () => this.setState({
     roleName: '',
     roleCapabilities: {},
+    checkboxSelectAll: false,
     alertVisible: ALERT_STATUS.SUCCESS
   });
   
   selectRole = (event) => {
     const roleCapabilities = Object.assign({}, this.state.roleCapabilities);
     const { role } = event.target.dataset;
-    if (roleCapabilities[role]) roleCapabilities[role] = !roleCapabilities[role];
-    else roleCapabilities[role] = true;
-    this.setState({ roleCapabilities });
+    const availableRoles = Object.keys(roleCapabilities);
+
+    roleCapabilities[role] = roleCapabilities[role] ? !roleCapabilities[role] : true;
+    const checkboxUnselectedRole = this.listRoles.findIndex(role => roleCapabilities[role] === false);
+
+    this.setState({
+      roleCapabilities,
+      checkboxSelectAll: checkboxUnselectedRole === -1 && availableRoles.length === this.listRoles.length
+    });
+  }
+
+  selectAllRoles = () => {
+    const roleCapabilities = Object.assign({}, this.state.roleCapabilities);
+    for (let index = 0; index < this.listRoles.length; index += 1) {
+      roleCapabilities[this.listRoles[index]] = !this.state.checkboxSelectAll;
+    }
+
+    this.setState({ checkboxSelectAll: !this.state.checkboxSelectAll, roleCapabilities });
   }
 
   saveRole = async (createRole) => {
-    const listRoles = Object.keys(roleCapabilities);
     let accessPermission = 0;
-    for (let index = 0; index < listRoles.length; index += 1) {
-      if (this.state.roleCapabilities[listRoles[index]])
-        accessPermission += roleCapabilities[listRoles[index]].value;
+    for (let index = 0; index < this.listRoles.length; index += 1) {
+      if (this.state.roleCapabilities[this.listRoles[index]])
+        accessPermission += roleCapabilities[this.listRoles[index]].value;
     }
     createRole({ variables: { name: this.state.roleName, accessPermission }});
   }
@@ -70,7 +88,7 @@ export default class AdminContentRolesFormComponent extends React.Component {
         <Label check>
           <Input
             type="checkbox"
-            checked={this.state.roleCapabilities[item]}
+            checked={this.state.roleCapabilities[item] === true}
             onClick={this.selectRole}
             data-role={item}
           />
@@ -81,8 +99,6 @@ export default class AdminContentRolesFormComponent extends React.Component {
   }
 
   render() {
-    const listRoles = Object.keys(roleCapabilities);
-
     return (
       <Mutation
         mutation={createRole}
@@ -100,7 +116,7 @@ export default class AdminContentRolesFormComponent extends React.Component {
                   <Link to='/admin'><FontAwesome icon="home" /> Home</Link>
                 </BreadcrumbItem>
                 <BreadcrumbItem>
-                  <Link to="/admin/user"><FontAwesome icon="users" /> Role</Link>
+                  <Link to="/admin/role"><FontAwesome icon="users" /> Role</Link>
                 </BreadcrumbItem>
                 <BreadcrumbItem active>{this.renderTopTitle()}</BreadcrumbItem>
               </Breadcrumb>
@@ -134,8 +150,16 @@ export default class AdminContentRolesFormComponent extends React.Component {
                       <FormGroup row>
                         <Label sm={3}>Role Capabilities</Label>
                         <Col sm={9}>
+                          <Row className={styles.rowSelectAll}>
+                            <Col sm={12}>
+                              <Label check>
+                                <Input type="checkbox" checked={this.state.checkboxSelectAll} onClick={this.selectAllRoles} />
+                                Select all
+                              </Label>
+                            </Col>
+                          </Row>
                           <Row>
-                            {listRoles.map(this.renderRole)}
+                            {this.listRoles.map(this.renderRole)}
                           </Row>
                         </Col>
                       </FormGroup>
