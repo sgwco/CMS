@@ -1,0 +1,16 @@
+.content-header-title {
+  display: flex;
+  align-items: center;
+}
+
+.content-header-title button {
+  margin-left: 15px;
+}
+
+.user-status-cell {
+  text-transform: lowercase;
+}
+
+.user-status-cell::first-letter {
+  text-transform: uppercase;
+}

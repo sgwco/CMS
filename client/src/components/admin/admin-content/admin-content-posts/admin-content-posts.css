@@ -1,0 +1,11 @@
+.box-categories {
+  overflow: scroll;
+}
+
+.category-tree {
+  height: 500px !important;
+}
+
+.btn-remove-category {
+  color: #e74c3c !important
+}
