@@ -7,7 +7,7 @@ import { Breadcrumb, BreadcrumbItem, Row, Col, Collapse, Button, Form as Bootstr
 import { Form } from 'react-form';
 import isEmail from 'validator/lib/isEmail';
 
-import { GET_ROLES } from '../../../../utils/graphql';
+import { GET_ROLES, CREATE_USER } from '../../../../utils/graphql';
 import { BootstrapTextField, BootstrapSelectField } from '../../../../commons/formFields';
 import styles from './admin-content-users-form.css';
 
@@ -80,7 +80,7 @@ export default class AdminContentUsersFormComponent extends React.Component {
   render() {
     return (
       <Mutation
-        mutation={this.createUser}
+        mutation={CREATE_USER}
       >
         {() => (
           <Form onSubmit={this.submitForm}>

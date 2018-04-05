@@ -4,8 +4,7 @@
   "scripts": {
     "server": "cd server && npm run dev",
     "client": "cd client && npm start",
-    "start": "cd client && npm run build && cd ../server && npm start",
-    "dev": "npm run server && npm run client"
+    "start": "cd client && npm run build && cd ../server && npm start"
   },
   "repository": {
     "type": "git",

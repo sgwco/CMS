@@ -21,7 +21,7 @@ server.options('*', cors());
 
 if (process.env.NODE_ENV === 'production') {
   publicPath = path.resolve(__dirname, '..', '..', 'client', 'build');
-  indexPath = path.resolve(__dirname, '..', 'src', 'client', 'build', 'index.html');
+  indexPath = path.resolve(__dirname, '..', '..', 'client', 'build', 'index.html');
 }
 else {
   publicPath = path.resolve(__dirname, '..', 'client', 'build');

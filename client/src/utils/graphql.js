@@ -47,7 +47,7 @@ export const REMOVE_ROLE = gql`
 
 export const CREATE_USER = gql`
   mutation createUser($username: String!, $password: String!, $email: String!, $role: String!, $fullname: String, $address: String, $phone: String) {
-    createUser(username: $username, password: $password, email: $email, role: $role, fullname: $fullname: address: $address, phone: $phone) {
+    createUser(username: $username, password: $password, email: $email, role: $role, fullname: $fullname, address: $address, phone: $phone) {
       id
     }
   }
