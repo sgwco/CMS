@@ -10,6 +10,7 @@ import filterFactory, { textFilter, selectFilter } from 'react-bootstrap-table2-
 import { GET_FULL_USERS, REMOVE_USER } from '../../../../utils/graphql';
 import { ALERT_STATUS } from '../../../../commons/enum';
 import styles from './admin-content-users.css';
+import { BoxWrapper, BoxBody } from '../../../../shared/boxWrapper';
 
 const userStatusFilterEnum = {
   'ACTIVE': 'Active',
@@ -24,6 +25,7 @@ class AdminContentUsersComponent extends React.Component {
       alertVisible: ALERT_STATUS.HIDDEN
     };
   }
+
   functionFormatter = (cell, row) => {
     const { match } = this.props;
     return (
@@ -112,11 +114,8 @@ class AdminContentUsersComponent extends React.Component {
                 <Alert color="success" isOpen={this.state.alertVisible === ALERT_STATUS.SUCCESS} toggle={this.onDismissAlert}>
                   Remove successfully!
                 </Alert>
-                <div className="box">
-                  <div className="box-header">
-                    <div className="box-title">List Users</div>
-                  </div>
-                  <div className={[styles.boxCategories, 'box-body'].join(' ')}>
+                <BoxWrapper color="primary" title="List Users">
+                  <BoxBody>
                     <Query query={GET_FULL_USERS}>
                       {({ loading, error, data }) => {
                         if (loading) return 'Loading...';
@@ -135,9 +134,8 @@ class AdminContentUsersComponent extends React.Component {
                         );
                       }}
                     </Query>
-                    
-                  </div>
-                </div>
+                  </BoxBody>
+                </BoxWrapper>
               </section>
             </div>
           );

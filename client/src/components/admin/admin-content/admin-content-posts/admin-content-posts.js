@@ -74,10 +74,10 @@ export default class AdminContentPostsComponent extends React.Component {
   generateNodeProps = () => {
     return {
       buttons: [
-        <Button color="link">
+        <Button color="link" key={1}>
           <FontAwesome icon='plus' />
         </Button>,
-        <Button color="link" className={styles.btnRemoveCategory}>
+        <Button color="link" className={styles.btnRemoveCategory} key={2}>
           <FontAwesome icon='trash' />
         </Button>
       ]

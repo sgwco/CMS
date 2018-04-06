@@ -2,12 +2,13 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import FontAwesome from '@fortawesome/react-fontawesome';
 import { Query, Mutation } from 'react-apollo';
-import { Breadcrumb, BreadcrumbItem, Button, Badge, Alert } from 'reactstrap';
+import { Button, Badge, Alert } from 'reactstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 
 import { GET_ROLES, REMOVE_ROLE } from '../../../../utils/graphql';
 import { roleCapabilities, ALERT_STATUS } from '../../../../commons/enum';
 import styles from './admin-content-roles.css';
+import Breadcrumb from '../../../../shared/breadcrumb';
 
 class AdminContentRolesComponent extends React.Component {
   constructor(props) {
@@ -90,12 +91,12 @@ class AdminContentRolesComponent extends React.Component {
                     </Button>
                   </Link>
                 </h1>
-                <Breadcrumb>
-                  <BreadcrumbItem>
-                    <Link to='/admin'><FontAwesome icon="home" /> Home</Link>
-                  </BreadcrumbItem>
-                  <BreadcrumbItem active>Roles</BreadcrumbItem>
-                </Breadcrumb>
+                <Breadcrumb
+                  items={[
+                    { url: '/admin', icon: 'home', text: 'Home' },
+                    { text: 'Roles' }
+                  ]}
+                />
               </section>
               <section className="content">
                 <Alert color="warning" isOpen={this.state.alertVisible === ALERT_STATUS.ERROR} toggle={this.onDismissAlert}>

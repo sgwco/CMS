@@ -6,9 +6,9 @@ import { Link } from 'react-router-dom';
 import { Query, Mutation, withApollo } from 'react-apollo';
 import { Breadcrumb, BreadcrumbItem, Row, Col, Collapse, Button, Form as BootstrapForm, Alert } from 'reactstrap';
 import { Form, withFormApi } from 'react-form';
-import isEmail from 'validator/lib/isEmail';
 import sha1 from 'sha1';
 
+import { requiredValidation, passwordMatchValidation, emailValidation } from '../../../../utils/validation';
 import { GET_ROLES, CREATE_USER, GET_FULL_USERS, GET_USER_BY_ID } from '../../../../utils/graphql';
 import { ALERT_STATUS } from '../../../../commons/enum';
 import { BootstrapTextField, BootstrapSelectField } from '../../../../commons/formFields';
@@ -73,32 +73,6 @@ class AdminContentUsersFormComponent extends React.Component {
     </option>
   );
 
-  requiredValidation = value => ({
-    error: !value || value.trim() === '' ? 'This field is required' : null
-  });
-
-  passwordMatchValidation = (currentPassword, abovePassword) => {
-    const required = this.requiredValidation(currentPassword);
-    if (required.error !== null) return required;
-    
-    if (currentPassword !== abovePassword) {
-      return { error: 'Password mismatch' };
-    }
-
-    return null;
-  }
-
-  emailValidation = value => {
-    const required = this.requiredValidation(value);
-    if (required.error !== null) return required;
-
-    if (!isEmail(value)) {
-      return { error: 'Email invalid' };
-    }
-
-    return null;
-  }
-
   roleMapper = item => ({
     text: item.name,
     value: item.id
@@ -106,7 +80,9 @@ class AdminContentUsersFormComponent extends React.Component {
 
   submitForm = (data, userMutation) => {
     data.password = sha1(data.password);
-    userMutation({ variables: data });
+    userMutation({
+      variables: data
+    });
   };
 
   updateUserCache = (cache, { data }) => {
@@ -171,26 +147,26 @@ class AdminContentUsersFormComponent extends React.Component {
                             field="username"
                             label="Username"
                             type="text"
-                            validate={this.requiredValidation}
+                            validate={requiredValidation}
                             disabled={isEditedUser}
                           />
                           <BootstrapTextField
                             field="password"
                             label="Password"
                             type="password"
-                            validate={this.requiredValidation}
+                            validate={requiredValidation}
                           />
                           <BootstrapTextField
                             field="retype_password"
                             label="Retype Password"
                             type="password"
-                            validate={value => this.passwordMatchValidation(value, formApi.values.password)}
+                            validate={value => passwordMatchValidation(value, formApi.values.password)}
                           />
                           <BootstrapTextField
                             field="email"
                             label="Email"
                             type="text"
-                            validate={this.emailValidation}
+                            validate={emailValidation}
                           />
                           <Query query={GET_ROLES(['id', 'name'])}>
                             {({ data, loading }) => {
@@ -204,7 +180,7 @@ class AdminContentUsersFormComponent extends React.Component {
                                   field="role"
                                   label="Role"
                                   data={dataRoles}
-                                  validate={this.requiredValidation}
+                                  validate={requiredValidation}
                                 />
                               );
                             }}
