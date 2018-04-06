@@ -1,4 +1,4 @@
-import { GraphQLList, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLInt, GraphQLError } from 'graphql';
+import { GraphQLList, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLInt, GraphQLError, GraphQLBoolean } from 'graphql';
 import uuid from 'uuid';
 import moment from 'moment';
 import isEmail from 'validator/lib/isEmail';
@@ -19,7 +19,10 @@ export const Query = {
     },
     resolve: async (source, { id }) => {
       const rows = await promiseQuery(`SELECT * FROM ${PREFIX}user WHERE id='${id}'`);
-      return rows;
+      if (rows.length > 0) {
+        return rows[0];
+      }
+      throw new GraphQLError('User does not exist');
     }
   }
 }
@@ -36,7 +39,7 @@ export const Mutation = {
       address: { type: GraphQLString, defaultValue: '' },
       phone: { type: GraphQLString, defaultValue: '' }
     },
-    resolve: async (source, args, context) => {
+    async resolve(source, args, context) {
       const { username, password, email, role, address, phone, fullname } = args;
       let roleData = null;
 
@@ -103,6 +106,22 @@ export const Mutation = {
         registration_date: registrationDate,
         user_status: UserStatus.getValue('ACTIVE')
       };
+    }
+  },
+  removeUser: {
+    type: GraphQLID,
+    args: {
+      id: { type: GraphQLNonNull(GraphQLID) }
+    },
+    resolve(source, args, context) {
+      const { id } = args;
+
+      if (!id) {
+        throw new GraphQLError('Id cannot be null');
+      }
+
+      promiseQuery(`DELETE FROM ${PREFIX}user WHERE id='${args.id}'`);
+      return args.id;
     }
   }
 }

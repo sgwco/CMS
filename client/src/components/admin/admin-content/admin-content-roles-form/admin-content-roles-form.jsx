@@ -128,7 +128,7 @@ class AdminContentRolesFormComponent extends React.Component {
         roles.push(data.createRole);
       }
       
-      cache.writeQuery({ query: GET_ROLES, data: { roles } });
+      cache.writeQuery({ query: GET_ROLES(['id', 'name', 'accessPermission']), data: { roles } });
     }
     catch (e) {
       // Do nothing

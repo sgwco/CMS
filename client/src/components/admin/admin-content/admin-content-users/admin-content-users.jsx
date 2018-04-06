@@ -2,12 +2,13 @@ import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment';
 import FontAwesome from '@fortawesome/react-fontawesome';
-import { Query } from 'react-apollo';
-import { Breadcrumb, BreadcrumbItem, Button } from 'reactstrap';
+import { Query, Mutation } from 'react-apollo';
+import { Breadcrumb, BreadcrumbItem, Button, Alert } from 'reactstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, { textFilter, selectFilter } from 'react-bootstrap-table2-filter';
 
-import { GET_FULL_USERS } from '../../../../utils/graphql';
+import { GET_FULL_USERS, REMOVE_USER } from '../../../../utils/graphql';
+import { ALERT_STATUS } from '../../../../commons/enum';
 import styles from './admin-content-users.css';
 
 const userStatusFilterEnum = {
@@ -16,6 +17,13 @@ const userStatusFilterEnum = {
 };
 
 class AdminContentUsersComponent extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      alertVisible: ALERT_STATUS.HIDDEN
+    };
+  }
   functionFormatter = (cell, row) => {
     const { match } = this.props;
     return (
@@ -25,7 +33,7 @@ class AdminContentUsersComponent extends React.Component {
             <FontAwesome icon='edit' className="text-white" />
           </Button>
         </Link>
-        <Button color="danger" onClick={() => this.onRemoveRole(row.id)}>
+        <Button color="danger" data-id={row.id} onClick={this.removeUser}>
           <FontAwesome icon='trash' className="text-white" />
         </Button>
       </div>
@@ -42,55 +50,99 @@ class AdminContentUsersComponent extends React.Component {
     { text: 'Function', dataField: '', headerClasses: 'function-column', formatter: this.functionFormatter }
   ];
 
+  onDismissAlert = () => this.setState({ alertVisible: ALERT_STATUS.HIDDEN });
+  triggerErrorCallback = () => this.setState({ alertVisible: ALERT_STATUS.ERROR });
+  triggerSuccessCallback = () => this.setState({ alertVisible: ALERT_STATUS.SUCCESS });
+
+  removeUser = e => {
+    const { id } = e.currentTarget.dataset;
+    
+    const result = confirm('Do you want to remove this user?');
+    if (result) {
+      this.removeUserMutation({
+        variables: { id },
+        optimisticResponse: {
+          __typename: 'Mutation',
+          removeUser: {
+            __typename: 'String',
+            id
+          }
+        },
+        update(cache, { data: { removeUser } }) {
+          let { users } = cache.readQuery({ query: GET_FULL_USERS });
+          users = users.filter(item => item.id !== removeUser);
+          cache.writeQuery({ query: GET_FULL_USERS, data: { users } });
+        }
+      });
+    }
+  }
+
   render() {
     const { match } = this.props;
     return (
-      <div>
-        <section className="content-header">
-          <h1 className={styles.contentHeaderTitle}>
-            <span>Users</span>
-            <Link to={`${match.url}/add-new`}>
-              <Button color="primary" size="sm">
-                <FontAwesome icon="plus" /> Add new user
-              </Button>
-            </Link>
-          </h1>
-          <Breadcrumb>
-            <BreadcrumbItem>
-              <Link to='/admin'><FontAwesome icon="home" /> Home</Link>
-            </BreadcrumbItem>
-            <BreadcrumbItem active>Users</BreadcrumbItem>
-          </Breadcrumb>
-        </section>
-        <section className="content">
-          <div className="box">
-            <div className="box-header">
-              <div className="box-title">List Users</div>
+      <Mutation
+        mutation={REMOVE_USER}
+        onError={this.triggerErrorCallback}
+        onCompleted={this.triggerSuccessCallback}
+      >
+        {(removeUser, { error }) => {
+          this.removeUserMutation = removeUser;
+          return (
+            <div>
+              <section className="content-header">
+                <h1 className={styles.contentHeaderTitle}>
+                  <span>Users</span>
+                  <Link to={`${match.url}/add-new`}>
+                    <Button color="primary" size="sm">
+                      <FontAwesome icon="plus" /> Add new user
+                    </Button>
+                  </Link>
+                </h1>
+                <Breadcrumb>
+                  <BreadcrumbItem>
+                    <Link to='/admin'><FontAwesome icon="home" /> Home</Link>
+                  </BreadcrumbItem>
+                  <BreadcrumbItem active>Users</BreadcrumbItem>
+                </Breadcrumb>
+              </section>
+              <section className="content">
+                <Alert color="warning" isOpen={this.state.alertVisible === ALERT_STATUS.ERROR} toggle={this.onDismissAlert}>
+                  Error: {error && error.graphQLErrors.length > 0 && error.graphQLErrors[0].message}
+                </Alert>
+                <Alert color="success" isOpen={this.state.alertVisible === ALERT_STATUS.SUCCESS} toggle={this.onDismissAlert}>
+                  Remove successfully!
+                </Alert>
+                <div className="box">
+                  <div className="box-header">
+                    <div className="box-title">List Users</div>
+                  </div>
+                  <div className={[styles.boxCategories, 'box-body'].join(' ')}>
+                    <Query query={GET_FULL_USERS}>
+                      {({ loading, error, data }) => {
+                        if (loading) return 'Loading...';
+                        if (error) return `Error! ${error.message}`;
+                        
+                        return (
+                          <BootstrapTable
+                            keyField='username'
+                            data={data.users}
+                            columns={this.tableHeaders}
+                            filter={filterFactory()}
+                            noDataIndication="Table is Empty"
+                            striped
+                            hover
+                          />
+                        );
+                      }}
+                    </Query>
+                    
+                  </div>
+                </div>
+              </section>
             </div>
-            <div className={[styles.boxCategories, 'box-body'].join(' ')}>
-              <Query query={GET_FULL_USERS}>
-                {({ loading, error, data }) => {
-                  if (loading) return 'Loading...';
-                  if (error) return `Error! ${error.message}`;
-                  
-                  return (
-                    <BootstrapTable
-                      keyField='username'
-                      data={data.users}
-                      columns={this.tableHeaders}
-                      filter={filterFactory()}
-                      noDataIndication="Table is Empty"
-                      striped
-                      hover
-                    />
-                  );
-                }}
-              </Query>
-              
-            </div>
-          </div>
-        </section>
-      </div>
+          );
+        }} 
+      </Mutation>
     );
   }
 }

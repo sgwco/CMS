@@ -62,10 +62,32 @@ export const GET_FULL_USERS = gql`
   }
 `;
 
+export const GET_USER_BY_ID = gql`
+  query user($id: ID!) {
+    user(id: $id) {
+      id
+      username
+      fullname
+      email
+      role {
+        id
+      }
+      address
+      phone
+    }
+  }
+`;
+
 export const CREATE_USER = gql`
   mutation createUser($username: String!, $password: String!, $email: String!, $role: ID!, $fullname: String, $address: String, $phone: String) {
     createUser(username: $username, password: $password, email: $email, role: $role, fullname: $fullname, address: $address, phone: $phone) {
       id
     }
+  }
+`;
+
+export const REMOVE_USER = gql`
+  mutation removeUser($id: ID!) {
+    removeUser(id: $id)
   }
 `;

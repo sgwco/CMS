@@ -1,19 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import FontAwesome from '@fortawesome/react-fontawesome';
+import _ from 'lodash';
 import { Link } from 'react-router-dom';
-import { Query, Mutation } from 'react-apollo';
+import { Query, Mutation, withApollo } from 'react-apollo';
 import { Breadcrumb, BreadcrumbItem, Row, Col, Collapse, Button, Form as BootstrapForm, Alert } from 'reactstrap';
-import { Form } from 'react-form';
+import { Form, withFormApi } from 'react-form';
 import isEmail from 'validator/lib/isEmail';
 import sha1 from 'sha1';
 
-import { GET_ROLES, CREATE_USER, GET_FULL_USERS } from '../../../../utils/graphql';
+import { GET_ROLES, CREATE_USER, GET_FULL_USERS, GET_USER_BY_ID } from '../../../../utils/graphql';
 import { ALERT_STATUS } from '../../../../commons/enum';
 import { BootstrapTextField, BootstrapSelectField } from '../../../../commons/formFields';
 import styles from './admin-content-users-form.css';
 
-export default class AdminContentUsersFormComponent extends React.Component {
+class AdminContentUsersFormComponent extends React.Component {
   constructor(props) {
     super(props);
 
@@ -36,7 +37,26 @@ export default class AdminContentUsersFormComponent extends React.Component {
 
   toggleAdditionalForm = () => this.setState({ additionalInformationVisible: !this.state.additionalInformationVisible });
 
-  getFormApi = formApi => this.setState({ formApi });
+  getFormApi = async formApi => {
+    const { isEditedUser, client, match, history } = this.props;
+    if (isEditedUser) {
+      try {
+        const { data } = await client.query({
+          query: GET_USER_BY_ID,
+          variables: { id: match.params.id }
+        });
+
+        const user = _.cloneDeep(data.user);
+        user.role = user.role.id;
+
+        formApi.setAllValues(user);
+      }
+      catch (e) {
+        history.push('/admin/user');
+      }
+    }
+    this.setState({ formApi });
+  }
 
   onDismissAlert = () => this.setState({ alertVisible: ALERT_STATUS.HIDDEN });
 
@@ -109,6 +129,7 @@ export default class AdminContentUsersFormComponent extends React.Component {
   }
 
   render() {
+    const { isEditedUser } = this.props;
     return (
       <Mutation
         mutation={CREATE_USER}
@@ -127,7 +148,7 @@ export default class AdminContentUsersFormComponent extends React.Component {
                       <Link to="/admin"><FontAwesome icon="home" /> Home</Link>
                     </BreadcrumbItem>
                     <BreadcrumbItem>
-                      <Link to="/admin/user"><FontAwesome icon="home" /> Users</Link>
+                      <Link to="/admin/user"><FontAwesome icon="user" /> Users</Link>
                     </BreadcrumbItem>
                     <BreadcrumbItem active> {this.renderTopTitle()} </BreadcrumbItem>
                   </Breadcrumb>
@@ -151,6 +172,7 @@ export default class AdminContentUsersFormComponent extends React.Component {
                             label="Username"
                             type="text"
                             validate={this.requiredValidation}
+                            disabled={isEditedUser}
                           />
                           <BootstrapTextField
                             field="password"
@@ -237,3 +259,5 @@ export default class AdminContentUsersFormComponent extends React.Component {
     );
   }
 }
+
+export default withApollo(withFormApi(AdminContentUsersFormComponent));
