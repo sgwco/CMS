@@ -32,7 +32,7 @@ class AdminContentRolesComponent extends React.Component {
   functionFormatter = (cell, row) => {
     const { match } = this.props;
     return (
-      <div className={styles.functionBtn}>
+      <div className="function-btn">
         <Link to={`${match.url}/edit/${row.id}`}>
           <Button color="warning">
             <FontAwesome icon='edit' className="text-white" />
@@ -48,7 +48,7 @@ class AdminContentRolesComponent extends React.Component {
   tableHeaders = [
     { text: 'Name', dataField: 'name', headerClasses: 'fit' },
     { text: 'Allowed Permission', dataField: 'accessPermission', formatter: this.accessPermissionFormatter },
-    { text: 'Function', dataField: '', headerClasses: styles.functionColumn, formatter: this.functionFormatter }
+    { text: 'Function', dataField: '', headerClasses: 'function-column', formatter: this.functionFormatter }
   ];
 
   onDismissAlert = () => this.setState({ alertVisible: ALERT_STATUS.HIDDEN });
@@ -63,9 +63,9 @@ class AdminContentRolesComponent extends React.Component {
   }
 
   updateRemoveRoleCache = (cache, { data: { removeRole } }) => {
-    let { roles } = cache.readQuery({ query: GET_ROLES });
+    let { roles } = cache.readQuery({ query: GET_ROLES(['id', 'name', 'accessPermission']) });
     roles = roles.filter(item => item.id !== removeRole);
-    cache.writeQuery({ query: GET_ROLES, data: { roles } });
+    cache.writeQuery({ query: GET_ROLES(['id', 'name', 'accessPermission']), data: { roles } });
   }
 
   render() {
@@ -109,7 +109,7 @@ class AdminContentRolesComponent extends React.Component {
                     <div className="box-title">List Roles</div>
                   </div>
                   <div className={[styles.boxCategories, 'box-body'].join(' ')}>
-                    <Query query={GET_ROLES}>
+                    <Query query={GET_ROLES(['id', 'name', 'accessPermission'])}>
                       {({ loading, error, data }) => {
                         if (loading) return 'Loading...';
                         if (error) return `Error! ${error.message}`;

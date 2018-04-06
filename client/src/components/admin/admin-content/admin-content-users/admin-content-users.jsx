@@ -3,44 +3,45 @@ import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment';
 import FontAwesome from '@fortawesome/react-fontawesome';
 import { Query } from 'react-apollo';
-import gql from 'graphql-tag';
 import { Breadcrumb, BreadcrumbItem, Button } from 'reactstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, { textFilter, selectFilter } from 'react-bootstrap-table2-filter';
 
+import { GET_FULL_USERS } from '../../../../utils/graphql';
 import styles from './admin-content-users.css';
-
-const fetchUsers = gql`
-  {
-    users {
-      id
-      username
-      fullname
-      email
-      registrationDate
-      role {
-        name
-      }
-      userStatus
-    }
-  }
-`;
 
 const userStatusFilterEnum = {
   'ACTIVE': 'Active',
   'DEACTIVE': 'Deactive'
 };
 
-const tableHeaders = [
-  { text: 'User Name', dataField: 'username', filter: textFilter({ delay: 0 }) },
-  { text: 'Full Name', dataField: 'fullname', filter: textFilter({ delay: 0 }) },
-  { text: 'Email', dataField: 'email', filter: textFilter({ delay: 0 }) },
-  { text: 'Registration Date', dataField: 'registrationDate', formatter: (cell) => moment(cell).format('DD/MM/YYYY') },
-  { text: 'Role', dataField: 'role.name' },
-  { text: 'User Status', dataField: 'userStatus', filter: selectFilter({ options: userStatusFilterEnum }), classes: styles.userStatusCell }
-];
-
 class AdminContentUsersComponent extends React.Component {
+  functionFormatter = (cell, row) => {
+    const { match } = this.props;
+    return (
+      <div className="function-btn">
+        <Link to={`${match.url}/edit/${row.id}`}>
+          <Button color="warning">
+            <FontAwesome icon='edit' className="text-white" />
+          </Button>
+        </Link>
+        <Button color="danger" onClick={() => this.onRemoveRole(row.id)}>
+          <FontAwesome icon='trash' className="text-white" />
+        </Button>
+      </div>
+    );
+  }
+
+  tableHeaders = [
+    { text: 'User Name', dataField: 'username', filter: textFilter({ delay: 0 }) },
+    { text: 'Full Name', dataField: 'fullname', filter: textFilter({ delay: 0 }), formatter: cell => cell || '—' },
+    { text: 'Email', dataField: 'email', filter: textFilter({ delay: 0 }) },
+    { text: 'Registration Date', dataField: 'registrationDate', formatter: (cell) => moment(cell).format('DD/MM/YYYY') },
+    { text: 'Role', dataField: 'role.name' },
+    { text: 'User Status', dataField: 'userStatus', filter: selectFilter({ options: userStatusFilterEnum }), classes: styles.userStatusCell },
+    { text: 'Function', dataField: '', headerClasses: 'function-column', formatter: this.functionFormatter }
+  ];
+
   render() {
     const { match } = this.props;
     return (
@@ -67,7 +68,7 @@ class AdminContentUsersComponent extends React.Component {
               <div className="box-title">List Users</div>
             </div>
             <div className={[styles.boxCategories, 'box-body'].join(' ')}>
-              <Query query={fetchUsers}>
+              <Query query={GET_FULL_USERS}>
                 {({ loading, error, data }) => {
                   if (loading) return 'Loading...';
                   if (error) return `Error! ${error.message}`;
@@ -76,7 +77,7 @@ class AdminContentUsersComponent extends React.Component {
                     <BootstrapTable
                       keyField='username'
                       data={data.users}
-                      columns={tableHeaders}
+                      columns={this.tableHeaders}
                       filter={filterFactory()}
                       noDataIndication="Table is Empty"
                       striped

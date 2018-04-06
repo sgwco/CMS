@@ -1,13 +1,14 @@
 import gql from 'graphql-tag';
 
-export const GET_ROLES = gql`
-  {
-    roles {
-      id
-      name
+export function GET_ROLES(fields) {
+  return gql`
+    {
+      roles {
+        ${fields.join('\n')}
+      }
     }
-  }
-`;
+  `;
+}
 
 export const GET_ROLE_BY_ID = gql`
   query role($id: ID!) {
@@ -45,8 +46,24 @@ export const REMOVE_ROLE = gql`
   }
 `;
 
+export const GET_FULL_USERS = gql`
+  {
+    users {
+      id
+      username
+      fullname
+      email
+      registrationDate
+      role {
+        name
+      }
+      userStatus
+    }
+  }
+`;
+
 export const CREATE_USER = gql`
-  mutation createUser($username: String!, $password: String!, $email: String!, $role: String!, $fullname: String, $address: String, $phone: String) {
+  mutation createUser($username: String!, $password: String!, $email: String!, $role: ID!, $fullname: String, $address: String, $phone: String) {
     createUser(username: $username, password: $password, email: $email, role: $role, fullname: $fullname, address: $address, phone: $phone) {
       id
     }

@@ -1,0 +1,12 @@
+body {
+  font-family: 'Open Sans';
+}
+
+.function-column {
+  width: 150px;
+}
+
+.function-btn {
+  display: flex;
+  justify-content: space-around;
+}

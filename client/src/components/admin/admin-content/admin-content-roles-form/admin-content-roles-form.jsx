@@ -118,7 +118,7 @@ class AdminContentRolesFormComponent extends React.Component {
 
   updateRoleCache = (cache, { data }) => {
     try {
-      const { roles } = cache.readQuery({ query: GET_ROLES });
+      const { roles } = cache.readQuery({ query: GET_ROLES(['id', 'name', 'accessPermission']) });
       
       if (this.props.isEditedUser) {
         const index = roles.findIndex(item => item.id === data.editRole.id);

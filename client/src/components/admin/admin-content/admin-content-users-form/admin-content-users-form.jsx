@@ -3,11 +3,13 @@ import PropTypes from 'prop-types';
 import FontAwesome from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
 import { Query, Mutation } from 'react-apollo';
-import { Breadcrumb, BreadcrumbItem, Row, Col, Collapse, Button, Form as BootstrapForm } from 'reactstrap';
+import { Breadcrumb, BreadcrumbItem, Row, Col, Collapse, Button, Form as BootstrapForm, Alert } from 'reactstrap';
 import { Form } from 'react-form';
 import isEmail from 'validator/lib/isEmail';
+import sha1 from 'sha1';
 
-import { GET_ROLES, CREATE_USER } from '../../../../utils/graphql';
+import { GET_ROLES, CREATE_USER, GET_FULL_USERS } from '../../../../utils/graphql';
+import { ALERT_STATUS } from '../../../../commons/enum';
 import { BootstrapTextField, BootstrapSelectField } from '../../../../commons/formFields';
 import styles from './admin-content-users-form.css';
 
@@ -17,7 +19,8 @@ export default class AdminContentUsersFormComponent extends React.Component {
 
     this.state = {
       additionalInformationVisible: false,
-      formInput: {}
+      alertVisible: ALERT_STATUS.HIDDEN,
+      formApi: null
     };
   }
 
@@ -31,10 +34,18 @@ export default class AdminContentUsersFormComponent extends React.Component {
 
   renderTopTitle = () => (this.props.isEditedUser ? 'Edit User' : 'Add New User');
 
-  toggleAdditionalForm = () =>
-    this.setState({
-      additionalInformationVisible: !this.state.additionalInformationVisible
-    });
+  toggleAdditionalForm = () => this.setState({ additionalInformationVisible: !this.state.additionalInformationVisible });
+
+  getFormApi = formApi => this.setState({ formApi });
+
+  onDismissAlert = () => this.setState({ alertVisible: ALERT_STATUS.HIDDEN });
+
+  triggerErrorCallback = () => this.setState({ alertVisible: ALERT_STATUS.ERROR });
+
+  triggerSuccessCallback = () => {
+    this.state.formApi.resetAll();
+    this.setState({ alertVisible: ALERT_STATUS.SUCCESS });
+  }
 
   renderRoleSelect = item => (
     <option key={item.id} value={item.id}>
@@ -73,17 +84,40 @@ export default class AdminContentUsersFormComponent extends React.Component {
     value: item.id
   });
 
-  submitForm = (data) => {
-    console.log(data);
+  submitForm = (data, userMutation) => {
+    data.password = sha1(data.password);
+    userMutation({ variables: data });
   };
+
+  updateUserCache = (cache, { data }) => {
+    try {
+      const { users } = cache.readQuery({ query: GET_FULL_USERS });
+      
+      if (this.props.isEditedUser) {
+        const index = users.findIndex(item => item.id === data.editUser.id);
+        users[index] = data.editUser;
+      }
+      else {
+        users.push(data.createUser);
+      }
+      
+      cache.writeQuery({ query: GET_FULL_USERS, data: { users } });
+    }
+    catch (e) {
+      // Do nothing
+    }
+  }
 
   render() {
     return (
       <Mutation
         mutation={CREATE_USER}
+        onError={this.triggerErrorCallback}
+        onCompleted={this.triggerSuccessCallback}
+        update={this.updateUserCache}
       >
-        {() => (
-          <Form onSubmit={this.submitForm}>
+        {(userMutation, { error }) => (
+          <Form onSubmit={data => this.submitForm(data, userMutation)} getApi={this.getFormApi}>
             {formApi => (
               <BootstrapForm onSubmit={formApi.submitForm}>
                 <section className="content-header">
@@ -99,6 +133,12 @@ export default class AdminContentUsersFormComponent extends React.Component {
                   </Breadcrumb>
                 </section>
                 <section className="content">
+                  <Alert color="warning" isOpen={this.state.alertVisible === ALERT_STATUS.ERROR} toggle={this.onDismissAlert}>
+                    Error: {error && error.graphQLErrors.length > 0 && error.graphQLErrors[0].message}
+                  </Alert>
+                  <Alert color="success" isOpen={this.state.alertVisible === ALERT_STATUS.SUCCESS} toggle={this.onDismissAlert}>
+                    {this.renderTopTitle()} successfully!
+                  </Alert>
                   <div className="box box-primary">
                     <div className="box-header">
                       <div className="box-title">Basic Information</div>
@@ -130,7 +170,7 @@ export default class AdminContentUsersFormComponent extends React.Component {
                             type="text"
                             validate={this.emailValidation}
                           />
-                          <Query query={GET_ROLES}>
+                          <Query query={GET_ROLES(['id', 'name'])}>
                             {({ data, loading }) => {
                               if (loading) return 'Loading...';
                               const dataRoles = [
