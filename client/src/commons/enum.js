@@ -4,9 +4,9 @@ export const USER_STATUS = {
 };
 
 export const ALERT_STATUS = {
-  HIDDEN: 0,
-  ERROR: 1,
-  SUCCESS: 2
+  HIDDEN: '',
+  ERROR: 'error',
+  SUCCESS: 'success'
 };
 
 export const roleCapabilities = {

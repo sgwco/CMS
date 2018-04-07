@@ -1,141 +1,87 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import FontAwesome from '@fortawesome/react-fontawesome';
-import { Query, Mutation } from 'react-apollo';
-import { Button, Badge, Alert } from 'reactstrap';
+import { Alert, Badge } from 'reactstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
+import styled from 'styled-components';
+import { withProps, compose, withHandlers } from 'recompose';
 
-import { GET_ROLES, REMOVE_ROLE } from '../../../../utils/graphql';
-import { roleCapabilities, ALERT_STATUS } from '../../../../commons/enum';
-import styles from './admin-content-roles.css';
-import Breadcrumb from '../../../../shared/breadcrumb';
+import { ALERT_STATUS, roleCapabilities } from '../../../commons/enum';
+import Breadcrumb from '../../../shared/breadcrumb';
+import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/contentContainer';
+import { BoxWrapper, BoxBody } from '../../../shared/boxWrapper';
+import { ContentHeaderTitleStyled, MarginLeftButtonStyled } from '../../../shared/styled';
+import { FunctionCell } from '../../../shared/components';
 
-class AdminContentRolesComponent extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      alertVisible: ALERT_STATUS.HIDDEN
-    };
-  }
-
-  accessPermissionFormatter = (cell) => {
-    const roleLists = Object.keys(roleCapabilities);
-    const badges = [];
-    for (let index = 0; index < roleLists.length; index += 1) {
-      if (cell & roleCapabilities[roleLists[index]].value) {
-        badges.push(<Badge className={styles.roleBadge} color="success" key={index}>{roleCapabilities[roleLists[index]].title}</Badge>);
-      }
-    }
-    return badges;
-  }
-
-  functionFormatter = (cell, row) => {
-    const { match } = this.props;
-    return (
-      <div className="function-btn">
-        <Link to={`${match.url}/edit/${row.id}`}>
-          <Button color="warning">
-            <FontAwesome icon='edit' className="text-white" />
-          </Button>
+const AdminContentRolesComponent = ({
+  match,
+  alertVisible,
+  removeAlert,
+  alertContent,
+  breadcrumbItems,
+  tableHeaders,
+  getRoles: { roles = [] }
+}) => (
+  <ContentContainer>
+    <ContentHeader>
+      <ContentHeaderTitleStyled>
+        <span>Roles</span>
+        <Link to={`${match.url}/add-new`}>
+          <MarginLeftButtonStyled color="primary" size="sm">
+            <FontAwesome icon="plus" /> Add new role
+          </MarginLeftButtonStyled>
         </Link>
-        <Button color="danger" onClick={() => this.onRemoveRole(row.id)}>
-          <FontAwesome icon='trash' className="text-white" />
-        </Button>
-      </div>
-    );
-  }
+      </ContentHeaderTitleStyled>
+      <Breadcrumb items={breadcrumbItems} />
+    </ContentHeader>
+    <ContentBody>
+      <Alert color={alertVisible} isOpen={alertVisible !== ALERT_STATUS.HIDDEN} toggle={removeAlert}>
+        {alertContent}
+      </Alert>
+      <BoxWrapper color="primary" title="List Roles">
+        <BoxBody>
+          <BootstrapTable
+            keyField='id'
+            data={roles}
+            columns={tableHeaders}
+            noDataIndication="Table is Empty"
+            striped
+            hover
+          />
+        </BoxBody>
+      </BoxWrapper>
+    </ContentBody>
+  </ContentContainer>
+);
 
-  tableHeaders = [
-    { text: 'Name', dataField: 'name', headerClasses: 'fit' },
-    { text: 'Allowed Permission', dataField: 'accessPermission', formatter: this.accessPermissionFormatter },
-    { text: 'Function', dataField: '', headerClasses: 'function-column', formatter: this.functionFormatter }
-  ];
+const RoleBadgesStyled = styled(Badge)`
+  margin-right: 5px;
+  margin-bottom: 5px;
+`;
 
-  onDismissAlert = () => this.setState({ alertVisible: ALERT_STATUS.HIDDEN });
-  triggerErrorCallback = () => this.setState({ alertVisible: ALERT_STATUS.ERROR });
-  triggerSuccessCallback = () => this.setState({ alertVisible: ALERT_STATUS.SUCCESS });
-
-  onRemoveRole = (id) => {
-    const result = confirm('Do you want to remove this role?');
-    if (result) {
-      this.removeRoleMutation({ variables: { id } });
+export default compose(
+  withRouter,
+  withHandlers({
+    accessPermissionFormatter: () => (cell) => {
+      const roleLists = Object.keys(roleCapabilities);
+      const badges = [];
+      for (let index = 0; index < roleLists.length; index += 1) {
+        if (cell & roleCapabilities[roleLists[index]].value) {
+          badges.push(<RoleBadgesStyled color="success" key={index}>{roleCapabilities[roleLists[index]].title}</RoleBadgesStyled>);
+        }
+      }
+      return badges;
+    },
+    functionFormatter: ({ onRemoveRole, match }) => (cell, row) => {
+      const functionCell = <FunctionCell url={`${match.url}/edit/${row.id}`} onDelete={() => onRemoveRole(row.id)} />;
+      return functionCell;
     }
-  }
-
-  updateRemoveRoleCache = (cache, { data: { removeRole } }) => {
-    let { roles } = cache.readQuery({ query: GET_ROLES(['id', 'name', 'accessPermission']) });
-    roles = roles.filter(item => item.id !== removeRole);
-    cache.writeQuery({ query: GET_ROLES(['id', 'name', 'accessPermission']), data: { roles } });
-  }
-
-  render() {
-    const { match } = this.props;
-    return (
-      <Mutation
-        mutation={REMOVE_ROLE}
-        onError={this.triggerErrorCallback}
-        onCompleted={this.triggerSuccessCallback}
-        update={this.updateRemoveRoleCache}
-      >
-        {(removeRole, { error }) => {
-          this.removeRoleMutation = removeRole;
-          return (
-            <div>
-              <section className="content-header">
-                <h1 className={styles.contentHeaderTitle}>
-                  <span>Roles</span>
-                  <Link to={`${match.url}/add-new`}>
-                    <Button color="primary" size="sm">
-                      <FontAwesome icon="plus" /> Add new role
-                    </Button>
-                  </Link>
-                </h1>
-                <Breadcrumb
-                  items={[
-                    { url: '/admin', icon: 'home', text: 'Home' },
-                    { text: 'Roles' }
-                  ]}
-                />
-              </section>
-              <section className="content">
-                <Alert color="warning" isOpen={this.state.alertVisible === ALERT_STATUS.ERROR} toggle={this.onDismissAlert}>
-                  Error: {error && error.graphQLErrors.length > 0 && error.graphQLErrors[0].message}
-                </Alert>
-                <Alert color="success" isOpen={this.state.alertVisible === ALERT_STATUS.SUCCESS} toggle={this.onDismissAlert}>
-                  Remove successfully!
-                </Alert>
-                <div className="box">
-                  <div className="box-header">
-                    <div className="box-title">List Roles</div>
-                  </div>
-                  <div className={[styles.boxCategories, 'box-body'].join(' ')}>
-                    <Query query={GET_ROLES(['id', 'name', 'accessPermission'])}>
-                      {({ loading, error, data }) => {
-                        if (loading) return 'Loading...';
-                        if (error) return `Error! ${error.message}`;
-                        
-                        return (
-                          <BootstrapTable
-                            keyField='id'
-                            data={data.roles}
-                            columns={this.tableHeaders}
-                            noDataIndication="Table is Empty"
-                            striped
-                            hover
-                          />
-                        );
-                      }}
-                    </Query>
-                  </div>
-                </div>
-              </section>
-            </div>
-          );
-        }}
-      </Mutation>
-    );
-  }
-}
-
-export default AdminContentRolesComponent;
+  }),
+  withProps(({ accessPermissionFormatter, functionFormatter }) => ({
+    tableHeaders: [
+      { text: 'Name', dataField: 'name', headerClasses: 'fit' },
+      { text: 'Allowed Permission', dataField: 'accessPermission', formatter: accessPermissionFormatter },
+      { text: 'Function', dataField: '', headerClasses: 'function-column', formatter: functionFormatter }
+    ]
+  }))
+)(AdminContentRolesComponent);
