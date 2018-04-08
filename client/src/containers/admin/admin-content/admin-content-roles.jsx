@@ -1,31 +1,25 @@
-import React from 'react';
 import { graphql } from 'react-apollo';
-import { compose, withHandlers, withStateHandlers } from 'recompose';
+import { compose, withHandlers, withStateHandlers, withProps, withState } from 'recompose';
 
 import AdminContentRolesComponent from '../../../components/admin/admin-content/admin-content-roles';
 import { GET_ROLES, REMOVE_ROLE } from '../../../utils/graphql';
 import { ALERT_STATUS } from '../../../commons/enum';
 
-const AdminContentRolesContainer = (props) => (
-  <AdminContentRolesComponent {...props} />
-);
-
 export default compose(
   graphql(GET_ROLES(['id', 'name', 'accessPermission']), { name: 'getRoles' }),
   graphql(REMOVE_ROLE, { name: 'removeRole' }),
+  withProps(() => ({
+    breadcrumbItems: [
+      { url: '/admin', icon: 'home', text: 'Home' },
+      { text: 'Roles' }
+    ]
+  })),
+  withState('alertVisible', 'setAlert', ALERT_STATUS.HIDDEN),
+  withState('alertContent', 'setAlertContent', ''),
   withStateHandlers(
-    () => ({
-      alertVisible: ALERT_STATUS.HIDDEN,
-      alertContent: '',
-      breadcrumbItems: [
-        { url: '/admin', icon: 'home', text: 'Home' },
-        { text: 'Roles' }
-      ]
-    }),
+    null,
     {
-      setAlert: () => (alertVisible) => ({ alertVisible }),
-      setAlertContent: () => (alertContent) => ({ alertContent }),
-      removeAlert: () => () => ({ alertVisible: ALERT_STATUS.HIDDEN })
+      removeAlert: ({ setAlert }) => () => setAlert(ALERT_STATUS.HIDDEN),
     }
   ),
   withHandlers({
@@ -52,4 +46,4 @@ export default compose(
       }
     }
   })
-)(AdminContentRolesContainer);
+)(AdminContentRolesComponent);

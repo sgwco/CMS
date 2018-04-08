@@ -2,10 +2,10 @@ import React from 'react';
 import { Route, withRouter } from 'react-router-dom';
 
 import AdminContentPostsComponent from './admin-content-posts/admin-content-posts';
-import AdminContentUsersComponent from './admin-content-users/admin-content-users';
+import AdminContentUsersContainer from '../../../containers/admin/admin-content/admin-content-users';
 import AdminContentUsersFormComponent from './admin-content-users-form/admin-content-users-form';
 import AdminContentRolesContainer from '../../../containers/admin/admin-content/admin-content-roles';
-import AdminContentRolesFormComponent from './admin-content-roles-form/admin-content-roles-form';
+import AdminContentRolesFormContainer from '../../../containers/admin/admin-content/admin-content-roles-form';
 
 const adminContent = [
   {
@@ -19,13 +19,13 @@ const AdminContentComponent = ({ match }) => (
     {adminContent.map((item, index) => (
       <Route key={index} exact path={`${match.url}/${item.href}`} render={() => <AdminContentPostsComponent {...item} />} />
     ))}
-    <Route exact path={`${match.url}/user`} component={AdminContentUsersComponent} />
+    <Route exact path={`${match.url}/user`} component={AdminContentUsersContainer} />
     <Route exact path={`${match.url}/user/add-new`} component={AdminContentUsersFormComponent} />
     <Route exact path={`${match.url}/user/edit/:id`} render={props => <AdminContentUsersFormComponent {...props} isEditedUser={true}  />} />
 
     <Route exact path={`${match.url}/role`} component={AdminContentRolesContainer} />
-    <Route exact path={`${match.url}/role/add-new`} component={AdminContentRolesFormComponent} />
-    <Route exact path={`${match.url}/role/edit/:id`} render={props => <AdminContentRolesFormComponent {...props} isEditedUser={true} />} />
+    <Route exact path={`${match.url}/role/add-new`} component={AdminContentRolesFormContainer} />
+    <Route exact path={`${match.url}/role/edit/:id`} render={props => <AdminContentRolesFormContainer {...props} isEditedUser={true} />} />
   </div>
 );
 
