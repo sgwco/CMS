@@ -2,7 +2,7 @@ import { compose, branch, lifecycle, withProps, withState, withStateHandlers, wi
 import { withRouter } from 'react-router-dom';
 import { graphql, withApollo } from 'react-apollo';
 
-import { CREATE_ROLE, EDIT_ROLE, GET_ROLE_BY_ID } from '../../../utils/graphql';
+import { CREATE_ROLE, EDIT_ROLE, GET_ROLE_BY_ID, GET_ROLES } from '../../../utils/graphql';
 import { ALERT_STATUS } from '../../../commons/enum';
 import AdminContentRolesFormComponent from '../../../components/admin/admin-content/admin-content-roles-form';
 import { roleCapabilities } from '../../../commons/enum';
@@ -32,8 +32,6 @@ export default compose(
   })),
   withState('alertVisible', 'setAlert', ALERT_STATUS.HIDDEN),
   withState('alertContent', 'setAlertContent', ''),
-  withState('roleName', 'setRoleName', ''),
-  withState('rolesSelected', 'setRoles', []),
   withState('checkboxSelectAll', 'setCheckboxSelectAll', false),
   withStateHandlers(
     null,
@@ -41,34 +39,30 @@ export default compose(
       removeAlert: ({ setAlert }) => () => setAlert(ALERT_STATUS.HIDDEN),
     }),
   withHandlers({
-    selectRole: ({ listRoles, setRoles, setCheckboxSelectAll }) => (event) => {
-      const roleClone = Object.assign({}, roleCapabilities);
-      const { role } = event.target.dataset;
-      const availableRoles = Object.keys(roleClone);
-  
-      roleClone[role] = roleClone[role] ? !roleClone[role] : true;
-      const checkboxUnselectedRole = listRoles.findIndex(role => roleClone[role] === false);
-
-      setRoles(roleClone);
-      console.log(roleClone);
-      setCheckboxSelectAll(checkboxUnselectedRole === -1 && availableRoles.length === listRoles.length);
-    },
-    selectAllRoles: ({ listRoles, checkboxSelectAll, setRoles, setCheckboxSelectAll }) => () => {
+    selectAllRoles: ({ listRoles, checkboxSelectAll, setCheckboxSelectAll }) => (formApi) => {
       const roleClone = Object.assign({}, roleCapabilities);
       for (let index = 0; index < listRoles.length; index += 1) {
         roleClone[listRoles[index]] = !checkboxSelectAll;
       }
 
-      setRoles(roleClone);
-      setCheckboxSelectAll(checkboxSelectAll);
+      const roles = listRoles.map(item => {
+        const obj = {};
+        obj[item] = !checkboxSelectAll;
+        return obj;
+      });
+
+      setCheckboxSelectAll(!checkboxSelectAll);
+      roles.forEach(item => {
+        const [key] = Object.keys(item);
+
+        if (key) {
+          formApi.setValue(key, item[key]);
+        }
+      });
     },
-    saveRole: ({ isEditedUser, match, roleCapabilities, listRoles, roleName, editRole, createRole }) => async () => {
-      let accessPermission = 0;
-  
-      for (let index = 0; index < listRoles.length; index += 1) {
-        if (roleCapabilities[listRoles[index]])
-          accessPermission += roleCapabilities[listRoles[index]].value;
-      }
+    saveRole: ({ isEditedUser, match, editRole, createRole, setAlertContent, setAlert }) => ({ roleName, ...roles }) => {
+      const accessPermission = Object.keys(roles).filter(item => roles[item]).map(item => roleCapabilities[item].value).reduce((total, num) => total + num);
+
       const variables = {
         name: roleName,
         accessPermission
@@ -79,7 +73,30 @@ export default compose(
         editRole({ variables });
       }
       else {
-        createRole({ variables });
+        createRole({
+          variables,
+          optimisticResponse: {
+            __typename: 'Mutation',
+            createRole: {
+              __typename: 'String',
+              id: Math.round(Math.random() * -1000000),
+              name: roleName,
+              accessPermission
+            }
+          },
+          update(cache, { data: { createRole } }) {
+            try {
+              const { roles } = cache.readQuery({ query: GET_ROLES(['id', 'name', 'accessPermission']) });
+              roles.push(createRole);
+              cache.writeQuery({ query: GET_ROLES(['id', 'name', 'accessPermission']), data: { roles } });
+            }
+            catch (e) {
+              // Nothing here
+            }
+          }
+        });
+        setAlertContent('Add role successfully');
+        setAlert(ALERT_STATUS.SUCCESS);
       }
     }
   }),

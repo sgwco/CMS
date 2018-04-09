@@ -3,7 +3,7 @@ import { Route, withRouter } from 'react-router-dom';
 
 import AdminContentPostsComponent from './admin-content-posts/admin-content-posts';
 import AdminContentUsersContainer from '../../../containers/admin/admin-content/admin-content-users';
-import AdminContentUsersFormComponent from './admin-content-users-form/admin-content-users-form';
+import AdminContentUsersFormContainer from '../../../containers/admin/admin-content/admin-content-users-form';
 import AdminContentRolesContainer from '../../../containers/admin/admin-content/admin-content-roles';
 import AdminContentRolesFormContainer from '../../../containers/admin/admin-content/admin-content-roles-form';
 
@@ -20,8 +20,8 @@ const AdminContentComponent = ({ match }) => (
       <Route key={index} exact path={`${match.url}/${item.href}`} render={() => <AdminContentPostsComponent {...item} />} />
     ))}
     <Route exact path={`${match.url}/user`} component={AdminContentUsersContainer} />
-    <Route exact path={`${match.url}/user/add-new`} component={AdminContentUsersFormComponent} />
-    <Route exact path={`${match.url}/user/edit/:id`} render={props => <AdminContentUsersFormComponent {...props} isEditedUser={true}  />} />
+    <Route exact path={`${match.url}/user/add-new`} component={AdminContentUsersFormContainer} />
+    <Route exact path={`${match.url}/user/edit/:id`} render={props => <AdminContentUsersFormContainer {...props} isEditedUser={true}  />} />
 
     <Route exact path={`${match.url}/role`} component={AdminContentRolesContainer} />
     <Route exact path={`${match.url}/role/add-new`} component={AdminContentRolesFormContainer} />
