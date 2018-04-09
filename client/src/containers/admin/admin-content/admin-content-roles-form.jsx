@@ -36,7 +36,7 @@ export default compose(
   withStateHandlers(
     null,
     {
-      removeAlert: ({ setAlert }) => () => setAlert(ALERT_STATUS.HIDDEN),
+      removeAlert: () => () => ({ alertVisible: ALERT_STATUS.HIDDEN }),
     }),
   withHandlers({
     selectAllRoles: ({ listRoles, checkboxSelectAll, setCheckboxSelectAll }) => (formApi) => {

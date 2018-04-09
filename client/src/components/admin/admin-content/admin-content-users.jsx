@@ -10,8 +10,7 @@ import { compose, withHandlers, withProps } from 'recompose';
 import { ALERT_STATUS } from '../../../commons/enum';
 import { BoxWrapper, BoxBody } from '../../../shared/boxWrapper';
 import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/contentContainer';
-import { ContentHeaderTitleStyled, MarginLeftButtonStyled } from '../../../shared/styled';
-import { FunctionCell } from '../../../shared/components';
+import { FunctionCell, ContentHeaderTitleStyled, MarginLeftButtonStyled } from '../../../shared/components';
 
 const userStatusFilterEnum = {
   'ACTIVE': 'Active',

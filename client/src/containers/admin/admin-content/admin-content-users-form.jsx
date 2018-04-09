@@ -18,7 +18,7 @@ export default compose(
   withStateHandlers(
     ({ additionalInformationVisible = false }) => ({ additionalInformationVisible }),
     {
-      removeAlert: ({ setAlert }) => () => setAlert(ALERT_STATUS.HIDDEN),
+      removeAlert: () => () => ({ alertVisible: ALERT_STATUS.HIDDEN }),
       toggleAdditionalForm: ({ additionalInformationVisible }) => () => ({ additionalInformationVisible: !additionalInformationVisible })
     }
   ),

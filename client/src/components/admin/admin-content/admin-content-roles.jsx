@@ -10,8 +10,14 @@ import { ALERT_STATUS, roleCapabilities } from '../../../commons/enum';
 import Breadcrumb from '../../../shared/breadcrumb';
 import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/contentContainer';
 import { BoxWrapper, BoxBody } from '../../../shared/boxWrapper';
-import { ContentHeaderTitleStyled, MarginLeftButtonStyled } from '../../../shared/styled';
-import { FunctionCell } from '../../../shared/components';
+import {
+  LoadingIndicator,
+  ContentHeaderTitleStyled,
+  MarginLeftButtonStyled,
+  FunctionWrapperStyled,
+  FunctionCell,
+  OpacityTextStyled
+} from '../../../shared/components';
 
 const AdminContentRolesComponent = ({
   match,
@@ -62,7 +68,14 @@ const RoleBadgesStyled = styled(Badge)`
 export default compose(
   withRouter,
   withHandlers({
-    accessPermissionFormatter: () => (cell) => {
+    nameFormatter: () => (cell, row) => {
+      if (typeof row.id === 'number' && row.id < 0) {
+        cell = (<OpacityTextStyled>{cell}</OpacityTextStyled>);
+      }
+
+      return cell;
+    },
+    accessPermissionFormatter: () => (cell, row) => {
       const roleLists = Object.keys(roleCapabilities);
       const badges = [];
       for (let index = 0; index < roleLists.length; index += 1) {
@@ -70,16 +83,38 @@ export default compose(
           badges.push(<RoleBadgesStyled color="success" key={index}>{roleCapabilities[roleLists[index]].title}</RoleBadgesStyled>);
         }
       }
+
+      if (typeof row.id === 'number' && row.id < 0) {
+        const opacityText = (<OpacityTextStyled>{badges}</OpacityTextStyled>);
+        return opacityText;
+      }
+
       return badges;
     },
-    functionFormatter: ({ onRemoveRole, match }) => (cell, row) => {
-      const functionCell = <FunctionCell url={`${match.url}/edit/${row.id}`} onDelete={() => onRemoveRole(row.id)} />;
+    functionFormatter: ({ match, onRemoveRole }) => (cell, row) => {
+      let functionCell = null;
+      functionCell = (
+        <FunctionWrapperStyled>
+          <LoadingIndicator />
+        </FunctionWrapperStyled>
+      );
+      if (typeof row.id === 'number' && row.id < 0) {
+        functionCell = (
+          <FunctionWrapperStyled>
+            <LoadingIndicator />
+          </FunctionWrapperStyled>
+        );
+      }
+      else {
+        functionCell = <FunctionCell url={`${match.url}/edit/${row.id}`} onDelete={() => onRemoveRole(row.id)} />;
+      }
+      
       return functionCell;
     }
   }),
-  withProps(({ accessPermissionFormatter, functionFormatter }) => ({
+  withProps(({ accessPermissionFormatter, functionFormatter, nameFormatter }) => ({
     tableHeaders: [
-      { text: 'Name', dataField: 'name', headerClasses: 'fit' },
+      { text: 'Name', dataField: 'name', headerClasses: 'fit', formatter: nameFormatter },
       { text: 'Allowed Permission', dataField: 'accessPermission', formatter: accessPermissionFormatter },
       { text: 'Function', dataField: '', headerClasses: 'function-column', formatter: functionFormatter }
     ]
