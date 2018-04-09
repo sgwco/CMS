@@ -53,68 +53,74 @@ export default compose(
         }
       });
     },
-    saveRole: ({ isEditedUser, match, editRole, createRole, setAlertContent, setAlert }) => ({ roleName, ...roles }) => {
-      const accessPermission = Object.keys(roles).filter(item => roles[item]).map(item => roleCapabilities[item].value).reduce((total, num) => total + num);
+    saveRole: ({ isEditedUser, match, editRole, createRole, setAlertContent, setAlert }) => async ({ roleName, ...roles }) => {
+      try {
+        const accessPermission = Object.keys(roles).filter(item => roles[item]).map(item => roleCapabilities[item].value).reduce((total, num) => total + num);
 
-      const variables = {
-        name: roleName,
-        accessPermission
-      };
-  
-      if (isEditedUser) {
-        variables.id = match.params.id;
-        editRole({
-          variables,
-          optimisticResponse: {
-            __typename: 'Mutation',
-            editRole: {
-              __typename: 'String',
-              id: Math.round(Math.random() * -1000000),
-              name: roleName,
-              accessPermission
+        const variables = {
+          name: roleName,
+          accessPermission
+        };
+    
+        if (isEditedUser) {
+          variables.id = match.params.id;
+          await editRole({
+            variables,
+            optimisticResponse: {
+              __typename: 'Mutation',
+              editRole: {
+                __typename: 'String',
+                id: Math.round(Math.random() * -1000000),
+                name: roleName,
+                accessPermission
+              }
+            },
+            update(cache, { data: { editRole } }) {
+              try {
+                const { roles } = cache.readQuery({ query: GET_ROLES(['id', 'name', 'accessPermission']) });
+                const index = roles.findIndex(item => item.id === match.params.id);
+                roles[index] = editRole;
+                cache.writeQuery({ query: GET_ROLES(['id', 'name', 'accessPermission']), data: { roles } });
+              }
+              catch (e) {
+                // Nothing here
+              }
             }
-          },
-          update(cache, { data: { editRole } }) {
-            try {
-              const { roles } = cache.readQuery({ query: GET_ROLES(['id', 'name', 'accessPermission']) });
-              const index = roles.findIndex(item => item.id === match.params.id);
-              roles[index] = editRole;
-              cache.writeQuery({ query: GET_ROLES(['id', 'name', 'accessPermission']), data: { roles } });
-            }
-            catch (e) {
-              // Nothing here
-            }
-          }
-        });
+          });
 
-        setAlertContent('Edit role successfully');
-        setAlert(ALERT_STATUS.SUCCESS);
+          setAlertContent('Edit role successfully');
+          setAlert(ALERT_STATUS.SUCCESS);
+        }
+        else {
+          await createRole({
+            variables,
+            optimisticResponse: {
+              __typename: 'Mutation',
+              createRole: {
+                __typename: 'Role',
+                id: Math.round(Math.random() * -1000000),
+                name: roleName,
+                accessPermission
+              }
+            },
+            update(cache, { data: { createRole } }) {
+              try {
+                const { roles } = cache.readQuery({ query: GET_ROLES(['id', 'name', 'accessPermission']) });
+                roles.push(createRole);
+                cache.writeQuery({ query: GET_ROLES(['id', 'name', 'accessPermission']), data: { roles } });
+              }
+              catch (e) {
+                // Nothing here
+              }
+            }
+          });
+          setAlertContent('Add role successfully');
+          setAlert(ALERT_STATUS.SUCCESS);
+        }
       }
-      else {
-        createRole({
-          variables,
-          optimisticResponse: {
-            __typename: 'Mutation',
-            createRole: {
-              __typename: 'String',
-              id: Math.round(Math.random() * -1000000),
-              name: roleName,
-              accessPermission
-            }
-          },
-          update(cache, { data: { createRole } }) {
-            try {
-              const { roles } = cache.readQuery({ query: GET_ROLES(['id', 'name', 'accessPermission']) });
-              roles.push(createRole);
-              cache.writeQuery({ query: GET_ROLES(['id', 'name', 'accessPermission']), data: { roles } });
-            }
-            catch (e) {
-              // Nothing here
-            }
-          }
-        });
-        setAlertContent('Add role successfully');
-        setAlert(ALERT_STATUS.SUCCESS);
+      catch (e) {
+        setAlertContent('Error: ' + e.graphQLErrors[0].message);
+        setAlert(ALERT_STATUS.ERROR);
       }
     },
     initValue: ({ isEditedUser, client, listRoles, history, match }) => async (formApi) => {

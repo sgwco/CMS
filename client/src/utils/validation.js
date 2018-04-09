@@ -5,7 +5,7 @@ export const requiredValidation = value => ({
 });
 
 export const passwordMatchValidation = (currentPassword, abovePassword) => {
-  const required = this.requiredValidation(currentPassword);
+  const required = requiredValidation(currentPassword);
   if (required.error !== null) return required;
   
   if (currentPassword !== abovePassword) {
@@ -16,7 +16,7 @@ export const passwordMatchValidation = (currentPassword, abovePassword) => {
 };
 
 export const emailValidation = value => {
-  const required = this.requiredValidation(value);
+  const required = requiredValidation(value);
   if (required.error !== null) return required;
 
   if (!isEmail(value)) {

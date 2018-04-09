@@ -10,7 +10,7 @@ import { compose, withHandlers, withProps } from 'recompose';
 import { ALERT_STATUS } from '../../../commons/enum';
 import { BoxWrapper, BoxBody } from '../../../shared/boxWrapper';
 import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/contentContainer';
-import { FunctionCell, ContentHeaderTitleStyled, MarginLeftButtonStyled } from '../../../shared/components';
+import { FunctionCell, ContentHeaderTitleStyled, MarginLeftButtonStyled, FunctionWrapperStyled, LoadingIndicator } from '../../../shared/components';
 
 const userStatusFilterEnum = {
   'ACTIVE': 'Active',
@@ -69,7 +69,23 @@ export default compose(
   withRouter,
   withHandlers({
     functionFormatter: ({ onRemoveUser, match }) => (cell, row) => {
-      const functionCell = <FunctionCell url={`${match.url}/edit/${row.id}`} onDelete={() => onRemoveUser(row.id)} />;
+      let functionCell = null;
+      functionCell = (
+        <FunctionWrapperStyled>
+          <LoadingIndicator />
+        </FunctionWrapperStyled>
+      );
+      if (typeof row.id === 'number' && row.id < 0) {
+        functionCell = (
+          <FunctionWrapperStyled>
+            <LoadingIndicator />
+          </FunctionWrapperStyled>
+        );
+      }
+      else {
+        functionCell = <FunctionCell url={`${match.url}/edit/${row.id}`} onDelete={() => onRemoveUser(row.id)} />;
+      }
+      
       return functionCell;
     }
   }),

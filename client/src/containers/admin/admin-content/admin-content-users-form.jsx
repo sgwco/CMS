@@ -3,7 +3,7 @@ import { graphql, withApollo } from 'react-apollo';
 import sha1 from 'sha1';
 
 import AdminContentUsersFormComponent from '../../../components/admin/admin-content/admin-content-users-form';
-import { GET_ROLES, CREATE_USER } from '../../../utils/graphql';
+import { GET_ROLES, CREATE_USER, GET_FULL_USERS } from '../../../utils/graphql';
 import { ALERT_STATUS } from '../../../commons/enum';
 
 export default compose(
@@ -24,11 +24,49 @@ export default compose(
   ),
   withHandlers({
     renderTopTitle: ({ isEditedUser }) => () => isEditedUser ? 'Edit User' : 'Add New User',
-    submitForm: ({ createUser }) => (data) => {
+    submitForm: ({ createUser, setAlertContent, setAlert }) => async (data) => {
       data.password = sha1(data.password);
-      createUser({
-        variables: data
-      });
+      console.log(data);
+      try {
+        await createUser({
+          variables: data,
+          optimisticResponse: {
+            __typename: 'Mutation',
+            createUser: {
+              __typename: 'User',
+              id: Math.round(Math.random() * -1000000),
+              username: data.username,
+              fullname: data.fullname || '',
+              email: data.email,
+              registrationDate: data.registrationDate,
+              role: {
+                __typename: 'Role',
+                id: data.role
+              },
+              userStatus: data.userStatus
+            }
+          },
+          update(cache, { data: { createUser } }) {
+            try {
+              const { users } = cache.readQuery({ query: GET_FULL_USERS });
+              console.log(users);
+              users.push(createUser);
+              cache.writeQuery({ query: GET_FULL_USERS, data: { users } });
+
+            }
+            catch (e) {
+              // Nothing here
+            }
+          }
+        });
+
+        setAlertContent('Create user successfully');
+        setAlert(ALERT_STATUS.SUCCESS);
+      }
+      catch(e) {
+        setAlertContent('Error: ' + e.graphQLErrors[0].message);
+        setAlert(ALERT_STATUS.ERROR);
+      }
     }
   }),
   withProps(({ renderTopTitle }) => ({

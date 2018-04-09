@@ -23,26 +23,33 @@ export default compose(
     }
   ),
   withHandlers({
-    onRemoveUser: ({ removeUser }) => e => {
-      const { id } = e.currentTarget.dataset;
-      
+    onRemoveUser: ({ removeUser, setAlertContent, setAlert }) => async id => {
       const result = confirm('Do you want to remove this user?');
       if (result) {
-        removeUser({
-          variables: { id },
-          optimisticResponse: {
-            __typename: 'Mutation',
-            removeUser: {
-              __typename: 'String',
-              id
+        try {
+          await removeUser({
+            variables: { id },
+            optimisticResponse: {
+              __typename: 'Mutation',
+              removeUser: {
+                __typename: 'String',
+                id
+              }
+            },
+            update(cache, { data: { removeUser } }) {
+              let { users } = cache.readQuery({ query: GET_FULL_USERS });
+              users = users.filter(item => item.id !== removeUser);
+              cache.writeQuery({ query: GET_FULL_USERS, data: { users } });
             }
-          },
-          update(cache, { data: { removeUser } }) {
-            let { users } = cache.readQuery({ query: GET_FULL_USERS });
-            users = users.filter(item => item.id !== removeUser);
-            cache.writeQuery({ query: GET_FULL_USERS, data: { users } });
-          }
-        });
+          });
+
+          setAlertContent('Remove user successfully');
+          setAlert(ALERT_STATUS.SUCCESS);
+        }
+        catch (e) {
+          setAlertContent('Error: ' + e.graphQLErrors[0].message);
+          setAlert(ALERT_STATUS.ERROR);
+        }
       }
     }
   })

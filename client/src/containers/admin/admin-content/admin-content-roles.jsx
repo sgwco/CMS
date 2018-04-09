@@ -23,26 +23,32 @@ export default compose(
     }
   ),
   withHandlers({
-    onRemoveRole: ({ removeRole, setAlert, setAlertContent }) => id => {
+    onRemoveRole: ({ removeRole, setAlert, setAlertContent }) => async id => {
       const result = confirm('Do you want to remove this role?');
       if (result) {
-        removeRole({
-          variables: { id },
-          optimisticResponse: {
-            __typename: 'Mutation',
-            removeRole: {
-              __typename: 'String',
-              id
+        try {
+          await removeRole({
+            variables: { id },
+            optimisticResponse: {
+              __typename: 'Mutation',
+              removeRole: {
+                __typename: 'String',
+                id
+              }
+            },
+            update(cache, { data: { removeRole } }) {
+              let { roles } = cache.readQuery({ query: GET_ROLES(['id', 'name', 'accessPermission']) });
+              roles = roles.filter(item => item.id !== removeRole);
+              cache.writeQuery({ query: GET_ROLES(['id', 'name', 'accessPermission']), data: { roles } });
             }
-          },
-          update(cache, { data: { removeRole } }) {
-            let { roles } = cache.readQuery({ query: GET_ROLES(['id', 'name', 'accessPermission']) });
-            roles = roles.filter(item => item.id !== removeRole);
-            cache.writeQuery({ query: GET_ROLES(['id', 'name', 'accessPermission']), data: { roles } });
-          }
-        });
-        setAlertContent('Remove role successfully');
-        setAlert(ALERT_STATUS.SUCCESS);
+          });
+          setAlertContent('Remove role successfully');
+          setAlert(ALERT_STATUS.SUCCESS);
+        }
+        catch (e) {
+          setAlertContent('Error: ' + e.graphQLErrors[0].message);
+          setAlert(ALERT_STATUS.ERROR);
+        }
       }
     }
   })
