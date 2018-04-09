@@ -3,6 +3,7 @@ import { Row, Col, Form as BootstrapForm, Input, FormGroup, Label, Button, Alert
 import styled from 'styled-components';
 import { Form, Checkbox } from 'react-form';
 import { withHandlers, compose } from 'recompose';
+import _ from 'lodash';
 
 import { BootstrapTextField } from '../../../shared/formFields';
 import { requiredValidation } from '../../../utils/validation';
@@ -18,12 +19,12 @@ const AdminContentRolesFormComponent = ({
   alertContent,
   removeAlert,
   renderRole,
-  checkboxSelectAll,
   selectAllRoles,
   listRoles,
-  saveRole
+  saveRole,
+  initValue
 }) => (
-  <Form onSubmit={saveRole}>
+  <Form onSubmit={saveRole} getApi={initValue}>
     {(formApi) => (
       <BootstrapForm onSubmit={formApi.submitForm}>
         <ContentContainer>
@@ -53,8 +54,8 @@ const AdminContentRolesFormComponent = ({
                             <Label check>
                               <Input
                                 type="checkbox"
-                                checked={checkboxSelectAll}
-                                onClick={() => selectAllRoles(formApi)}
+                                checked={Object.keys(_.pickBy(formApi.values, value => value === true)).length === listRoles.length}
+                                onClick={(e) => selectAllRoles(e, formApi)}
                               />
                               Select all
                             </Label>
