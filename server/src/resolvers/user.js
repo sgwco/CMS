@@ -41,7 +41,6 @@ export const Mutation = {
     },
     async resolve(source, args, context) {
       const { username, password, email, role, address, phone, fullname } = args;
-      let roleData = null;
 
       if (!username) {
         throw new GraphQLError('Username cannot be null');
@@ -62,13 +61,6 @@ export const Mutation = {
       if (!role) {
         throw new GraphQLError('Role cannot be null');
       }
-      
-      try {
-        roleData = await context.dataloaders.rolesByIds.load(role);
-      }
-      catch (e) {
-        throw new GraphQLError('Role invalid');
-      }
 
       const registrationDate = moment().format('YYYY-MM-DD HH:MM');
 
@@ -88,9 +80,12 @@ export const Mutation = {
         )`);
       }
       catch (e) {
+        console.log(e);
         switch (e.code) {
           case 'ER_DUP_ENTRY':
             throw new GraphQLError('User existed');
+          case 'ER_NO_REFERENCED_ROW_2':
+            throw new GraphQLError('User data invalid');
         }
       }
 
@@ -100,11 +95,11 @@ export const Mutation = {
         password,
         fullname,
         email,
-        role: roleData,
+        role,
         address,
         phone,
         registration_date: registrationDate,
-        user_status: UserStatus.getValue('ACTIVE')
+        user_status: UserStatus.getValue('ACTIVE').value
       };
     }
   },

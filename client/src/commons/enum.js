@@ -1,6 +1,6 @@
 export const USER_STATUS = {
-  ACTIVE: 'active',
-  DEACTIVE: 'deactive'
+  ACTIVE: 'ACTIVE',
+  DEACTIVE: 'DEACTIVE'
 };
 
 export const ALERT_STATUS = {
