@@ -1,6 +1,6 @@
 import React from 'react';
 import FontAwesome from '@fortawesome/react-fontawesome';
-import { Row, Col, Collapse, Button, Form as BootstrapForm, Alert } from 'reactstrap';
+import { Row, Col, Collapse, Button, Form as BootstrapForm, Alert, FormGroup, Label } from 'reactstrap';
 import { Form } from 'react-form';
 import { compose, withHandlers } from 'recompose';
 
@@ -22,10 +22,14 @@ const AdminContentUsersFormComponent = ({
   getRoles: { roles = [] },
   toggleAdditionalForm,
   additionalInformationVisible,
-  roleMapper
+  initValue,
+  roleMapper,
+  formIsLoading,
+  editUserChangePassword,
+  setEditUserChangePassword
 }) => (
   <ContentContainer>
-    <Form onSubmit={submitForm} getApi={this.getFormApi}>
+    <Form onSubmit={submitForm} getApi={initValue}>
       {formApi => (
         <BootstrapForm onSubmit={formApi.submitForm}>
           <ContentHeader>
@@ -36,7 +40,7 @@ const AdminContentUsersFormComponent = ({
             <Alert color={alertVisible} isOpen={alertVisible !== ALERT_STATUS.HIDDEN} toggle={removeAlert}>
               {alertContent}
             </Alert>
-            <BoxWrapper color="primary" title="Basic Information">
+            <BoxWrapper color="primary" title="Basic Information" isLoading={formIsLoading}>
               <BoxBody>
                 <Row>
                   <Col lg={6} md={12}>
@@ -47,18 +51,29 @@ const AdminContentUsersFormComponent = ({
                       validate={requiredValidation}
                       disabled={isEditedUser}
                     />
-                    <BootstrapTextField
-                      field="password"
-                      label="Password"
-                      type="password"
-                      validate={requiredValidation}
-                    />
-                    <BootstrapTextField
-                      field="retype_password"
-                      label="Retype Password"
-                      type="password"
-                      validate={value => passwordMatchValidation(value, formApi.values.password)}
-                    />
+                    {isEditedUser && !editUserChangePassword ? (
+                      <FormGroup row>
+                        <Label sm={3}>Password</Label>
+                        <Col sm={9}>
+                          <Button color="link" onClick={() => setEditUserChangePassword(true)}>Change Password?</Button>
+                        </Col>
+                      </FormGroup>
+                    ) : (
+                      <div>
+                        <BootstrapTextField
+                          field="password"
+                          label="Password"
+                          type="password"
+                          validate={requiredValidation}
+                        />
+                        <BootstrapTextField
+                          field="retype_password"
+                          label="Retype Password"
+                          type="password"
+                          validate={value => passwordMatchValidation(value, formApi.values.password)}
+                        />
+                      </div>
+                    )}
                     <BootstrapTextField
                       field="email"
                       label="Email"

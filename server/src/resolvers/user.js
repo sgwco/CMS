@@ -103,6 +103,52 @@ export const Mutation = {
       };
     }
   },
+  editUser: {
+    type: User,
+    args: {
+      id: { type: GraphQLNonNull(GraphQLID) },
+      password: { type: GraphQLString },
+      email: { type: GraphQLString },
+      role: { type: GraphQLID },
+      fullname: { type: GraphQLString },
+      address: { type: GraphQLString },
+      phone: { type: GraphQLString }
+    },
+    async resolve(source, args, context) {
+      if (!args.id) {
+        throw new GraphQLError('Id cannot be null');
+      }
+
+      if (args.email && !isEmail(args.email)) {
+        throw new GraphQLError('Email invalid');
+      }
+
+      const criteria = Object.keys(args).map(item => {
+        switch (typeof args[item]) {
+          case 'number':
+            return `${item}=${args[item]}`;
+          default:
+            return `${item}='${args[item]}'`;
+        }
+      }).join(', ');
+
+      try {
+        await promiseQuery(`UPDATE ${PREFIX}user SET ${criteria} WHERE id='${args.id}'`);
+      }
+      catch (e) {
+        switch (e.code) {
+          case 'ER_DUP_ENTRY':
+            throw new GraphQLError('User existed');
+          case 'ER_NO_REFERENCED_ROW_2':
+            throw new GraphQLError('User data invalid');
+        }
+      }
+
+      context.dataloaders.usersByIds.clear(args.id);
+
+      return context.dataloaders.usersByIds.load(args.id);
+    }
+  },
   removeUser: {
     type: GraphQLID,
     args: {

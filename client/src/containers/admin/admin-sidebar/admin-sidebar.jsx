@@ -29,6 +29,11 @@ const data = [
         badgePrimary: '4'
       },
       {
+        title: 'Packages',
+        href: 'package',
+        icon: 'cube',
+      },
+      {
         title: 'Users',
         href: 'user',
         icon: 'user'
