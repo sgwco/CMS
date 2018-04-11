@@ -29,10 +29,13 @@ export default compose(
     renderTopTitle: ({ isEditedUser }) => () => isEditedUser ? 'Edit User' : 'Add New User',
     submitForm: ({ createUser, setAlertContent, setAlert, isEditedUser, editUser, match }) => async (data) => {
       try {
-        if (data.password) data.password = sha1(data.password);
+        if (data.password) {
+          data.password = sha1(data.password);
+          delete data.retype_password;
+        }
+
         if (isEditedUser) {
           data.id = match.params.id;
-          console.log(data);
           await editUser({
             variables: data,
             optimisticResponse: {

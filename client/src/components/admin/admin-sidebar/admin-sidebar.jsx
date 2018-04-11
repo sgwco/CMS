@@ -5,7 +5,7 @@ import FontAwesome from '@fortawesome/react-fontawesome';
 import AdminSidebarMenuComponent from './admin-sidebar-menu';
 import styled from 'styled-components';
 
-const AdminSidebarComponent = ({ profile: { fullname, role, avatar }, menuData, selectedMenu, onSelectMenu }) => (
+const AdminSidebarComponent = ({ profile: { fullname, role, avatar }, menuData }) => (
   <aside className="main-sidebar">
     <section className="sidebar">
       <div className="user-panel">
@@ -33,12 +33,11 @@ const AdminSidebarComponent = ({ profile: { fullname, role, avatar }, menuData, 
           item.menus.map((menuItem, menuIndex) => (
             <AdminSidebarMenuComponent
               key={menuIndex}
-              isActive={selectedMenu === menuItem.href}
               title={menuItem.title}
               href={menuItem.href}
               icon={menuItem.icon}
+              subMenu={menuItem.subMenu}
               badgePrimary={menuItem.badgePrimary}
-              onClick={() => onSelectMenu(menuItem.href)}
             />
           ))
         ])}

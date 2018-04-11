@@ -1,5 +1,4 @@
-import React from 'react';
-import { withStateHandlers, compose } from 'recompose';
+import { withProps, compose } from 'recompose';
 
 import AdminSidebarComponent from '../../../components/admin/admin-sidebar/admin-sidebar';
 
@@ -20,7 +19,17 @@ const data = [
       {
         title: 'Posts',
         href: 'post',
-        icon: 'file'
+        icon: 'file',
+        subMenu: [
+          {
+            title: 'All Posts',
+            href: 'post'
+          },
+          {
+            title: 'Post Categories',
+            href: 'post/category'
+          }
+        ]
       },
       {
         title: 'Products',
@@ -52,20 +61,13 @@ const data = [
   }
 ];
 
-const AdminSidebarContainer = ({ selectedMenu, setSelectedMenu }) => (
-  <AdminSidebarComponent
-    profile={{ fullname: 'Vo Hoai Son', role: 'Admin', avatar: 'https://graph.facebook.com/100006945288953/picture?type=square' }}
-    menuData={data}
-    selectedMenu={selectedMenu}
-    onSelectMenu={setSelectedMenu}
-  />
-);
-
 export default compose(
-  withStateHandlers(
-    ({ initialSelectedMenu = 'dashboard' }) => ({ selectedMenu: initialSelectedMenu }),
-    {
-      setSelectedMenu: () => (currentMenu) => ({ selectedMenu: currentMenu })
-    }
-  )
-)(AdminSidebarContainer);
+  withProps(() => ({
+    profile: {
+      fullname: 'Vo Hoai Son',
+      role: 'Admin',
+      avatar: 'https://graph.facebook.com/100006945288953/picture?type=square'
+    },
+    menuData: data
+  }))
+)(AdminSidebarComponent);

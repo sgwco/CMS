@@ -1,14 +1,13 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import { Badge } from 'reactstrap';
 import FontAwesome from '@fortawesome/react-fontawesome';
 import styled from 'styled-components';
-import { compose, setPropTypes, defaultProps } from 'recompose';
+import { compose, withHandlers } from 'recompose';
 
-const AdminSidebarMenuComponent = ({ isActive, title, href, icon, badgePrimary, onClick, match }) => (
-  <MenuLiStyled className="treeview" isActive={isActive} onClick={onClick}>
+const AdminSidebarMenuComponent = ({ title, href, icon, badgePrimary, onClick, match, subMenu = [], isActiveMenu, isActiveSubmenu }) => (
+  <MenuLiStyled className="treeview" isActive={isActiveMenu(href)} onClick={onClick}>
     <Link to={`${match.url}/${href}`}>
       <MenuIconStyled icon={icon} />
       <MenuTitleStyled>{title}</MenuTitleStyled>
@@ -18,10 +17,40 @@ const AdminSidebarMenuComponent = ({ isActive, title, href, icon, badgePrimary, 
         </span>
       )}
     </Link>
+    {subMenu.length > 0 && (
+      <ul className="treeview-menu">
+        {subMenu.map((item, index) => (
+          <SubmenuLiStyled key={index} isActive={isActiveSubmenu(item.href)}>
+            <Link to={`${match.url}/${item.href}`}><FontAwesome icon="angle-right" /> {item.title}</Link>
+          </SubmenuLiStyled>
+        ))}
+      </ul>
+    )}
   </MenuLiStyled>
 );
 
+export default compose(
+  withRouter,
+  withHandlers({
+    isActiveSubmenu: ({ location }) => (href) => {
+      const pathname = location.pathname.split('/');
+      pathname.splice(0, 2);
+      const parsedHref = pathname.join('/');
+      
+      return parsedHref === href;
+    },
+    isActiveMenu: ({ location }) => (href) => {
+      const pathname = location.pathname.split('/');
+      return pathname.indexOf(href) > -1;
+    }
+  })
+)(AdminSidebarMenuComponent);
+
 const MenuLiStyled = styled.li.attrs({
+  className: props => props.isActive ? 'active menu-open' : ''
+})``;
+
+const SubmenuLiStyled = styled.li.attrs({
   className: props => props.isActive ? 'active' : ''
 })``;
 
@@ -33,19 +62,3 @@ const MenuTitleStyled = styled.span`
   margin-left: 10px;
 `;
 
-export default compose(
-  withRouter,
-  setPropTypes({
-    isActive: PropTypes.bool.isRequired,
-    title: PropTypes.string.isRequired,
-    href: PropTypes.string.isRequired,
-    icon: PropTypes.string,
-    badgePrimary: PropTypes.string,
-    onClick: PropTypes.func
-  }),
-  defaultProps({
-    icon: null,
-    badgePrimary: null,
-    onClick: null
-  })
-)(AdminSidebarMenuComponent);

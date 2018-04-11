@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, withRouter } from 'react-router-dom';
 
-import AdminContentPostsComponent from './admin-content-posts/admin-content-posts';
+import AdminContentPostsContainer from '../../../containers/admin//admin-content/admin-content-posts';
 import AdminContentUsersContainer from '../../../containers/admin/admin-content/admin-content-users';
 import AdminContentUsersFormContainer from '../../../containers/admin/admin-content/admin-content-users-form';
 import AdminContentRolesContainer from '../../../containers/admin/admin-content/admin-content-roles';
@@ -17,7 +17,7 @@ const adminContent = [
 const AdminContentComponent = ({ match }) => (
   <div>
     {adminContent.map((item, index) => (
-      <Route key={index} exact path={`${match.url}/${item.href}`} render={() => <AdminContentPostsComponent {...item} />} />
+      <Route key={index} exact path={`${match.url}/${item.href}`} render={() => <AdminContentPostsContainer {...item} />} />
     ))}
     <Route exact path={`${match.url}/user`} component={AdminContentUsersContainer} />
     <Route exact path={`${match.url}/user/add-new`} component={AdminContentUsersFormContainer} />
