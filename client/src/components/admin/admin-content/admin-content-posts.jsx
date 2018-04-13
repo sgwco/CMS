@@ -1,19 +1,26 @@
 import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { compose } from 'recompose';
-
+import { compose, withHandlers, withProps } from 'recompose';
+import BootstrapTable from 'react-bootstrap-table-next';
+import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
 import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/contentContainer';
-import {
-  ContentHeaderTitleStyled,
-  MarginLeftButtonStyled
-} from '../../../shared/components';
+import { FunctionCell, ContentHeaderTitleStyled, MarginLeftButtonStyled, FunctionWrapperStyled, LoadingIndicator } from '../../../shared/components';
 import { BoxWrapper, BoxBody } from '../../../shared/boxWrapper';
-import Breadcrumb from '../../../shared/breadcrumb';
+import { Breadcrumb, Alert } from 'reactstrap';
+import { ALERT_STATUS } from '../../../commons/enum';
 import FontAwesome from '@fortawesome/react-fontawesome';
 // import SortableTree from 'react-sortable-tree';
 // import 'react-sortable-tree/style.css';
 
-const AdminContentPostsComponent = ({ match, breadcrumbItems }) => (
+const AdminContentPostsComponent = ({ 
+  match, 
+  breadcrumbItems,
+  tableHeaders,
+  alertVisible,
+  removeAlert,
+  alertContent,
+  getPosts: { posts = [] }
+}) => (
   <ContentContainer>
     <ContentHeader>
       <ContentHeaderTitleStyled>
@@ -27,8 +34,20 @@ const AdminContentPostsComponent = ({ match, breadcrumbItems }) => (
       <Breadcrumb items={breadcrumbItems} />
     </ContentHeader>
     <ContentBody>
+      <Alert color={alertVisible} isOpen={alertVisible !== ALERT_STATUS.HIDDEN} toggle={removeAlert}>
+        {alertContent}
+      </Alert>
       <BoxWrapper color="primary" title="List Posts">
         <BoxBody>
+          <BootstrapTable
+            keyField='title'
+            data={posts}
+            columns={tableHeaders}
+            filter={filterFactory()}
+            noDataIndication="Table is Empty"
+            striped
+            hover
+          />
         </BoxBody>
       </BoxWrapper>
     </ContentBody>
@@ -36,7 +55,35 @@ const AdminContentPostsComponent = ({ match, breadcrumbItems }) => (
 );
 
 export default compose(
-  withRouter
+  withRouter,
+  withHandlers({
+    functionFormatter: ({ onRemovePost, match }) => (cell, row) => {
+      let functionCell = null;
+      functionCell = (
+        <FunctionWrapperStyled>
+          <LoadingIndicator />
+        </FunctionWrapperStyled>
+      );
+      if (typeof row.id === 'number' && row.id < 0) {
+        functionCell = (
+          <FunctionWrapperStyled>
+            <LoadingIndicator />
+          </FunctionWrapperStyled>
+        );
+      }
+      else {
+        functionCell = <FunctionCell url={`${match.url}/edit/${row.id}`} onDelete={() => onRemovePost(row.id)} />;
+      }
+      
+      return functionCell;
+    }
+  }),
+  withProps(({ functionFormatter }) => ({
+    tableHeaders: [
+      { text: 'Title', dataField: 'title', filter: textFilter({ delay: 0 }) },
+      { text: 'Function', dataField: '', headerClasses: 'function-column', formatter: functionFormatter }
+    ]
+  }))
 )(AdminContentPostsComponent);
 
 // export default class AdminContentPostsComponent extends React.Component {

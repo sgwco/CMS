@@ -27,7 +27,7 @@ const data = [
           },
           {
             title: 'Post Categories',
-            href: 'post/category'
+            href: 'post/category',
           }
         ]
       },
@@ -36,22 +36,17 @@ const data = [
         href: 'product',
         icon: 'shopping-cart',
         badgePrimary: '4'
-      },
-      {
-        title: 'Packages',
-        href: 'package',
-        icon: 'cube',
-      },
-      {
-        title: 'Users',
-        href: 'user',
-        icon: 'user'
       }
     ]
   },
   {
     header: 'CONFIGURATIONS',
     menus: [
+      {
+        title: 'Users',
+        href: 'user',
+        icon: 'user'
+      },
       {
         title: 'Roles',
         href: 'role',

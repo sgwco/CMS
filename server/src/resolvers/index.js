@@ -2,8 +2,8 @@ import { GraphQLObjectType } from 'graphql';
 import { Query as UserQuery, Mutation as UserMutation } from './user';
 import { Query as RoleQuery, Mutation as RoleMutation } from './role';
 import MediaResolver from './media';
-import PostResolver from './post';
-import CategoryResolver from './category';
+import { Query as PostQuery, Mutation as PostMutation} from './post';
+import { Query as CategoryQuery, Mutation as CategoryMutatin } from './category';
 
 export const Query = new GraphQLObjectType({
   name: 'SGW_Queries',
@@ -11,8 +11,8 @@ export const Query = new GraphQLObjectType({
     ...UserQuery,
     ...RoleQuery,
     ...MediaResolver,
-    ...PostResolver,
-    ...CategoryResolver
+    ...CategoryQuery,
+    ...PostQuery
   }
 });
 
@@ -20,6 +20,8 @@ export const Mutation = new GraphQLObjectType({
   name: 'SGW_Mutations',
   fields: {
     ...UserMutation,
-    ...RoleMutation
+    ...RoleMutation,
+    ...PostMutation,
+    ...CategoryMutatin
   }
 });

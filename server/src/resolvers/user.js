@@ -9,7 +9,7 @@ export const Query = {
   users: {
     type: new GraphQLList(User),
     resolve: () => {
-      return promiseQuery(`SELECT * FROM ${PREFIX}user`);;
+      return promiseQuery(`SELECT * FROM ${PREFIX}user`);
     }
   },
   user: {
