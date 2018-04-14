@@ -1,19 +1,14 @@
 import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString } from 'graphql';
-import { Media } from './media';
+// import { Media } from './media';
 
 export const Category = new GraphQLObjectType({
   name: 'Category',
   fields: () => ({
     id: { type: GraphQLNonNull(GraphQLID) },
     name: { type: GraphQLNonNull(GraphQLString) },
-    slug: {
-      type: GraphQLString,
-      resolve: (category) => {
-        return category.slug;
-      }
-    },
-    parent: { type: Category },
+    slug: { type: GraphQLString },
+    parent: { type: GraphQLString },
     description: { type: GraphQLString },
-    thumbnail: { type: Media }
+    thumbnail: { type: GraphQLString }
   })
 });

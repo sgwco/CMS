@@ -1,16 +1,15 @@
 import React from 'react';
 import { Form as BootstrapForm, Alert, Row, Col, Button } from 'reactstrap';
 import { Form } from 'react-form';
-import { compose, withHandlers } from 'recompose';
 
 import { ALERT_STATUS } from '../../../commons/enum';
 import { requiredValidation } from '../../../utils/validation';
 import Breadcrumb from '../../../shared/breadcrumb';
 import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/contentContainer';
 import { BoxWrapper, BoxBody, BoxFooter } from '../../../shared/boxWrapper';
-import { BootstrapTextField, BootstrapSelectField } from '../../../shared/formFields';
+import { BootstrapTextField } from '../../../shared/formFields';
 
-const AdminContentPostsFormComponent = ({
+const AdminContentPostsCategoryFormComponent = ({
   submitForm,
   initValue,
   breadcrumbItems,
@@ -18,10 +17,6 @@ const AdminContentPostsFormComponent = ({
   alertVisible,
   alertContent,
   removeAlert,
-  userMapper,
-  getUsers: { users = [] },
-  categoryMapper,
-  getCategories: { categories =[] }
 }) => (
   <ContentContainer>
     <Form onSubmit={submitForm} getApi={initValue}>
@@ -40,29 +35,9 @@ const AdminContentPostsFormComponent = ({
                 <Row>
                   <Col lg="12" md="12">
                     <BootstrapTextField
-                      field="title"
-                      label="Title"
+                      field="name"
+                      label="Name"
                       type="text"
-                      validate={requiredValidation}
-                    />
-                    <BootstrapTextField
-                      field="content"
-                      label="Content"
-                      type="text"
-                      validate={requiredValidation}
-                    />
-                    <BootstrapTextField
-                      field="excerpt"
-                      label="Excerpt"
-                      type="text"
-                    />
-                    <BootstrapSelectField
-                      field="author"
-                      label="Author"
-                      data={[
-                        { value: '', text: '-- Please Select --'},
-                        ...users.map(userMapper)
-                      ]}
                       validate={requiredValidation}
                     />
                     <BootstrapTextField
@@ -70,24 +45,20 @@ const AdminContentPostsFormComponent = ({
                       label="Slug"
                       type="text"
                     />
-                    <BootstrapSelectField
-                      field="category"
-                      label="Category"
-                      data={[
-                        { value: '', text: '-- Please Select --'},
-                        ...categories.map(categoryMapper)
-                      ]}
-                      validate={requiredValidation}
+                    <BootstrapTextField
+                      field="parent"
+                      label="Parent"
+                      type="text"
+                    />
+                    <BootstrapTextField
+                      field="description"
+                      label="Description"
+                      type="text"
                     />
                     <BootstrapTextField
                       field="thumbnail"
                       label="Thumbnail"
                       type="text"
-                    />
-                    <BootstrapTextField
-                      field="count"
-                      label="Count"
-                      type="number"
                     />
                   </Col>
                 </Row>
@@ -102,15 +73,4 @@ const AdminContentPostsFormComponent = ({
     </Form>
   </ContentContainer>
 );
-export default compose(
-  withHandlers({
-    userMapper: () => item => ({
-      text: item.fullname,
-      value: item.id
-    }),
-    categoryMapper: () => item => ({
-      text: item.name,
-      value: item.id
-    })
-  })
-)(AdminContentPostsFormComponent);
+export default AdminContentPostsCategoryFormComponent;

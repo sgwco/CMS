@@ -11,21 +11,26 @@ export const Post = new GraphQLObjectType({
     content: { type: GraphQLNonNull(GraphQLString) },
     excerpt: { type: GraphQLString },
     author: {
-      type: GraphQLNonNull(User),
-      resolve: ({ author }) => {
-        return userData.find(item => item.id === author);
+      type: User,
+      resolve: async ({ author }, _, context) => {
+        return context.dataloaders.usersByIds.load(author);
       }
     },
-    slug: { type: GraphQLNonNull(GraphQLString) },
+    slug: { type: GraphQLString },
     category: {
-      type: GraphQLList(Category),
-      resolve: ({ category }) => {
-        return categoryData.filter(item => item.id === category);
+      type: Category,
+      resolve: async ({ category }, _, context) => {
+        return context.dataloaders.categoriesByIds.load(category);
       }
     },
-    thumbnail: { type: Media },
-    count: { type: GraphQLNonNull(GraphQLInt) },
-    publishDate: { type: GraphQLNonNull(GraphQLString) }
+    thumbnail: { type: GraphQLString },
+    count: { type: GraphQLInt },
+    publishDate: {
+      type: GraphQLNonNull(GraphQLString),
+      resolve: ({ publish_date }) => {
+        return publish_date;
+      }
+    }
   })
 });
 

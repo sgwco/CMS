@@ -1,13 +1,12 @@
 import { compose, withProps, withState, withStateHandlers, withHandlers } from 'recompose';
 import { graphql } from 'react-apollo';
 
-import AdminContentPostsComponent from '../../../components/admin/admin-content/admin-content-posts';
+import AdminContentPostsCategoryComponent from '../../../components/admin/admin-content/admin-content-posts-category';
 import { ALERT_STATUS } from '../../../commons/enum';
-import { GET_FULL_POSTS, REMOVE_POST } from '../../../utils/graphql';
-
+import { GET_FULL_CATEGORIES, REMOVE_CATEGORY } from '../../../utils/graphql';
 export default compose(
-  graphql(GET_FULL_POSTS, { name: 'getPosts' }),
-  graphql(REMOVE_POST, { name: 'removePost' }),
+  graphql(GET_FULL_CATEGORIES, { name: 'getCategories' }),
+  graphql(REMOVE_CATEGORY, { name: 'removeCategory' }),
   withProps(() => ({
     breadcrumbItems: [
       { url: '/admin', icon: 'home', text: 'Home' },
@@ -23,27 +22,27 @@ export default compose(
     }
   ),
   withHandlers({
-    onRemovePost: ({ removePost, setAlertContent, setAlert }) => async id => {
-      const result = confirm('Do you want to remove this post?');
+    onRemoveCategory: ({ removeCategory, setAlertContent, setAlert }) => async id => {
+      const result = confirm('Do you want to remove this category?');
       if (result) {
         try {
-          await removePost({
+          await removeCategory({
             variables: { id },
             optimisticResponse: {
               __typename: 'Mutation',
-              removePost: {
+              removeCategory: {
                 __typename: 'String',
                 id
               }
             },
-            update(cache, { data: { removePost } }) {
-              let { posts } = cache.readQuery({ query: GET_FULL_POSTS });
-              posts = posts.filter(item => item.id !== removePost);
-              cache.writeQuery({ query: GET_FULL_POSTS, data: { posts } });
+            update(cache, { data: { removeCategory } }) {
+              let { categories } = cache.readQuery({ query: GET_FULL_CATEGORIES });
+              categories = categories.filter(item => item.id !== removeCategory);
+              cache.writeQuery({ query: GET_FULL_CATEGORIES, data: { categories } });
             }
           });
 
-          setAlertContent('Remove post successfully');
+          setAlertContent('Remove category successfully');
           setAlert(ALERT_STATUS.SUCCESS);
         }
         catch (e) {
@@ -53,4 +52,4 @@ export default compose(
       }
     }
   })
-)(AdminContentPostsComponent);
+)(AdminContentPostsCategoryComponent);

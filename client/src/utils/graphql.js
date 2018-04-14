@@ -119,3 +119,124 @@ export const REMOVE_USER = gql`
     removeUser(id: $id)
   }
 `;
+
+export const GET_FULL_POSTS = gql`
+  {
+    posts {
+      id
+      title
+      content
+      excerpt
+      author {
+        id
+        username
+      }
+      slug
+      category {
+        id
+        name
+      }
+      thumbnail
+      count
+      publishDate
+    }
+  }
+`;
+
+export const CREATE_POST = gql`
+  mutation createPost($title: String!, $content: String!, $excerpt: String, $author: ID!, $slug: String, $category: String, $thumbnail: String, $count: Int ) {
+    createPost(title: $title, content: $content, excerpt: $excerpt, author: $author, slug: $slug, category: $category, thumbnail: $thumbnail, count: $count) {
+      id
+      title
+      content
+      excerpt
+      author {
+        id
+        username
+      }
+      slug
+      category {
+        id
+        name
+      }
+      thumbnail
+      count
+      publishDate
+    }
+  }
+`;
+
+export const EDIT_POST = gql`
+  mutation editPost($id: ID!, $title: String!, $content: String!, $excerpt: String, $author: ID, $slug: String, $category: String, $thumbnail: String, $count: Int ) {
+    editPost(id: $id, title: $title, content: $content, excerpt: $excerpt, author: $author, slug: $slug, category: $category, thumbnail: $thumbnail, count: $count) {
+      id
+      title
+      content
+      excerpt
+      author {
+        id
+        username
+      }
+      slug
+      category {
+        id
+        name
+      }
+      thumbnail
+      count
+      publishDate
+    }
+  }
+`;
+
+export const REMOVE_POST = gql`
+  mutation removePost($id: ID!) {
+    removePost(id: $id)
+  }
+`;
+
+
+export const GET_FULL_CATEGORIES = gql`
+  {
+    categories {
+      id
+      name
+      slug
+      parent
+      description
+      thumbnail
+    }
+  }
+`;
+
+export const CREATE_CATEGORY = gql`
+  mutation createCategory($name: String!, $slug: String, $parent: String, $description: String, $thumbnail: String ) {
+    createCategory(name: $name, slug: $slug, parent: $parent, description: $description, thumbnail: $thumbnail ) {
+      id
+      name
+      slug
+      parent
+      description
+      thumbnail
+    }
+  }
+`;
+
+export const EDIT_CATEGORY = gql`
+  mutation editCategory($id: ID!, $name: String!, $slug: String, $parent: String, $description: String, $thumbnail: String ) {
+    editCategory(id:$id, name: $name, slug: $slug, parent: $parent, description: $description, thumbnail: $thumbnail ) {
+      id
+      name
+      slug
+      parent
+      description
+      thumbnail
+    }
+  }
+`;
+
+export const REMOVE_CATEGORY = gql`
+  mutation removeCategory($id: ID!) {
+    removeCategory(id: $id)
+  }
+`;
