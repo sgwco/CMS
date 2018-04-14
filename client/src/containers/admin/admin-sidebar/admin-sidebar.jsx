@@ -36,6 +36,11 @@ const data = [
         href: 'product',
         icon: 'shopping-cart',
         badgePrimary: '4'
+      },
+      {
+        title: 'Package',
+        href: 'package',
+        icon: 'briefcase'
       }
     ]
   },

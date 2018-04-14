@@ -240,3 +240,14 @@ export const REMOVE_CATEGORY = gql`
     removeCategory(id: $id)
   }
 `;
+
+export const GET_ALL_PACKAGES = gql`
+{
+  packages {
+    id
+    name
+    duration
+    price
+  }
+}
+`;

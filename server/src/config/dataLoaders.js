@@ -21,9 +21,15 @@ const getCategoriesByIds = categoryIds => {
   return promiseQuery(`SELECT * FROM ${PREFIX}category WHERE id IN (${params})`);
 }
 
+const getPackagesByIds = packageIds => {
+  const params = packageIds.map(id => `'${id}'`).join(', ');
+  return promiseQuery(`SELECT * FROM ${PREFIX}package WHERE id IN (${params})`);
+}
+
 export default {
   rolesByIds: new DataLoader(getRolesByIds),
   usersByIds: new DataLoader(getUsersByIds),
   postsByIds: new DataLoader(getPostsByIds),
-  categoriesByIds: new DataLoader(getCategoriesByIds)
+  categoriesByIds: new DataLoader(getCategoriesByIds),
+  packagesByIds: new DataLoader(getPackagesByIds)
 }

@@ -94,5 +94,25 @@ export async function initDatabase(conn) {
         ON DELETE CASCADE
         ON UPDATE CASCADE
     )`);
+
+    // Package table
+    await promiseQuery(`CREATE TABLE IF NOT EXISTS ${PREFIX}package (
+      id VARCHAR(50) NOT NULL PRIMARY KEY,
+      name VARCHAR(100) NOT NULL,
+      duration INT(10) NOT NULL,
+      price INT(10) UNSIGNED NOT NULL,
+      interest_rate FLOAT(5, 5) UNSIGNED NOT NULL
+    )`);
+
+    // Subscription table
+    promiseQuery(`CREATE TABLE IF NOT EXISTS ${PREFIX}subscription (
+      id VARCHAR(50) NOT NULL PRIMARY KEY,
+      user_id VARCHAR(50) NOT NULL,
+      package_id VARCHAR(50) NOT NULL,
+      subscribe_date DATETIME NOT NULL,
+      status INT(10) NOT NULL DEFAULT 0,
+      CONSTRAINT FK_USER FOREIGN KEY (user_id) REFERENCES ${PREFIX}user(id) ON DELETE CASCADE ON UPDATE CASCADE,
+      CONSTRAINT FK_PACKAGE FOREIGN KEY (package_id) REFERENCES ${PREFIX}package(id) ON DELETE CASCADE ON UPDATE CASCADE
+    )`);
   });
 }
