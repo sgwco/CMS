@@ -46,7 +46,7 @@ const AdminContentPackageComponent = ({
       <BoxWrapper color="primary" title="List Posts">
         <BoxBody>
           <BootstrapTable
-            keyField='title'
+            keyField='id'
             data={packages}
             columns={tableHeaders}
             filter={filterFactory()}
@@ -63,7 +63,7 @@ const AdminContentPackageComponent = ({
 export default compose(
   withRouter,
   withHandlers({
-    functionFormatter: ({ match, onRemoveRole }) => (cell, row) => {
+    functionFormatter: ({ match, onRemovePackage }) => (cell, row) => {
       let functionCell = null;
       functionCell = (
         <FunctionWrapperStyled>
@@ -78,7 +78,7 @@ export default compose(
         );
       }
       else {
-        functionCell = <FunctionCell url={`${match.url}/edit/${row.id}`} onDelete={() => onRemoveRole(row.id)} />;
+        functionCell = <FunctionCell url={`${match.url}/edit/${row.id}`} onDelete={() => onRemovePackage(row.id)} />;
       }
       
       return functionCell;

@@ -3,10 +3,11 @@ import { graphql } from 'react-apollo';
 
 import AdminContentPackageComponent from '../../../components/admin/admin-content/admin-content-package';
 import { ALERT_STATUS } from '../../../commons/enum';
-import { GET_ALL_PACKAGES } from '../../../utils/graphql';
+import { GET_ALL_PACKAGES, REMOVE_PACKAGE } from '../../../utils/graphql';
 
 export default compose(
   graphql(GET_ALL_PACKAGES, { name: 'getPackages' }),
+  graphql(REMOVE_PACKAGE, { name: 'removePackage' }),
   withProps(() => ({
     breadcrumbItems: [
       { url: '/admin', icon: 'home', text: 'Home' },
@@ -22,11 +23,11 @@ export default compose(
     }
   ),
   withHandlers({
-    onRemoveUser: ({ removeUser, setAlertContent, setAlert }) => async id => {
-      const result = confirm('Do you want to remove this user?');
+    onRemovePackage: ({ removePackage, setAlertContent, setAlert }) => async id => {
+      const result = confirm('Do you want to remove this package?');
       if (result) {
         try {
-          await removeUser({
+          await removePackage({
             variables: { id },
             optimisticResponse: {
               __typename: 'Mutation',
@@ -35,14 +36,14 @@ export default compose(
                 id
               }
             },
-            update(cache, { data: { removeUser } }) {
-              let { users } = cache.readQuery({ query: GET_ALL_PACKAGES });
-              users = users.filter(item => item.id !== removeUser);
-              cache.writeQuery({ query: GET_ALL_PACKAGES, data: { users } });
+            update(cache, { data: { removePackage } }) {
+              let { packages } = cache.readQuery({ query: GET_ALL_PACKAGES });
+              packages = packages.filter(item => item.id !== removePackage);
+              cache.writeQuery({ query: GET_ALL_PACKAGES, data: { packages } });
             }
           });
 
-          setAlertContent('Remove user successfully');
+          setAlertContent('Remove package successfully');
           setAlert(ALERT_STATUS.SUCCESS);
         }
         catch (e) {

@@ -262,3 +262,9 @@ export const CREATE_PACKAGE = gql`
     }
   }
 `;
+
+export const REMOVE_PACKAGE = gql`
+  mutation removePackage($id: ID!) {
+    removePackage(id: $id)
+  }
+`;

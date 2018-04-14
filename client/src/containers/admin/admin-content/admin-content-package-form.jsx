@@ -85,11 +85,11 @@ export default compose(
                 interestRate
               }
             },
-            update(cache, { data: { createRole } }) {
+            update(cache, { data: { createPackage } }) {
               try {
-                const { roles } = cache.readQuery({ query: CREATE_PACKAGE });
-                roles.push(createRole);
-                cache.writeQuery({ query: CREATE_PACKAGE, data: { roles } });
+                const { packages } = cache.readQuery({ query: GET_ALL_PACKAGES });
+                packages.push(createPackage);
+                cache.writeQuery({ query: GET_ALL_PACKAGES, data: { packages } });
               }
               catch (e) {
                 // Nothing here
