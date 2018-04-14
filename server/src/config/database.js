@@ -4,7 +4,7 @@ import moment from 'moment';
 
 const HOSTING = '127.0.0.1';
 const USER = 'root';
-const PASSWORD = '';
+const PASSWORD = 'password';
 const DATABASE = 'sgw_cms';
 export const PREFIX = 'sgw_';
 
