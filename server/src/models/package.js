@@ -15,8 +15,7 @@ export const Package = new GraphQLObjectType({
   fields: () => ({
     id: { type: GraphQLNonNull(GraphQLID) },
     name: { type: GraphQLNonNull(GraphQLString) },
-    duration: { type: GraphQLNonNull(PackageDuration) },
-    price: { type: GraphQLNonNull(GraphQLInt) },
+    price: { type: GraphQLNonNull(GraphQLFloat) },
     interestRate: {
       type: GraphQLNonNull(GraphQLFloat),
       resolve: ({ interest_rate }) => interest_rate
@@ -36,6 +35,7 @@ export const Subscription = new GraphQLObjectType({
       type: GraphQLNonNull(GraphQLString),
       resolve: ({ package_id }) => package_id
     },
+    duration: { type: GraphQLNonNull(PackageDuration) },
     subscribeDate: {
       type: GraphQLNonNull(GraphQLString),
       resolve: ({ subscribe_date }) => subscribe_date

@@ -9,6 +9,7 @@ import AdminContentPostCategoryFormContainer from '../../../containers/admin/adm
 import AdminContentPostCategoryContainer from '../../../containers/admin/admin-content/admin-content-posts-category';
 
 import AdminContentPackageContainer from '../../../containers/admin/admin-content/admin-content-package';
+import AdminContentPackageFormContainer from '../../../containers/admin/admin-content/admin-content-package-form';
 
 import AdminContentUsersContainer from '../../../containers/admin/admin-content/admin-content-users';
 import AdminContentUsersFormContainer from '../../../containers/admin/admin-content/admin-content-users-form';
@@ -26,6 +27,7 @@ const AdminContentComponent = ({ match }) => (
     <Route exact path={`${match.url}/post/category/edit/:id`} render={props => <AdminContentPostCategoryFormContainer {...props} isEditedUser={true}  />} />
 
     <Route exact path={`${match.url}/package`} component={AdminContentPackageContainer} />
+    <Route exact path={`${match.url}/package/add-new`} component={AdminContentPackageFormContainer} />
     
     <Route exact path={`${match.url}/user`} component={AdminContentUsersContainer} />
     <Route exact path={`${match.url}/user/add-new`} component={AdminContentUsersFormContainer} />

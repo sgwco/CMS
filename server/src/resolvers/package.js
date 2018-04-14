@@ -31,17 +31,12 @@ export const Mutation = {
     type: Package,
     args: {
       name: { type: GraphQLNonNull(GraphQLString) },
-      duration: { type: GraphQLNonNull(PackageDuration) },
-      price: { type: GraphQLNonNull(GraphQLInt) },
+      price: { type: GraphQLNonNull(GraphQLFloat) },
       interestRate: { type: GraphQLNonNull(GraphQLFloat) }
     },
     resolve: async (source, args) => {
       if (!args.name) {
         throw new GraphQLError('Name cannot be null');
-      }
-
-      if (!args.duration || args.duration < 0) {
-        throw new GraphQLError('Duration invalid');
       }
 
       if (!args.price || args.price < 0) {
@@ -56,7 +51,6 @@ export const Mutation = {
       await promiseQuery(`INSERT INTO ${PREFIX}package VALUES (
         '${id}',
         '${args.name}',
-        ${args.duration},
         ${args.price},
         ${args.interestRate}
       )`);
@@ -64,7 +58,6 @@ export const Mutation = {
       return {
         id,
         name: args.name,
-        duration: args.duration,
         price: args.price,
         interest_rate: args.interestRate
       };
@@ -75,8 +68,7 @@ export const Mutation = {
     args: {
       id: { type: GraphQLNonNull(GraphQLID) },
       name: { type: GraphQLString },
-      duration: { type: PackageDuration },
-      price: { type: GraphQLInt },
+      price: { type: GraphQLFloat },
       interestRate: { type: GraphQLFloat }
     },
     resolve: async (source, args, context) => {
@@ -86,10 +78,6 @@ export const Mutation = {
 
       if (args.name && args.name.length === 0) {
         throw new GraphQLError('Name cannot be null');
-      }
-
-      if (args.duration && args.duration < 0) {
-        throw new GraphQLError('Duration invalid');
       }
 
       if (args.price && args.price < 0) {

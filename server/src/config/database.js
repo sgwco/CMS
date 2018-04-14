@@ -90,16 +90,13 @@ export async function initDatabase(conn) {
       address VARCHAR(200) DEFAULT '',
       phone VARCHAR(50) DEFAULT '',
       user_status VARCHAR(20) NOT NULL DEFAULT 'active',
-      CONSTRAINT FK_ROLE FOREIGN KEY (role) REFERENCES ${PREFIX}role(id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
+      CONSTRAINT FK_ROLE FOREIGN KEY (role) REFERENCES ${PREFIX}role(id) ON DELETE CASCADE ON UPDATE CASCADE
     )`);
 
     // Package table
     await promiseQuery(`CREATE TABLE IF NOT EXISTS ${PREFIX}package (
       id VARCHAR(50) NOT NULL PRIMARY KEY,
       name VARCHAR(100) NOT NULL,
-      duration INT(10) NOT NULL,
       price INT(10) UNSIGNED NOT NULL,
       interest_rate FLOAT(5, 5) UNSIGNED NOT NULL
     )`);
@@ -109,6 +106,7 @@ export async function initDatabase(conn) {
       id VARCHAR(50) NOT NULL PRIMARY KEY,
       user_id VARCHAR(50) NOT NULL,
       package_id VARCHAR(50) NOT NULL,
+      duration INT(10) NOT NULL,
       subscribe_date DATETIME NOT NULL,
       status INT(10) NOT NULL DEFAULT 0,
       CONSTRAINT FK_USER FOREIGN KEY (user_id) REFERENCES ${PREFIX}user(id) ON DELETE CASCADE ON UPDATE CASCADE,

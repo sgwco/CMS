@@ -30,7 +30,7 @@ const AdminContentPackageComponent = ({
   <ContentContainer>
     <ContentHeader>
       <ContentHeaderTitleStyled>
-        <span>Posts</span>
+        <span>Package</span>
         <Link to={`${match.url}/add-new`}>
           <MarginLeftButtonStyled color="primary" size="sm">
             <FontAwesome icon="plus" /> Add new package
@@ -86,9 +86,9 @@ export default compose(
   }),
   withProps(({ functionFormatter }) => ({
     tableHeaders: [
-      { text: 'Package Name', dataField: 'packageName', filter: textFilter({ delay: 0 }) },
-      { text: 'Duration', dataField: 'duration' },
+      { text: 'Package Name', dataField: 'name', filter: textFilter({ delay: 0 }) },
       { text: 'Price', dataField: 'price', filter: textFilter({ delay: 0 }) },
+      { text: 'Interest Rate', dataField: 'interestRate' },
       { text: 'Function', dataField: '', headerClasses: 'function-column', formatter: functionFormatter }
     ]
   }))

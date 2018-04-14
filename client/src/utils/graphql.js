@@ -246,8 +246,19 @@ export const GET_ALL_PACKAGES = gql`
   packages {
     id
     name
-    duration
     price
+    interestRate
   }
 }
+`;
+
+export const CREATE_PACKAGE = gql`
+  mutation createPackage($name: String!, $price: Float!, $interestRate: Float!) {
+    createPackage(name: $name, price: $price, interestRate: $interestRate) {
+      id
+      name
+      price
+      interestRate
+    }
+  }
 `;

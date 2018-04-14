@@ -3,15 +3,14 @@ import { graphql } from 'react-apollo';
 
 import AdminContentPackageComponent from '../../../components/admin/admin-content/admin-content-package';
 import { ALERT_STATUS } from '../../../commons/enum';
-import { GET_FULL_USERS, REMOVE_USER } from '../../../utils/graphql';
+import { GET_ALL_PACKAGES } from '../../../utils/graphql';
 
 export default compose(
-  graphql(GET_FULL_USERS, { name: 'getUsers' }),
-  graphql(REMOVE_USER, { name: 'removeUser' }),
+  graphql(GET_ALL_PACKAGES, { name: 'getPackages' }),
   withProps(() => ({
     breadcrumbItems: [
       { url: '/admin', icon: 'home', text: 'Home' },
-      { text: 'Users' }
+      { text: 'Packages' }
     ]
   })),
   withState('alertVisible', 'setAlert', ALERT_STATUS.HIDDEN),
@@ -37,9 +36,9 @@ export default compose(
               }
             },
             update(cache, { data: { removeUser } }) {
-              let { users } = cache.readQuery({ query: GET_FULL_USERS });
+              let { users } = cache.readQuery({ query: GET_ALL_PACKAGES });
               users = users.filter(item => item.id !== removeUser);
-              cache.writeQuery({ query: GET_FULL_USERS, data: { users } });
+              cache.writeQuery({ query: GET_ALL_PACKAGES, data: { users } });
             }
           });
 
