@@ -93,6 +93,8 @@ export const Mutation = {
         switch (item) {
           case 'name':
             return `${item}='${args[item]}'`;
+          case 'interestRate':
+            return `interest_rate=${args[item]}`;
           default:
             return `${item}=${args[item]}`;
         }

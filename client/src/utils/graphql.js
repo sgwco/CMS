@@ -263,6 +263,17 @@ export const CREATE_PACKAGE = gql`
   }
 `;
 
+export const EDIT_PACKAGE = gql`
+  mutation editPackage($id: ID!, $name: String, $price: Float, $interestRate: Float) {
+    editPackage(id: $id, name: $name, price: $price, interestRate: $interestRate) {
+      id
+      name
+      price
+      interestRate
+    }
+  }
+`;
+
 export const REMOVE_PACKAGE = gql`
   mutation removePackage($id: ID!) {
     removePackage(id: $id)

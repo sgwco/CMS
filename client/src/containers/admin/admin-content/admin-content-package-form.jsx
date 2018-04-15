@@ -2,24 +2,22 @@ import { compose, branch, withProps, withState, withStateHandlers, withHandlers 
 import { withRouter } from 'react-router-dom';
 import { graphql, withApollo } from 'react-apollo';
 
-import { EDIT_ROLE, GET_ALL_PACKAGES, CREATE_PACKAGE } from '../../../utils/graphql';
+import { EDIT_PACKAGE, GET_ALL_PACKAGES, CREATE_PACKAGE } from '../../../utils/graphql';
 import { ALERT_STATUS } from '../../../commons/enum';
 import AdminContentPackageFormComponent from '../../../components/admin/admin-content/admin-content-package-form';
-import { roleCapabilities } from '../../../commons/enum';
 
 export default compose(
   withApollo,
   withRouter,
   branch(
     ({ isEditedPackage }) => isEditedPackage,
-    graphql(EDIT_ROLE, { name: 'editRole' }),
+    graphql(EDIT_PACKAGE, { name: 'editPackage' }),
     graphql(CREATE_PACKAGE, { name: 'createPackage' })
   ),
   withHandlers({
     renderTopTitle: ({ isEditedPackage }) => () => isEditedPackage ? 'Edit Package' : 'Add New Package',
   }),
   withProps(({ renderTopTitle }) => ({
-    listRoles: Object.keys(roleCapabilities),
     breadcrumbItems: [
       { url: '/admin', icon: 'home', text: 'Home' },
       { url: '/admin/package', icon: 'briefcase', text: 'Packages' },
@@ -34,7 +32,7 @@ export default compose(
       removeAlert: () => () => ({ alertVisible: ALERT_STATUS.HIDDEN }),
     }),
   withHandlers({
-    savePackage: ({ isEditedPackage, match, editRole, createPackage, setAlertContent, setAlert }) => async ({ name, price, interestRate }) => {
+    savePackage: ({ isEditedPackage, match, editPackage, createPackage, setAlertContent, setAlert }) => async ({ name, price, interestRate }) => {
       try {
         const variables = {
           name,
@@ -44,11 +42,11 @@ export default compose(
     
         if (isEditedPackage) {
           variables.id = match.params.id;
-          await editRole({
+          await editPackage({
             variables,
             optimisticResponse: {
               __typename: 'Mutation',
-              editRole: {
+              editPackage: {
                 __typename: 'Package',
                 id: Math.round(Math.random() * -1000000),
                 name,
@@ -56,11 +54,11 @@ export default compose(
                 interestRate
               }
             },
-            update(cache, { data: { editRole } }) {
+            update(cache, { data: { editPackage } }) {
               try {
                 const { packages } = cache.readQuery({ query: GET_ALL_PACKAGES });
                 const index = packages.findIndex(item => item.id === match.params.id);
-                packages[index] = editRole;
+                packages[index] = editPackage;
                 cache.writeQuery({ query: GET_ALL_PACKAGES, data: { packages } });
               }
               catch (e) {
@@ -69,7 +67,7 @@ export default compose(
             }
           });
 
-          setAlertContent('Edit role successfully');
+          setAlertContent('Edit package successfully');
           setAlert(ALERT_STATUS.SUCCESS);
         }
         else {
@@ -77,7 +75,7 @@ export default compose(
             variables,
             optimisticResponse: {
               __typename: 'Mutation',
-              createRole: {
+              createPackage: {
                 __typename: 'Package',
                 id: Math.round(Math.random() * -1000000),
                 name,
@@ -105,7 +103,20 @@ export default compose(
         setAlert(ALERT_STATUS.ERROR);
       }
     },
-    initValue: () => async () => {
+    initValue: ({ isEditedPackage, client, history, match }) => (formApi) => {
+      if (isEditedPackage) {
+        try {
+          const { packages } = client.cache.readQuery({ query: GET_ALL_PACKAGES });
+          const packageItem = packages.find(item => item.id === match.params.id);
+
+          formApi.setValue('name', packageItem.name);
+          formApi.setValue('price', packageItem.price);
+          formApi.setValue('interestRate', packageItem.interestRate);
+        }
+        catch (e) {
+          history.push('/admin/package');
+        }
+      }
     }
   }),
 )(AdminContentPackageFormComponent);

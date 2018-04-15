@@ -1,15 +1,19 @@
 import isEmail from 'validator/lib/isEmail';
 import isFloat from 'validator/lib/isFloat';
 
-export const requiredValidation = value => ({
-  error: !value || value.trim() === '' ? 'This field is required' : null
-});
+export const requiredValidation = value => {
+  if (!value || value.trim() === '') {
+    return { error: 'This field is required' };
+  }
+  return null;
+};
 
 export const numberValidation = value => {
-  const required = requiredValidation(value);
-  if (required.error !== null) return required;
+  let strValue = value + '';
+  const required = requiredValidation(strValue);
+  if (required && required.error) return required;
 
-  if (!isFloat(value)) {
+  if (!isFloat(strValue)) {
     return { error: 'This field contains non-numeric letter' };
   }
 
@@ -18,7 +22,7 @@ export const numberValidation = value => {
 
 export const passwordMatchValidation = (currentPassword, abovePassword) => {
   const required = requiredValidation(currentPassword);
-  if (required.error !== null) return required;
+  if (required && required.error) return required;
   
   if (currentPassword !== abovePassword) {
     return { error: 'Password mismatch' };
@@ -29,7 +33,7 @@ export const passwordMatchValidation = (currentPassword, abovePassword) => {
 
 export const emailValidation = value => {
   const required = requiredValidation(value);
-  if (required.error !== null) return required;
+  if (required && required.error) return required;
 
   if (!isEmail(value)) {
     return { error: 'Email invalid' };

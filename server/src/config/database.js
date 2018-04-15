@@ -98,7 +98,7 @@ export async function initDatabase(conn) {
       id VARCHAR(50) NOT NULL PRIMARY KEY,
       name VARCHAR(100) NOT NULL,
       price INT(10) UNSIGNED NOT NULL,
-      interest_rate FLOAT(5, 5) UNSIGNED NOT NULL
+      interest_rate FLOAT(10, 5) UNSIGNED NOT NULL
     )`);
 
     // Subscription table
