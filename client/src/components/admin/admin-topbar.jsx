@@ -5,7 +5,8 @@ import moment from 'moment';
 import { DropdownToggle, DropdownItem, Nav, Navbar, NavItem, UncontrolledDropdown, DropdownMenu } from 'reactstrap';
 
 const AdminTopbarProfileComponent = ({
-  getUserToken: { loggedInUser }
+  getUserToken: { loggedInUser },
+  logout
 }) => (
   <UncontrolledDropdownStyled className="user user-menu" nav inNavbar>
     <DropdownToggle nav caret>
@@ -20,6 +21,9 @@ const AdminTopbarProfileComponent = ({
           <small>Member since {loggedInUser && moment(loggedInUser.registrationDate).format('MMM. YYYY')}</small>
         </p>
       </DropdownItem>
+      <LogoutStyled onClick={logout}>
+        <FontAwesome icon="sign-out-alt" /> Logout
+      </LogoutStyled>
     </DropdownMenuStyled>
   </UncontrolledDropdownStyled>
 );
@@ -27,7 +31,8 @@ const AdminTopbarProfileComponent = ({
 const AdminTopbarComponent = ({
   companyName,
   logo,
-  getUserToken
+  getUserToken,
+  logout
 }) => (
   <header className="main-header">
     <a href="#" className="logo">
@@ -46,7 +51,7 @@ const AdminTopbarComponent = ({
       </NavItemStyled>
       <NavItemStyled className="nav-item navbar-custom-menu">
         <Nav navbar className="nav">
-          <AdminTopbarProfileComponent getUserToken={getUserToken} />
+          <AdminTopbarProfileComponent getUserToken={getUserToken} logout={logout} />
         </Nav>
       </NavItemStyled>
     </NavbarStyled>
@@ -72,6 +77,14 @@ export const UncontrolledDropdownStyled = styled(UncontrolledDropdown)`
 export const DropdownMenuStyled = styled(DropdownMenu)`
   border-radius: 0 !important;
   border: none !important;
+`;
+
+export const LogoutStyled = styled(DropdownItem)`
+  border: 1px solid rgba(0, 0, 0, 0.4) !important;
+  border-top: none !important;
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 export default AdminTopbarComponent;
