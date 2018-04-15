@@ -41,6 +41,11 @@ const data = [
         title: 'Package',
         href: 'package',
         icon: 'briefcase'
+      },
+      {
+        title: 'Subscription',
+        href: 'subscription',
+        icon: 'cube'
       }
     ]
   },

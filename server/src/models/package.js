@@ -1,12 +1,21 @@
 import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLInt, GraphQLList, GraphQLEnumType, GraphQLFloat } from 'graphql';
 
-export const PackageDuration = new GraphQLEnumType({
-  name: 'PackageDuration',
+export const SubscriptionDuration = new GraphQLEnumType({
+  name: 'SubscriptionDuration',
   values: {
     MONTH_3: { value: 3 },
     MONTH_6: { value: 6 },
     MONTH_9: { value: 9 },
     MONTH_12: { value: 12 }
+  }
+});
+
+export const SubscriptionStatus = new GraphQLEnumType({
+  name: 'SubscriptionStatus',
+  values: {
+    ACTIVE: { value: 'active' },
+    PENDING: { value: 'pending' },
+    EXPIRED: { value: 'expired' }
   }
 });
 
@@ -35,11 +44,11 @@ export const Subscription = new GraphQLObjectType({
       type: GraphQLNonNull(GraphQLString),
       resolve: ({ package_id }) => package_id
     },
-    duration: { type: GraphQLNonNull(PackageDuration) },
+    duration: { type: GraphQLNonNull(SubscriptionDuration) },
     subscribeDate: {
       type: GraphQLNonNull(GraphQLString),
       resolve: ({ subscribe_date }) => subscribe_date
     },
-    status: { type: GraphQLNonNull(GraphQLInt) }
+    status: { type: GraphQLNonNull(SubscriptionStatus) }
   })
 });

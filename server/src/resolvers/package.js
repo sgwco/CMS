@@ -1,8 +1,9 @@
 import { GraphQLList, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLInt, GraphQLError, GraphQLFloat } from 'graphql';
 import uuid from 'uuid';
 import moment from 'moment';
-import { Package, PackageDuration } from '../models';
+import { Package } from '../models';
 import { promiseQuery, PREFIX } from '../config/database';
+import { convertCamelCaseToSnakeCase } from '../utils/utils';
 
 export const Query = {
   packages: {
@@ -89,16 +90,7 @@ export const Mutation = {
       }
       
       const listArgs = Object.keys(args).filter(item => item !== 'id');
-      const setStatement = listArgs.map(item => {
-        switch (item) {
-          case 'name':
-            return `${item}='${args[item]}'`;
-          case 'interestRate':
-            return `interest_rate=${args[item]}`;
-          default:
-            return `${item}=${args[item]}`;
-        }
-      }).join(',');
+      const setStatement = listArgs.map(item => `${convertCamelCaseToSnakeCase(item)}='${args[item]}'`).join(',');
 
       await promiseQuery(`UPDATE ${PREFIX}package SET ${setStatement} WHERE id='${args.id}'`);
       context.dataloaders.packagesByIds.clear(args.id);

@@ -2,6 +2,7 @@ import { GraphQLList, GraphQLNonNull, GraphQLID, GraphQLString } from 'graphql';
 import { Category } from '../models';
 import uuid from 'uuid';
 import { promiseQuery, PREFIX } from '../config/database';
+import { convertCamelCaseToSnakeCase } from '../utils/utils';
 
 export const Query = {
   categories: {
@@ -88,17 +89,11 @@ export const Mutation = {
         throw new GraphQLError('Name cannot be null');
       }
 
-      const criteria = Object.keys(args).map(item => {
-        switch (typeof args[item]) {
-          case 'number':
-            return `${item}=${args[item]}`;
-          default:
-            return `${item}='${args[item]}'`;
-        }
-      }).join(', ');
+      const listArgs = Object.keys(args).filter(item => item !== 'id');
+      const setStatement = listArgs.map(item => `${convertCamelCaseToSnakeCase(item)}='${args[item]}'`).join(',');
 
       try {
-        await promiseQuery(`UPDATE ${PREFIX}category SET ${criteria} WHERE id='${args.id}'`);
+        await promiseQuery(`UPDATE ${PREFIX}category SET ${setStatement} WHERE id='${args.id}'`);
       }
       catch (e) {
         switch (e.code) {

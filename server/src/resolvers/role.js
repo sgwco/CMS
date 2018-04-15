@@ -3,6 +3,7 @@ import uuid from 'uuid';
 import moment from 'moment';
 import { Role } from '../models';
 import { promiseQuery, PREFIX } from '../config/database';
+import { convertCamelCaseToSnakeCase } from '../utils/utils';
 
 export const Query = {
   roles: {
@@ -70,14 +71,7 @@ export const Mutation = {
       }
       
       const listArgs = Object.keys(args).filter(item => item !== 'id');
-      const setStatement = listArgs.map(item => {
-        switch (item) {
-          case 'name':
-            return `${item}='${args[item]}'`;
-          case 'accessPermission':
-            return `access_permission=${args[item]}`;
-        }
-      }).join(',');
+      const setStatement = listArgs.map(item => `${convertCamelCaseToSnakeCase(item)}='${args[item]}'`).join(',');
 
       await promiseQuery(`UPDATE ${PREFIX}role SET ${setStatement} WHERE id='${args.id}'`);
       context.dataloaders.rolesByIds.clear(args.id);

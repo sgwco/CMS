@@ -3,6 +3,7 @@ import { Post } from '../models';
 import uuid from 'uuid';
 import moment from 'moment';
 import { promiseQuery, PREFIX } from '../config/database';
+import { convertCamelCaseToSnakeCase } from '../utils/utils';
 
 export const Query = {
   posts: {
@@ -120,17 +121,11 @@ export const Mutation = {
         throw new GraphQLError('Author cannot be null');
       }
 
-      const criteria = Object.keys(args).map(item => {
-        switch (typeof args[item]) {
-          case 'number':
-            return `${item}=${args[item]}`;
-          default:
-            return `${item}='${args[item]}'`;
-        }
-      }).join(', ');
+      const listArgs = Object.keys(args).filter(item => item !== 'id');
+      const setStatement = listArgs.map(item => `${convertCamelCaseToSnakeCase(item)}='${args[item]}'`).join(',');
 
       try {
-        await promiseQuery(`UPDATE ${PREFIX}post SET ${criteria} WHERE id='${args.id}'`);
+        await promiseQuery(`UPDATE ${PREFIX}post SET ${setStatement} WHERE id='${args.id}'`);
       }
       catch (e) {
         switch (e.code) {

@@ -30,10 +30,10 @@ const AdminContentPackageComponent = ({
   <ContentContainer>
     <ContentHeader>
       <ContentHeaderTitleStyled>
-        <span>Package</span>
+        <span>Subscription</span>
         <Link to={`${match.url}/add-new`}>
           <MarginLeftButtonStyled color="primary" size="sm">
-            <FontAwesome icon="plus" /> Add new package
+            <FontAwesome icon="plus" /> Add new subscription
           </MarginLeftButtonStyled>
         </Link>
       </ContentHeaderTitleStyled>
@@ -43,7 +43,7 @@ const AdminContentPackageComponent = ({
       <Alert color={alertVisible} isOpen={alertVisible !== ALERT_STATUS.HIDDEN} toggle={removeAlert}>
         {alertContent}
       </Alert>
-      <BoxWrapper color="primary" title="List Packages">
+      <BoxWrapper color="primary" title="List Subscriptions">
         <BoxBody>
           <BootstrapTable
             keyField='id'
