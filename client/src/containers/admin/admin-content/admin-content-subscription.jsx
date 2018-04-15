@@ -1,13 +1,16 @@
-import { compose, withHandlers, withState, withStateHandlers, withProps } from 'recompose';
-import { graphql } from 'react-apollo';
+import { compose, withHandlers, withState, withStateHandlers, withProps, branch, renderComponent } from 'recompose';
+import { graphql, withApollo } from 'react-apollo';
 
 import AdminContentSubscriptionComponent from '../../../components/admin/admin-content/admin-content-subscription';
+import AdminContentSubscriptionMemberComponent from '../../../components/admin/admin-content/admin-content-subscription-member';
 import { ALERT_STATUS } from '../../../commons/enum';
-import { GET_ALL_SUBSCRIPTIONS, REMOVE_SUBSCRIPTION } from '../../../utils/graphql';
+import { GET_ALL_SUBSCRIPTIONS, REMOVE_SUBSCRIPTION, GET_USER_TOKEN } from '../../../utils/graphql';
 
 export default compose(
   graphql(GET_ALL_SUBSCRIPTIONS, { name: 'getSubscriptions' }),
   graphql(REMOVE_SUBSCRIPTION, { name: 'removeSubscription' }),
+  graphql(GET_USER_TOKEN, { name: 'getUserToken' }),
+  withApollo,
   withProps(() => ({
     breadcrumbItems: [
       { url: '/admin', icon: 'home', text: 'Home' },
@@ -52,5 +55,17 @@ export default compose(
         }
       }
     }
-  })
+  }),
+  branch(
+    ({ getUserToken: { loggedInUser } }) => {
+      if (loggedInUser) {
+        const writeSubscriptionPermission = Math.pow(2, 16);
+        if (loggedInUser.role.accessPermission & writeSubscriptionPermission) {
+          return false;
+        }
+      }
+      return true;
+    },
+    renderComponent(AdminContentSubscriptionMemberComponent)
+  )
 )(AdminContentSubscriptionComponent);

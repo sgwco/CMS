@@ -17,7 +17,7 @@ export default compose(
       removeAlert: () => () => ({ alertVisible: ALERT_STATUS.HIDDEN }),
     }),
   withHandlers({
-    onLogin: ({ loginApi, history, setAlertContent, setAlert }) => async ({ username, password }) => {
+    onLogin: ({ loginApi, setAlertContent, setAlert }) => async ({ username, password }) => {
       const variables = {
         username,
         password
@@ -27,7 +27,7 @@ export default compose(
 
       if (data.login) {
         localStorage.setItem('token', data.login);
-        history.push('/admin');
+        window.location = '/admin';
       }
       else {
         setAlertContent('Login failed. Please check username or password');
@@ -39,7 +39,7 @@ export default compose(
     componentWillMount() {
       const token = localStorage.getItem('token');
       if (token) {
-        this.props.history.push('/admin');
+        window.location = '/admin';
       }
     }
   })

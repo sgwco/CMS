@@ -42,12 +42,14 @@ const data = [
       {
         title: 'Package',
         href: 'package',
-        icon: 'briefcase'
+        icon: 'briefcase',
+        readPermission: Math.pow(2, 13)
       },
       {
         title: 'Subscription',
         href: 'subscription',
-        icon: 'cube'
+        icon: 'cube',
+        readPermission: Math.pow(2, 15)
       }
     ]
   },

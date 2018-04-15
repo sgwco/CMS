@@ -1,4 +1,5 @@
 import React from 'react';
+import { compose, withHandlers } from 'recompose';
 // import { Button, InputGroup, InputGroupAddon, Input } from 'reactstrap';
 // import FontAwesome from '@fortawesome/react-fontawesome';
 
@@ -8,7 +9,8 @@ import AdminSidebarMenuComponent from './admin-sidebar-menu';
 const AdminSidebarComponent = ({
   getUserToken: { loggedInUser },
   profile: { avatar },
-  menuData
+  menuData,
+  checkRoleAllowed
 }) => (
   <aside className="main-sidebar">
     <section className="sidebar">
@@ -35,14 +37,16 @@ const AdminSidebarComponent = ({
         {menuData.map((item, itemIndex) => [
           <li key={itemIndex} className="header">{item.header}</li>,
           item.menus.map((menuItem, menuIndex) => (
-            <AdminSidebarMenuComponent
-              key={menuIndex}
-              title={menuItem.title}
-              href={menuItem.href}
-              icon={menuItem.icon}
-              subMenu={menuItem.subMenu}
-              badgePrimary={menuItem.badgePrimary}
-            />
+            loggedInUser && checkRoleAllowed(loggedInUser.role.accessPermission, menuItem.readPermission) !== 0 && (
+              <AdminSidebarMenuComponent
+                key={menuIndex}
+                title={menuItem.title}
+                href={menuItem.href}
+                icon={menuItem.icon}
+                subMenu={menuItem.subMenu}
+                badgePrimary={menuItem.badgePrimary}
+              />
+            )
           ))
         ])}
       </ul>
@@ -54,4 +58,11 @@ const AdminSidebarComponent = ({
 //   border: none !important;
 // `;
 
-export default AdminSidebarComponent;
+export default compose(
+  withHandlers({
+    checkRoleAllowed: () => (accessPermission, permission) => {
+      if (!permission) return 1;
+      return accessPermission & permission;
+    }
+  })
+)(AdminSidebarComponent);

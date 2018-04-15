@@ -356,6 +356,7 @@ export const GET_USER_TOKEN = gql`
       fullname
       role {
         name
+        accessPermission
       }
       registrationDate
     }
