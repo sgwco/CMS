@@ -37,19 +37,19 @@ export const Subscription = new GraphQLObjectType({
   name: 'Subscription',
   fields: () => ({
     id: { type: GraphQLNonNull(GraphQLID) },
-    user: {
+    user_id: {
       type: GraphQLNonNull(User),
       resolve: async ({ user_id }, _, context) => {
-        return context.dataloaders.getUsersByIds.load(user_id);
+        return context.dataloaders.usersByIds.load(user_id);
       }
     },
-    package: {
+    package_id: {
       type: GraphQLNonNull(Package),
       resolve: async ({ package_id }, _, context) => {
-        return context.dataloaders.getPackagesByIds.load(package_id);
+        return context.dataloaders.packagesByIds.load(package_id);
       }
     },
-    duration: { type: GraphQLNonNull(SubscriptionDuration) },
+    duration: { type: GraphQLNonNull(GraphQLInt) },
     subscribeDate: {
       type: GraphQLNonNull(GraphQLString),
       resolve: ({ subscribe_date }) => subscribe_date

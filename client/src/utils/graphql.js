@@ -284,11 +284,11 @@ export const GET_ALL_SUBSCRIPTIONS = gql`
 {
   subscriptions {
     id
-    user {
+    user_id {
       id
       fullname
     }
-    package {
+    package_id {
       id
       name
     }
@@ -300,14 +300,14 @@ export const GET_ALL_SUBSCRIPTIONS = gql`
 `;
 
 export const CREATE_SUBSCRIPTION = gql`
-  mutation createSubscription($user: String!, $package: String!, $duration: Int!, $subscribeDate: String, $status: String) {
-    createSubscription(userId: $userId, packageId: $packageId, duration: $duration, subscribeDate: $subscribeDate, status: $status) {
+  mutation createSubscription($user_id: String!, $package_id: String!, $duration: Int!, $subscribeDate: String, $status: Int) {
+    createSubscription(user_id: $user_id, package_id: $package_id, duration: $duration, subscribeDate: $subscribeDate, status: $status) {
       id
-      user {
+      user_id {
         id
         fullname
       }
-      package {
+      package_id {
         id
         name
       }
@@ -319,14 +319,14 @@ export const CREATE_SUBSCRIPTION = gql`
 `;
 
 export const EDIT_SUBSCRIPTION = gql`
-  mutation editSubscription($id: ID!, $user: String, $package: String, $duration: Int, $subscribeDate: String, $status: String) {
-    editSubscription(id: $id, userId: $userId, packageId: $packageId, duration: $duration, subscribeDate: $subscribeDate, status: $status) {
+  mutation editSubscription($id: ID!, $user_id: String!, $package_id: String!, $duration: Int!, $subscribeDate: String, $status: Int) {
+    editSubscription(id: $id, user_id: $user_id, package_id: $package_id, duration: $duration, subscribeDate: $subscribeDate, status: $status) {
       id
-      user {
+      user_id {
         id
         fullname
       }
-      package {
+      package_id {
         id
         name
       }

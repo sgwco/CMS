@@ -12,7 +12,7 @@ import AdminContentPackageContainer from '../../../containers/admin/admin-conten
 import AdminContentPackageFormContainer from '../../../containers/admin/admin-content/admin-content-package-form';
 
 import AdminContentSubscriptionContainer from '../../../containers/admin/admin-content/admin-content-subscription';
-// import AdminContentSubscriptionFormContainer from '../../../containers/admin/admin-content/admin-content-subscription-form';
+import AdminContentSubscriptionFormContainer from '../../../containers/admin/admin-content/admin-content-subscription-form';
 
 import AdminContentUsersContainer from '../../../containers/admin/admin-content/admin-content-users';
 import AdminContentUsersFormContainer from '../../../containers/admin/admin-content/admin-content-users-form';
@@ -35,8 +35,8 @@ const AdminContentComponent = ({ match }) => (
     <Route exact path={`${match.url}/package/edit/:id`} render={props => <AdminContentPackageFormContainer {...props} isEditedPackage={true}  />} />
 
     <Route exact path={`${match.url}/subscription`} component={AdminContentSubscriptionContainer} />
-    {/* <Route exact path={`${match.url}/subscription/add-new`} component={AdminContentSubscriptionFormContainer} />
-    <Route exact path={`${match.url}/subscription/edit/:id`} render={props => <AdminContentSubscriptionFormContainer {...props} isEditedSubscription={true}  />} /> */}
+    <Route exact path={`${match.url}/subscription/add-new`} component={AdminContentSubscriptionFormContainer} />
+    <Route exact path={`${match.url}/subscription/edit/:id`} render={props => <AdminContentSubscriptionFormContainer {...props} isEditedSubscription={true}  />} />
     
     <Route exact path={`${match.url}/user`} component={AdminContentUsersContainer} />
     <Route exact path={`${match.url}/user/add-new`} component={AdminContentUsersFormContainer} />
