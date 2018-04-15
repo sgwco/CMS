@@ -2,13 +2,20 @@ import { GraphQLList, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLInt, Grap
 import uuid from 'uuid';
 import moment from 'moment';
 import isEmail from 'validator/lib/isEmail';
+import sha1 from 'sha1';
+
 import { User, UserStatus, Role } from '../models';
 import { promiseQuery, PREFIX } from '../config/database';
+import { createToken } from '../config/auth';
 
 export const Query = {
   users: {
     type: new GraphQLList(User),
-    resolve: () => {
+    resolve: (source, args, { payload }) => {
+      if (!payload) {
+        throw new GraphQLError('Unauthorized');
+      }
+
       return promiseQuery(`SELECT * FROM ${PREFIX}user`);
     }
   },
@@ -17,7 +24,11 @@ export const Query = {
     args: {
       id: { type: new GraphQLNonNull(GraphQLID) }
     },
-    resolve: async (source, { id }) => {
+    resolve: async (source, { id }, { payload }) => {
+      if (!payload) {
+        throw new GraphQLError('Unauthorized');
+      }
+
       const rows = await promiseQuery(`SELECT * FROM ${PREFIX}user WHERE id='${id}'`);
       if (rows.length > 0) {
         return rows[0];
@@ -40,6 +51,10 @@ export const Mutation = {
       phone: { type: GraphQLString, defaultValue: '' }
     },
     async resolve(source, args, context) {
+      if (!context.payload) {
+        throw new GraphQLError('Unauthorized');
+      }
+
       const { username, password, email, role, address, phone, fullname } = args;
 
       if (!username) {
@@ -162,6 +177,32 @@ export const Mutation = {
 
       promiseQuery(`DELETE FROM ${PREFIX}user WHERE id='${args.id}'`);
       return args.id;
+    }
+  },
+  login: {
+    type: GraphQLString,
+    args: {
+      username: { type: GraphQLNonNull(GraphQLString) },
+      password: { type: GraphQLNonNull(GraphQLString) }
+    },
+    async resolve(source, args, context) {
+      if (!args.username) {
+        throw new GraphQLError('Username cannot be null');
+      }
+
+      if (!args.password) {
+        throw new GraphQLError('Password cannot be null');
+      }
+
+      args.password = sha1(args.password);
+
+      const rows = await promiseQuery(`SELECT username, email, fullname, role FROM ${PREFIX}user WHERE username='${args.username}' AND password='${args.password}'`);
+      if (rows.length > 0) {
+        const role = await context.dataloaders.rolesByIds.load(rows[0].role);
+        rows[0].role = role.access_permission;
+        return createToken(rows[0]);
+      }
+      return null;
     }
   }
 }

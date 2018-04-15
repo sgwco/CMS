@@ -4,9 +4,11 @@ import path from 'path';
 import cors from 'cors';
 import { graphiqlExpress, graphqlExpress } from 'graphql-server-express';
 import bodyParser from 'body-parser';
+
 import { initDatabase, connection } from './src/config/database';
 import Schema from './src/schema';
 import dataLoaders from './src/config/dataLoaders'
+import { createToken, verifyToken } from './src/config/auth';
 
 const PORT = 8000;
 const server = express();
@@ -30,7 +32,20 @@ else {
   server.use('/graphiql', graphiqlExpress({ endpointURL: '/api' }));
 }
 
-server.use('/api', bodyParser.json(), graphqlExpress({ schema: Schema, context: { dataloaders: dataLoaders } }));
+server.use('/api', (req, res, next) => {
+  const token = req.headers.authorization;
+  req.payload = verifyToken(token);
+  next();
+});
+server.use('/api', bodyParser.json(), graphqlExpress(req => (
+  { 
+    schema: Schema,
+    context: {
+      dataloaders: dataLoaders,
+      payload: req.payload
+    }
+  }
+)));
 server.use(express.static(publicPath));
 server.get('*', (req, res) => {
   res.sendFile(indexPath);
