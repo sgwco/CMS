@@ -22,7 +22,7 @@ export const Query = {
   user: {
     type: User,
     args: {
-      id: { type: new GraphQLNonNull(GraphQLID) }
+      id: { type: GraphQLNonNull(GraphQLID) }
     },
     resolve: async (source, { id }, { payload }) => {
       if (!payload) {
@@ -34,6 +34,16 @@ export const Query = {
         return rows[0];
       }
       throw new GraphQLError('User does not exist');
+    }
+  },
+  loggedInUser: {
+    type: User,
+    async resolve(source, _, { payload, dataloaders }) {
+      if (!payload) {
+        throw new GraphQLError('Unauthorized');
+      }
+      
+      return dataloaders.usersByIds.load(payload.id);
     }
   }
 }
@@ -196,7 +206,7 @@ export const Mutation = {
 
       args.password = sha1(args.password);
 
-      const rows = await promiseQuery(`SELECT username, email, fullname, role FROM ${PREFIX}user WHERE username='${args.username}' AND password='${args.password}'`);
+      const rows = await promiseQuery(`SELECT id, username, email, fullname, role FROM ${PREFIX}user WHERE username='${args.username}' AND password='${args.password}'`);
       if (rows.length > 0) {
         const role = await context.dataloaders.rolesByIds.load(rows[0].role);
         rows[0].role = role.access_permission;

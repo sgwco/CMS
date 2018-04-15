@@ -1,6 +1,8 @@
+import { graphql } from 'react-apollo';
 import { withProps, compose } from 'recompose';
 
 import AdminSidebarComponent from '../../../components/admin/admin-sidebar/admin-sidebar';
+import { GET_USER_TOKEN } from '../../../utils/graphql';
 
 const data = [
   {
@@ -67,10 +69,9 @@ const data = [
 ];
 
 export default compose(
+  graphql(GET_USER_TOKEN, { name: 'getUserToken' }),
   withProps(() => ({
     profile: {
-      fullname: 'Vo Hoai Son',
-      role: 'Admin',
       avatar: 'https://graph.facebook.com/100006945288953/picture?type=square'
     },
     menuData: data

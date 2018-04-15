@@ -348,3 +348,16 @@ export const LOGIN = gql`
     login(username: $username, password: $password)
   }
 `;
+
+export const GET_USER_TOKEN = gql`
+  {
+    loggedInUser {
+      username
+      fullname
+      role {
+        name
+      }
+      registrationDate
+    }
+  }
+`;
