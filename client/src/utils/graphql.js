@@ -279,3 +279,66 @@ export const REMOVE_PACKAGE = gql`
     removePackage(id: $id)
   }
 `;
+
+export const GET_ALL_SUBSCRIPTIONS = gql`
+{
+  subscriptions {
+    id
+    user {
+      id
+      fullname
+    }
+    package {
+      id
+      name
+    }
+    duration
+    subscribeDate
+    status
+  }
+}
+`;
+
+export const CREATE_SUBSCRIPTION = gql`
+  mutation createSubscription($user: String!, $package: String!, $duration: Int!, $subscribeDate: String, $status: String) {
+    createSubscription(userId: $userId, packageId: $packageId, duration: $duration, subscribeDate: $subscribeDate, status: $status) {
+      id
+      user {
+        id
+        fullname
+      }
+      package {
+        id
+        name
+      }
+      duration
+      subscribeDate
+      status
+    }
+  }
+`;
+
+export const EDIT_SUBSCRIPTION = gql`
+  mutation editSubscription($id: ID!, $user: String, $package: String, $duration: Int, $subscribeDate: String, $status: String) {
+    editSubscription(id: $id, userId: $userId, packageId: $packageId, duration: $duration, subscribeDate: $subscribeDate, status: $status) {
+      id
+      user {
+        id
+        fullname
+      }
+      package {
+        id
+        name
+      }
+      duration
+      subscribeDate
+      status
+    }
+  }
+`;
+
+export const REMOVE_SUBSCRIPTION = gql`
+  mutation removeSubscription($id: ID!) {
+    removeSubscription(id: $id)
+  }
+`;

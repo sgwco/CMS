@@ -108,7 +108,7 @@ export async function initDatabase(conn) {
       package_id VARCHAR(50) NOT NULL,
       duration INT(10) NOT NULL,
       subscribe_date DATETIME NOT NULL,
-      status INT(10) NOT NULL DEFAULT 0,
+      status VARCHAR(50) NOT NULL,
       CONSTRAINT FK_USER FOREIGN KEY (user_id) REFERENCES ${PREFIX}user(id) ON DELETE CASCADE ON UPDATE CASCADE,
       CONSTRAINT FK_PACKAGE FOREIGN KEY (package_id) REFERENCES ${PREFIX}package(id) ON DELETE CASCADE ON UPDATE CASCADE
     )`);

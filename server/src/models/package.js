@@ -1,4 +1,5 @@
 import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLInt, GraphQLList, GraphQLEnumType, GraphQLFloat } from 'graphql';
+import { User } from './user';
 
 export const SubscriptionDuration = new GraphQLEnumType({
   name: 'SubscriptionDuration',
@@ -36,13 +37,17 @@ export const Subscription = new GraphQLObjectType({
   name: 'Subscription',
   fields: () => ({
     id: { type: GraphQLNonNull(GraphQLID) },
-    userId: {
-      type: GraphQLNonNull(GraphQLString),
-      resolve: ({ user_id }) => user_id
+    user: {
+      type: GraphQLNonNull(User),
+      resolve: async ({ user_id }, _, context) => {
+        return context.dataloaders.getUsersByIds.load(user_id);
+      }
     },
-    packageId: {
-      type: GraphQLNonNull(GraphQLString),
-      resolve: ({ package_id }) => package_id
+    package: {
+      type: GraphQLNonNull(Package),
+      resolve: async ({ package_id }, _, context) => {
+        return context.dataloaders.getPackagesByIds.load(package_id);
+      }
     },
     duration: { type: GraphQLNonNull(SubscriptionDuration) },
     subscribeDate: {

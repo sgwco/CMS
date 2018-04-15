@@ -3,15 +3,15 @@ import { graphql } from 'react-apollo';
 
 import AdminContentSubscriptionComponent from '../../../components/admin/admin-content/admin-content-subscription';
 import { ALERT_STATUS } from '../../../commons/enum';
-import { GET_ALL_PACKAGES, REMOVE_PACKAGE } from '../../../utils/graphql';
+import { GET_ALL_SUBSCRIPTIONS, REMOVE_SUBSCRIPTION } from '../../../utils/graphql';
 
 export default compose(
-  graphql(GET_ALL_PACKAGES, { name: 'getPackages' }),
-  graphql(REMOVE_PACKAGE, { name: 'removePackage' }),
+  graphql(GET_ALL_SUBSCRIPTIONS, { name: 'getSubscriptions' }),
+  graphql(REMOVE_SUBSCRIPTION, { name: 'removeSubscription' }),
   withProps(() => ({
     breadcrumbItems: [
       { url: '/admin', icon: 'home', text: 'Home' },
-      { text: 'Packages' }
+      { text: 'Subscription' }
     ]
   })),
   withState('alertVisible', 'setAlert', ALERT_STATUS.HIDDEN),
@@ -23,11 +23,11 @@ export default compose(
     }
   ),
   withHandlers({
-    onRemovePackage: ({ removePackage, setAlertContent, setAlert }) => async id => {
+    onRemoveSubscription: ({ removeSubscription, setAlertContent, setAlert }) => async id => {
       const result = confirm('Do you want to remove this subscription?');
       if (result) {
         try {
-          await removePackage({
+          await removeSubscription({
             variables: { id },
             optimisticResponse: {
               __typename: 'Mutation',
@@ -36,10 +36,10 @@ export default compose(
                 id
               }
             },
-            update(cache, { data: { removePackage } }) {
-              let { packages } = cache.readQuery({ query: GET_ALL_PACKAGES });
-              packages = packages.filter(item => item.id !== removePackage);
-              cache.writeQuery({ query: GET_ALL_PACKAGES, data: { packages } });
+            update(cache, { data: { removeSubscription } }) {
+              let { subscriptions } = cache.readQuery({ query: GET_ALL_SUBSCRIPTIONS });
+              subscriptions = subscriptions.filter(item => item.id !== removeSubscription);
+              cache.writeQuery({ query: GET_ALL_SUBSCRIPTIONS, data: { subscriptions } });
             }
           });
 

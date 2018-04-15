@@ -80,7 +80,6 @@ export const Mutation = {
         )`);
       }
       catch (e) {
-        console.log(e);
         switch (e.code) {
           case 'ER_DUP_ENTRY':
             throw new GraphQLError('User existed');
