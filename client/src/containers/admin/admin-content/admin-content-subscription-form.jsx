@@ -2,25 +2,27 @@ import { compose, branch, withProps, withState, withStateHandlers, withHandlers 
 import { withRouter } from 'react-router-dom';
 import { graphql, withApollo } from 'react-apollo';
 
-import { EDIT_PACKAGE, GET_ALL_PACKAGES, CREATE_PACKAGE } from '../../../utils/graphql';
+import { EDIT_SUBSCRIPTION, CREATE_SUBSCRIPTION, GET_ALL_SUBSCRIPTIONS, GET_FULL_USERS, GET_ALL_PACKAGES } from '../../../utils/graphql';
 import { ALERT_STATUS } from '../../../commons/enum';
-import AdminContentPackageFormComponent from '../../../components/admin/admin-content/admin-content-package-form';
+import AdminContentSubscriptionFormContainer from '../../../components/admin/admin-content/admin-content-subscription-form';
 
 export default compose(
   withApollo,
   withRouter,
   branch(
-    ({ isEditedPackage }) => isEditedPackage,
-    graphql(EDIT_PACKAGE, { name: 'editPackage' }),
-    graphql(CREATE_PACKAGE, { name: 'createPackage' })
+    ({ isEditedSubscription }) => isEditedSubscription,
+    graphql(EDIT_SUBSCRIPTION, { name: 'editSubscription' }),
+    graphql(CREATE_SUBSCRIPTION, { name: 'createSubscription' })
   ),
+  graphql(GET_FULL_USERS, { name: 'getUsers' }),
+  graphql(GET_ALL_PACKAGES, { name: 'getPackages' }),
   withHandlers({
-    renderTopTitle: ({ isEditedPackage }) => () => isEditedPackage ? 'Edit Package' : 'Add New Package',
+    renderTopTitle: ({ isEditedSubscription }) => () => isEditedSubscription ? 'Edit Subscription' : 'Add New Subscription',
   }),
   withProps(({ renderTopTitle }) => ({
     breadcrumbItems: [
       { url: '/admin', icon: 'home', text: 'Home' },
-      { url: '/admin/package', icon: 'briefcase', text: 'Packages' },
+      { url: '/admin/subscription', icon: 'briefcase', text: 'Subscription' },
       { text: renderTopTitle() }
     ]
   })),
@@ -32,62 +34,67 @@ export default compose(
       removeAlert: () => () => ({ alertVisible: ALERT_STATUS.HIDDEN }),
     }),
   withHandlers({
-    savePackage: ({ isEditedPackage, match, editPackage, createPackage, setAlertContent, setAlert }) => async ({ name, price, interestRate }) => {
+    saveSubscription: ({ isEditedSubscription, match, editSubscription, createSubscription, setAlertContent, setAlert }) => async ({ user_id, package_id, duration, subscribeDate, status }) => {
       try {
         const variables = {
-          name,
-          price,
-          interestRate
+          user_id,
+          package_id,
+          duration,
+          subscribeDate,
+          status
         };
     
-        if (isEditedPackage) {
+        if (isEditedSubscription) {
           variables.id = match.params.id;
-          await editPackage({
+          await editSubscription({
             variables,
             optimisticResponse: {
               __typename: 'Mutation',
-              editPackage: {
-                __typename: 'Package',
+              editSubscription: {
+                __typename: 'Subscription',
                 id: Math.round(Math.random() * -1000000),
-                name,
-                price,
-                interestRate
+                user_id,
+                package_id,
+                duration,
+                subscribeDate,
+                status
               }
             },
-            update(cache, { data: { editPackage } }) {
+            update(cache, { data: { editSubscription } }) {
               try {
-                const { packages } = cache.readQuery({ query: GET_ALL_PACKAGES });
-                const index = packages.findIndex(item => item.id === match.params.id);
-                packages[index] = editPackage;
-                cache.writeQuery({ query: GET_ALL_PACKAGES, data: { packages } });
+                const { subscriptions } = cache.readQuery({ query: GET_ALL_SUBSCRIPTIONS });
+                const index = subscriptions.findIndex(item => item.id === match.params.id);
+                subscriptions[index] = editSubscription;
+                cache.writeQuery({ query: GET_ALL_SUBSCRIPTIONS, data: { subscriptions } });
               }
               catch (e) {
                 // Nothing here
               }
             }
           });
-
-          setAlertContent('Edit package successfully');
+          setAlertContent('Edit subscription successfully');
           setAlert(ALERT_STATUS.SUCCESS);
         }
         else {
-          await createPackage({
+          await createSubscription({
             variables,
             optimisticResponse: {
               __typename: 'Mutation',
-              createPackage: {
-                __typename: 'Package',
+              createSubscription: {
+                __typename: 'Subscription',
                 id: Math.round(Math.random() * -1000000),
-                name,
-                price,
-                interestRate
+                user_id,
+                package_id,
+                duration,
+                subscribeDate,
+                status
               }
             },
-            update(cache, { data: { createPackage } }) {
+            update(cache, { data: { createSubscription } }) {
               try {
-                const { packages } = cache.readQuery({ query: GET_ALL_PACKAGES });
-                packages.push(createPackage);
-                cache.writeQuery({ query: GET_ALL_PACKAGES, data: { packages } });
+                const { subscriptions } = cache.readQuery({ query: GET_ALL_SUBSCRIPTIONS });
+                subscriptions.push(createSubscription);
+                cache.writeQuery({ query: GET_ALL_SUBSCRIPTIONS, data: { subscriptions } });
               }
               catch (e) {
                 // Nothing here
@@ -99,24 +106,25 @@ export default compose(
         }
       }
       catch (e) {
+        console.log(e.graphQLErrors);
         setAlertContent('Error: ' + e.graphQLErrors[0].message);
         setAlert(ALERT_STATUS.ERROR);
       }
     },
-    initValue: ({ isEditedPackage, client, history, match }) => (formApi) => {
-      if (isEditedPackage) {
+    initValue: ({ isEditedSubscription, history, client, match }) => (formApi) => {
+      if (isEditedSubscription) {
         try {
-          const { packages } = client.cache.readQuery({ query: GET_ALL_PACKAGES });
-          const packageItem = packages.find(item => item.id === match.params.id);
+          const { subscriptions } = client.cache.readQuery({ query: GET_ALL_SUBSCRIPTIONS });
+          const subscriptionItem = subscriptions.find(item => item.id === match.params.id);
 
-          formApi.setValue('name', packageItem.name);
-          formApi.setValue('price', packageItem.price);
-          formApi.setValue('interestRate', packageItem.interestRate);
+          formApi.setValue('user_id', subscriptionItem.user_id.id);
+          formApi.setValue('package_id', subscriptionItem.package_id.id);
+          formApi.setValue('duration', subscriptionItem.duration);
         }
         catch (e) {
-          history.push('/admin/package');
+          history.push('/admin/subscription');
         }
       }
     }
   }),
-)(AdminContentPackageFormComponent);
+)(AdminContentSubscriptionFormContainer);

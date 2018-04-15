@@ -1,4 +1,4 @@
-import { GraphQLList, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLInt, GraphQLError, GraphQLFloat } from 'graphql';
+import { GraphQLList, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLInt, GraphQLError } from 'graphql';
 import uuid from 'uuid';
 import moment from 'moment';
 import { Subscription, SubscriptionDuration, SubscriptionStatus } from '../models';
@@ -31,23 +31,23 @@ export const Mutation = {
   createSubscription: {
     type: Subscription,
     args: {
-      user: { type: GraphQLNonNull(GraphQLString) },
-      package: { type: GraphQLNonNull(GraphQLString) },
-      duration: { type: GraphQLNonNull(SubscriptionDuration) },
+      user_id: { type: GraphQLNonNull(GraphQLString) },
+      package_id: { type: GraphQLNonNull(GraphQLString) },
+      duration: { type: GraphQLNonNull(GraphQLInt) },
       subscribeDate: { type: GraphQLString },
-      status: { type: SubscriptionStatus }
+      status: { type: GraphQLInt }
     },
     resolve: async (source, args) => {
-      if (!args.user) {
+      if (!args.user_id) {
         throw new GraphQLError('User cannot be null');
       }
 
-      if (!args.package) {
+      if (!args.package_id) {
         throw new GraphQLError('Package cannot be null');
       }
 
-      if (!args.duration || args.duration < 0) {
-        throw new GraphQLError('Duration invalid');
+      if (!args.duration) {
+        throw new GraphQLError('Duration cannot be null');
       }
 
       let subscribeDate = args.subscribeDate || moment().format('YYYY-MM-DD HH:MM');
@@ -57,8 +57,8 @@ export const Mutation = {
       try {
         await promiseQuery(`INSERT INTO ${PREFIX}subscription VALUES (
           '${id}',
-          '${args.user}',
-          '${args.package}',
+          '${args.user_id}',
+          '${args.package_id}',
           ${args.duration},
           '${subscribeDate}',
           '${status}'
@@ -67,11 +67,11 @@ export const Mutation = {
       catch (e) {
         throw new GraphQLError('Subscription data invalid');
       }
-      
+
       return {
         id,
-        user_id: args.user,
-        package_id: args.package,
+        user_id: args.user_id,
+        package_id: args.package_id,
         duration: args.duration,
         subscribe_date: subscribeDate,
         status
@@ -82,24 +82,36 @@ export const Mutation = {
     type: Subscription,
     args: {
       id: { type: GraphQLNonNull(GraphQLID) },
-      userId: { type: GraphQLString },
-      packageId: { type: GraphQLString },
-      duration: { type: SubscriptionDuration },
+      user_id: { type: GraphQLNonNull(GraphQLString) },
+      package_id: { type: GraphQLNonNull(GraphQLString) },
+      duration: { type: GraphQLNonNull(GraphQLInt) },
       subscribeDate: { type: GraphQLString },
-      status: { type: SubscriptionStatus }
+      status: { type: GraphQLInt }
     },
     resolve: async (source, args, context) => {
       if (!args.id) {
         throw new GraphQLError('Edit subscription must have id');
       }
+      if (!args.user_id) {
+        throw new GraphQLError('User cannot be null');
+      }
+
+      if (!args.package_id) {
+        throw new GraphQLError('Package cannot be null');
+      }
+
+      if (!args.duration) {
+        throw new GraphQLError('Duration cannot be null');
+      }
       
       const listArgs = Object.keys(args).filter(item => item !== 'id');
       const setStatement = listArgs.map(item => `${convertCamelCaseToSnakeCase(item)}='${args[item]}'`).join(',');
-
+      
       try {
         await promiseQuery(`UPDATE ${PREFIX}subscription SET ${setStatement} WHERE id='${args.id}'`);
       }
       catch (e) {
+        console.log(`UPDATE ${PREFIX}subscription SET ${setStatement} WHERE id='${args.id}'`);
         switch (e.code) {
           case 'ER_NO_REFERENCED_ROW_2':
             throw new GraphQLError('Subscription data invalid');

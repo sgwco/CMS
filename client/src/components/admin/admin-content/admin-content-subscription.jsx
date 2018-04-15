@@ -86,9 +86,8 @@ export default compose(
   }),
   withProps(({ functionFormatter }) => ({
     tableHeaders: [
-      { text: 'Package Name', dataField: 'name', filter: textFilter({ delay: 0 }) },
-      { text: 'Price', dataField: 'price', filter: textFilter({ delay: 0 }) },
-      { text: 'Interest Rate', dataField: 'interestRate' },
+      { text: 'User', dataField: 'user_id.fullname', filter: textFilter({ delay: 0 }) },
+      { text: 'Package', dataField: 'package_id.name', filter: textFilter({ delay: 0 }) },
       { text: 'Function', dataField: '', headerClasses: 'function-column', formatter: functionFormatter }
     ]
   }))
