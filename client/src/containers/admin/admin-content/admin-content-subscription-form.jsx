@@ -106,7 +106,6 @@ export default compose(
         }
       }
       catch (e) {
-        console.log(e.graphQLErrors);
         setAlertContent('Error: ' + e.graphQLErrors[0].message);
         setAlert(ALERT_STATUS.ERROR);
       }

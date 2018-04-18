@@ -286,6 +286,7 @@ export const GET_ALL_SUBSCRIPTIONS = gql`
     id
     user_id {
       id
+      username
       fullname
     }
     package_id {
@@ -305,6 +306,7 @@ export const CREATE_SUBSCRIPTION = gql`
       id
       user_id {
         id
+        username
         fullname
       }
       package_id {
@@ -324,6 +326,7 @@ export const EDIT_SUBSCRIPTION = gql`
       id
       user_id {
         id
+        username
         fullname
       }
       package_id {

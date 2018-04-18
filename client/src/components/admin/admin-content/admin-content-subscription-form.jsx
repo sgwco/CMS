@@ -85,7 +85,7 @@ const AdminContentSubscriptionFormContainer = ({
 export default compose(
   withHandlers({
     userMapper: () => item => ({
-      text: item.fullname,
+      text: item.username,
       value: item.id
     }),
     packageMapper: () => item => ({

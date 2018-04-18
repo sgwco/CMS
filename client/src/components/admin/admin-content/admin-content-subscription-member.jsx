@@ -6,9 +6,9 @@ import styled from 'styled-components';
 
 const PackageStyled = styled.div`
   background: #49B2EE;
-  padding:15px 0px;
+  padding: 15px 0px;
   font-family: 'Open Sans Condensed', sans-serif;
-  font-weight:300;
+  font-weight: 300;
   text-align: center;
   margin-bottom: 20px;
 `;
@@ -18,43 +18,43 @@ const H3Styled = styled.h3`
   font-family: 'Open Sans Condensed', sans-serif;
 `;
 const BStyled = styled.b`
-  font-weight:600;
+  font-weight: 600;
 `;
 const PStyled = styled.p`
-  padding:20px 0px;
+  padding: 20px 0px;
   text-align: center;
-  background:#fff;
-  margin-bottom:0px;
+  background: #fff;
+  margin-bottom: 0px;
 `;
 const SpanStyled = styled.span`
-  font-weight:600;
+  font-weight: 600;
   font-size: 25px;
 `;
 const BottomStyled = styled.div`
-  padding:15px 10px;
-  text-align:left;
+  padding: 15px 10px;
+  text-align: left;
   color: #676767;
   font-size: 16px;
 `;
 const PBottomStyled = styled.p`
-  padding:10px 0px;
-  text-align:center;
-  margin-bottom:0px;
+  padding: 10px 0px;
+  text-align: center;
+  margin-bottom: 0px;
   font-size: 35px;
   line-height: 45px;
 `;
 const PPBottomStyled = styled.p`
   font-size: 22px;
-  text-align:center
+  text-align: center;
 `;
 const SpanBottomStyled = styled.span`
   font-size: 16px;
 `;
 const DivBox = styled.div`
-  min-height:150px;
+  min-height: 150px;
 `;
 const DivIcon = styled.div`
-  top:10px!important;
+  top: 10px !important;
 `;
 
 const AdminContentSubscriptionMemberContainer = () => (
