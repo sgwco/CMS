@@ -4,9 +4,6 @@
 /client/node_modules
 /server/node_modules
 
-# build
-/server/dist
-
 # testing
 /coverage
 
