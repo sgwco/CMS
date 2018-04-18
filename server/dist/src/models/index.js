@@ -63,3 +63,15 @@ Object.keys(_role).forEach(function (key) {
     }
   });
 });
+
+var _package = require('./package');
+
+Object.keys(_package).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _package[key];
+    }
+  });
+});

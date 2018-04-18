@@ -7,7 +7,7 @@ exports.Category = undefined;
 
 var _graphql = require('graphql');
 
-var _media = require('./media');
+// import { Media } from './media';
 
 var Category = exports.Category = new _graphql.GraphQLObjectType({
   name: 'Category',
@@ -15,15 +15,10 @@ var Category = exports.Category = new _graphql.GraphQLObjectType({
     return {
       id: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLID) },
       name: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLString) },
-      slug: {
-        type: _graphql.GraphQLString,
-        resolve: function resolve(category) {
-          return category.slug;
-        }
-      },
-      parent: { type: Category },
+      slug: { type: _graphql.GraphQLString },
+      parent: { type: _graphql.GraphQLString },
       description: { type: _graphql.GraphQLString },
-      thumbnail: { type: _media.Media }
+      thumbnail: { type: _graphql.GraphQLString }
     };
   }
 });

@@ -13,6 +13,8 @@ var _user = require('./user');
 
 var _category = require('./category');
 
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
 var Post = exports.Post = new _graphql.GraphQLObjectType({
   name: 'Post',
   fields: function fields() {
@@ -22,29 +24,64 @@ var Post = exports.Post = new _graphql.GraphQLObjectType({
       content: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLString) },
       excerpt: { type: _graphql.GraphQLString },
       author: {
-        type: (0, _graphql.GraphQLNonNull)(_user.User),
-        resolve: function resolve(_ref) {
-          var author = _ref.author;
+        type: _user.User,
+        resolve: function () {
+          var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(_ref2, _, context) {
+            var author = _ref2.author;
+            return regeneratorRuntime.wrap(function _callee$(_context) {
+              while (1) {
+                switch (_context.prev = _context.next) {
+                  case 0:
+                    return _context.abrupt('return', context.dataloaders.usersByIds.load(author));
 
-          return userData.find(function (item) {
-            return item.id === author;
-          });
-        }
+                  case 1:
+                  case 'end':
+                    return _context.stop();
+                }
+              }
+            }, _callee, undefined);
+          }));
+
+          return function resolve(_x, _x2, _x3) {
+            return _ref.apply(this, arguments);
+          };
+        }()
       },
-      slug: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLString) },
+      slug: { type: _graphql.GraphQLString },
       category: {
-        type: (0, _graphql.GraphQLList)(_category.Category),
-        resolve: function resolve(_ref2) {
-          var category = _ref2.category;
+        type: _category.Category,
+        resolve: function () {
+          var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(_ref4, _, context) {
+            var category = _ref4.category;
+            return regeneratorRuntime.wrap(function _callee2$(_context2) {
+              while (1) {
+                switch (_context2.prev = _context2.next) {
+                  case 0:
+                    return _context2.abrupt('return', context.dataloaders.categoriesByIds.load(category));
 
-          return categoryData.filter(function (item) {
-            return item.id === category;
-          });
-        }
+                  case 1:
+                  case 'end':
+                    return _context2.stop();
+                }
+              }
+            }, _callee2, undefined);
+          }));
+
+          return function resolve(_x4, _x5, _x6) {
+            return _ref3.apply(this, arguments);
+          };
+        }()
       },
-      thumbnail: { type: _media.Media },
-      count: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLInt) },
-      publishDate: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLString) }
+      thumbnail: { type: _graphql.GraphQLString },
+      count: { type: _graphql.GraphQLInt },
+      publishDate: {
+        type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLString),
+        resolve: function resolve(_ref5) {
+          var publish_date = _ref5.publish_date;
+
+          return publish_date;
+        }
+      }
     };
   }
 });

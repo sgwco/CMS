@@ -43,9 +43,18 @@ var initDatabase = exports.initDatabase = function () {
                         promiseQuery('CREATE TABLE IF NOT EXISTS ' + PREFIX + 'media_meta (\n      id VARCHAR(50) NOT NULL PRIMARY KEY,\n      name VARCHAR(1000) NOT NULL,\n      value VARCHAR(2000)\n    )');
 
                         // User table
-                        promiseQuery('CREATE TABLE IF NOT EXISTS ' + PREFIX + 'user (\n      id VARCHAR(50) NOT NULL PRIMARY KEY,\n      username VARCHAR(50) NOT NULL UNIQUE,\n      password VARCHAR(50) NOT NULL,\n      fullname VARCHAR(100) NOT NULL,\n      email VARCHAR(200) NOT NULL UNIQUE,\n      registration_date DATETIME NOT NULL,\n      role VARCHAR(50) NOT NULL,\n      address VARCHAR(200) DEFAULT \'\',\n      phone VARCHAR(50) DEFAULT \'\',\n      user_status VARCHAR(20) NOT NULL DEFAULT \'active\',\n      CONSTRAINT FK_ROLE FOREIGN KEY (role) REFERENCES ' + PREFIX + 'role(id)\n        ON DELETE CASCADE\n        ON UPDATE CASCADE\n    )');
+                        promiseQuery('CREATE TABLE IF NOT EXISTS ' + PREFIX + 'user (\n      id VARCHAR(50) NOT NULL PRIMARY KEY,\n      username VARCHAR(50) NOT NULL UNIQUE,\n      password VARCHAR(50) NOT NULL,\n      fullname VARCHAR(100) NOT NULL,\n      email VARCHAR(200) NOT NULL UNIQUE,\n      registration_date DATETIME NOT NULL,\n      role VARCHAR(50) NOT NULL,\n      address VARCHAR(200) DEFAULT \'\',\n      phone VARCHAR(50) DEFAULT \'\',\n      user_status VARCHAR(20) NOT NULL DEFAULT \'active\',\n      CONSTRAINT FK_ROLE FOREIGN KEY (role) REFERENCES ' + PREFIX + 'role(id) ON DELETE CASCADE ON UPDATE CASCADE\n    )');
 
-                      case 7:
+                        // Package table
+                        _context.next = 9;
+                        return promiseQuery('CREATE TABLE IF NOT EXISTS ' + PREFIX + 'package (\n      id VARCHAR(50) NOT NULL PRIMARY KEY,\n      name VARCHAR(100) NOT NULL,\n      price INT(10) UNSIGNED NOT NULL,\n      interest_rate FLOAT(10, 5) UNSIGNED NOT NULL\n    )');
+
+                      case 9:
+
+                        // Subscription table
+                        promiseQuery('CREATE TABLE IF NOT EXISTS ' + PREFIX + 'subscription (\n      id VARCHAR(50) NOT NULL PRIMARY KEY,\n      user_id VARCHAR(50) NOT NULL,\n      package_id VARCHAR(50) NOT NULL,\n      duration INT(10) NOT NULL,\n      subscribe_date DATETIME NOT NULL,\n      status VARCHAR(50) NOT NULL,\n      CONSTRAINT FK_USER FOREIGN KEY (user_id) REFERENCES ' + PREFIX + 'user(id) ON DELETE CASCADE ON UPDATE CASCADE,\n      CONSTRAINT FK_PACKAGE FOREIGN KEY (package_id) REFERENCES ' + PREFIX + 'package(id) ON DELETE CASCADE ON UPDATE CASCADE\n    )');
+
+                      case 10:
                       case 'end':
                         return _context.stop();
                     }

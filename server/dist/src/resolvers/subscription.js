@@ -26,23 +26,21 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 var Query = exports.Query = {
-  roles: {
-    type: new _graphql.GraphQLList(_models.Role),
+  subscriptions: {
+    type: new _graphql.GraphQLList(_models.Subscription),
     resolve: function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-        var rows;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
                 _context.next = 2;
-                return (0, _database.promiseQuery)('SELECT * FROM ' + _database.PREFIX + 'role');
+                return (0, _database.promiseQuery)('SELECT * FROM ' + _database.PREFIX + 'subscription');
 
               case 2:
-                rows = _context.sent;
-                return _context.abrupt('return', rows);
+                return _context.abrupt('return', _context.sent);
 
-              case 4:
+              case 3:
               case 'end':
                 return _context.stop();
             }
@@ -55,8 +53,8 @@ var Query = exports.Query = {
       };
     }()
   },
-  role: {
-    type: _models.Role,
+  subscription: {
+    type: _models.Subscription,
     args: {
       id: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLID) }
     },
@@ -69,7 +67,7 @@ var Query = exports.Query = {
             switch (_context2.prev = _context2.next) {
               case 0:
                 _context2.next = 2;
-                return (0, _database.promiseQuery)('SELECT * FROM ' + _database.PREFIX + 'role WHERE id=\'' + id + '\'');
+                return (0, _database.promiseQuery)('SELECT * FROM ' + _database.PREFIX + 'subscription WHERE id=\'' + id + '\'');
 
               case 2:
                 rows = _context2.sent;
@@ -82,7 +80,7 @@ var Query = exports.Query = {
                 return _context2.abrupt('return', rows[0]);
 
               case 7:
-                throw new _graphql.GraphQLError('Role does not exist');
+                throw new _graphql.GraphQLError('Subscription does not exist');
 
               case 8:
               case 'end':
@@ -100,52 +98,78 @@ var Query = exports.Query = {
 };
 
 var Mutation = exports.Mutation = {
-  createRole: {
-    type: _models.Role,
+  createSubscription: {
+    type: _models.Subscription,
     args: {
-      name: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLString) },
-      accessPermission: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLInt) }
+      user_id: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLString) },
+      package_id: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLString) },
+      duration: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLInt) },
+      subscribeDate: { type: _graphql.GraphQLString },
+      status: { type: _graphql.GraphQLInt }
     },
     resolve: function () {
       var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(source, args) {
-        var id;
+        var subscribeDate, status, id;
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                if (args.name) {
+                if (args.user_id) {
                   _context3.next = 2;
                   break;
                 }
 
-                throw new _graphql.GraphQLError('Name cannot be null');
+                throw new _graphql.GraphQLError('User cannot be null');
 
               case 2:
-                if (!(args.accessPermission <= 0)) {
+                if (args.package_id) {
                   _context3.next = 4;
                   break;
                 }
 
-                throw new _graphql.GraphQLError('Role Capabilities invalid');
+                throw new _graphql.GraphQLError('Package cannot be null');
 
               case 4:
-                id = _uuid2.default.v1();
-                _context3.next = 7;
-                return (0, _database.promiseQuery)('INSERT INTO ' + _database.PREFIX + 'role VALUES (\n        \'' + id + '\',\n        \'' + args.name + '\',\n        \'' + args.accessPermission + '\'\n      )');
+                if (args.duration) {
+                  _context3.next = 6;
+                  break;
+                }
 
-              case 7:
+                throw new _graphql.GraphQLError('Duration cannot be null');
+
+              case 6:
+                subscribeDate = args.subscribeDate || (0, _moment2.default)().format('YYYY-MM-DD HH:MM');
+                status = args.status || _models.SubscriptionStatus.getValue('ACTIVE').value;
+                id = _uuid2.default.v1();
+                _context3.prev = 9;
+                _context3.next = 12;
+                return (0, _database.promiseQuery)('INSERT INTO ' + _database.PREFIX + 'subscription VALUES (\n          \'' + id + '\',\n          \'' + args.user_id + '\',\n          \'' + args.package_id + '\',\n          ' + args.duration + ',\n          \'' + subscribeDate + '\',\n          \'' + status + '\'\n        )');
+
+              case 12:
+                _context3.next = 17;
+                break;
+
+              case 14:
+                _context3.prev = 14;
+                _context3.t0 = _context3['catch'](9);
+                throw new _graphql.GraphQLError('Subscription data invalid');
+
+              case 17:
                 return _context3.abrupt('return', {
                   id: id,
-                  name: args.name,
-                  access_permission: args.accessPermission
+                  user_id: args.user_id,
+                  package_id: args.package_id,
+                  duration: args.duration,
+                  subscribe_date: subscribeDate,
+                  status: status
                 });
 
-              case 8:
+              case 18:
               case 'end':
                 return _context3.stop();
             }
           }
-        }, _callee3, undefined);
+        }, _callee3, undefined, [[9, 14]]);
       }));
 
       return function resolve(_x3, _x4) {
@@ -153,12 +177,15 @@ var Mutation = exports.Mutation = {
       };
     }()
   },
-  editRole: {
-    type: _models.Role,
+  editSubscription: {
+    type: _models.Subscription,
     args: {
       id: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLID) },
-      name: { type: _graphql.GraphQLString },
-      accessPermission: { type: _graphql.GraphQLInt }
+      user_id: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLString) },
+      package_id: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLString) },
+      duration: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLInt) },
+      subscribeDate: { type: _graphql.GraphQLString },
+      status: { type: _graphql.GraphQLInt }
     },
     resolve: function () {
       var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(source, args, context) {
@@ -172,29 +199,70 @@ var Mutation = exports.Mutation = {
                   break;
                 }
 
-                throw new _graphql.GraphQLError('Edit role must have id');
+                throw new _graphql.GraphQLError('Edit subscription must have id');
 
               case 2:
+                if (args.user_id) {
+                  _context4.next = 4;
+                  break;
+                }
+
+                throw new _graphql.GraphQLError('User cannot be null');
+
+              case 4:
+                if (args.package_id) {
+                  _context4.next = 6;
+                  break;
+                }
+
+                throw new _graphql.GraphQLError('Package cannot be null');
+
+              case 6:
+                if (args.duration) {
+                  _context4.next = 8;
+                  break;
+                }
+
+                throw new _graphql.GraphQLError('Duration cannot be null');
+
+              case 8:
                 listArgs = Object.keys(args).filter(function (item) {
                   return item !== 'id';
                 });
                 setStatement = listArgs.map(function (item) {
                   return (0, _utils.convertCamelCaseToSnakeCase)(item) + '=\'' + args[item] + '\'';
                 }).join(',');
-                _context4.next = 6;
-                return (0, _database.promiseQuery)('UPDATE ' + _database.PREFIX + 'role SET ' + setStatement + ' WHERE id=\'' + args.id + '\'');
+                _context4.prev = 10;
+                _context4.next = 13;
+                return (0, _database.promiseQuery)('UPDATE ' + _database.PREFIX + 'subscription SET ' + setStatement + ' WHERE id=\'' + args.id + '\'');
 
-              case 6:
-                context.dataloaders.rolesByIds.clear(args.id);
+              case 13:
+                _context4.next = 22;
+                break;
 
-                return _context4.abrupt('return', context.dataloaders.rolesByIds.load(args.id));
+              case 15:
+                _context4.prev = 15;
+                _context4.t0 = _context4['catch'](10);
 
-              case 8:
+                console.log('UPDATE ' + _database.PREFIX + 'subscription SET ' + setStatement + ' WHERE id=\'' + args.id + '\'');
+                _context4.t1 = _context4.t0.code;
+                _context4.next = _context4.t1 === 'ER_NO_REFERENCED_ROW_2' ? 21 : 22;
+                break;
+
+              case 21:
+                throw new _graphql.GraphQLError('Subscription data invalid');
+
+              case 22:
+
+                context.dataloaders.subscriptionsByIds.clear(args.id);
+                return _context4.abrupt('return', context.dataloaders.subscriptionsByIds.load(args.id));
+
+              case 24:
               case 'end':
                 return _context4.stop();
             }
           }
-        }, _callee4, undefined);
+        }, _callee4, undefined, [[10, 15]]);
       }));
 
       return function resolve(_x5, _x6, _x7) {
@@ -202,7 +270,7 @@ var Mutation = exports.Mutation = {
       };
     }()
   },
-  removeRole: {
+  removeSubscription: {
     type: _graphql.GraphQLID,
     args: {
       id: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLID) }
@@ -222,7 +290,7 @@ var Mutation = exports.Mutation = {
 
               case 2:
 
-                (0, _database.promiseQuery)('DELETE FROM ' + _database.PREFIX + 'role WHERE id=\'' + args.id + '\'');
+                (0, _database.promiseQuery)('DELETE FROM ' + _database.PREFIX + 'subscription WHERE id=\'' + args.id + '\'');
                 return _context5.abrupt('return', args.id);
 
               case 4:

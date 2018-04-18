@@ -19,6 +19,46 @@ var getRolesByIds = function getRolesByIds(roleIds) {
   return (0, _database.promiseQuery)('SELECT * FROM ' + _database.PREFIX + 'role WHERE id IN (' + params + ')');
 };
 
+var getUsersByIds = function getUsersByIds(userIds) {
+  var params = userIds.map(function (id) {
+    return '\'' + id + '\'';
+  }).join(', ');
+  return (0, _database.promiseQuery)('SELECT * FROM ' + _database.PREFIX + 'user WHERE id IN (' + params + ')');
+};
+
+var getPostsByIds = function getPostsByIds(postIds) {
+  var params = postIds.map(function (id) {
+    return '\'' + id + '\'';
+  }).join(', ');
+  return (0, _database.promiseQuery)('SELECT * FROM ' + _database.PREFIX + 'post WHERE id IN (' + params + ')');
+};
+
+var getCategoriesByIds = function getCategoriesByIds(categoryIds) {
+  var params = categoryIds.map(function (id) {
+    return '\'' + id + '\'';
+  }).join(', ');
+  return (0, _database.promiseQuery)('SELECT * FROM ' + _database.PREFIX + 'category WHERE id IN (' + params + ')');
+};
+
+var getPackagesByIds = function getPackagesByIds(packageIds) {
+  var params = packageIds.map(function (id) {
+    return '\'' + id + '\'';
+  }).join(', ');
+  return (0, _database.promiseQuery)('SELECT * FROM ' + _database.PREFIX + 'package WHERE id IN (' + params + ')');
+};
+
+var getSubscriptionsByIds = function getSubscriptionsByIds(subscriptionIds) {
+  var params = subscriptionIds.map(function (id) {
+    return '\'' + id + '\'';
+  }).join(', ');
+  return (0, _database.promiseQuery)('SELECT * FROM ' + _database.PREFIX + 'subscription WHERE id IN (' + params + ')');
+};
+
 exports.default = {
-  rolesByIds: new _dataloader2.default(getRolesByIds)
+  rolesByIds: new _dataloader2.default(getRolesByIds),
+  usersByIds: new _dataloader2.default(getUsersByIds),
+  postsByIds: new _dataloader2.default(getPostsByIds),
+  categoriesByIds: new _dataloader2.default(getCategoriesByIds),
+  packagesByIds: new _dataloader2.default(getPackagesByIds),
+  subscriptionsByIds: new _dataloader2.default(getSubscriptionsByIds)
 };

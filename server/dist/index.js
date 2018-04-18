@@ -30,6 +30,8 @@ var _dataLoaders = require('./src/config/dataLoaders');
 
 var _dataLoaders2 = _interopRequireDefault(_dataLoaders);
 
+var _auth = require('./src/config/auth');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var PORT = 8000;
@@ -53,7 +55,20 @@ if (process.env.NODE_ENV === 'production') {
   server.use('/graphiql', (0, _graphqlServerExpress.graphiqlExpress)({ endpointURL: '/api' }));
 }
 
-server.use('/api', _bodyParser2.default.json(), (0, _graphqlServerExpress.graphqlExpress)({ schema: _schema2.default, context: { dataloaders: _dataLoaders2.default } }));
+server.use('/api', function (req, res, next) {
+  var token = req.headers.authorization;
+  req.payload = (0, _auth.verifyToken)(token);
+  next();
+});
+server.use('/api', _bodyParser2.default.json(), (0, _graphqlServerExpress.graphqlExpress)(function (req) {
+  return {
+    schema: _schema2.default,
+    context: {
+      dataloaders: _dataLoaders2.default,
+      payload: req.payload
+    }
+  };
+}));
 server.use(_express2.default.static(publicPath));
 server.get('*', function (req, res) {
   res.sendFile(indexPath);
