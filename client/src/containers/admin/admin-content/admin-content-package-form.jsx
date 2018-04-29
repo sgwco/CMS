@@ -2,7 +2,7 @@ import { compose, branch, withProps, withState, withStateHandlers, withHandlers 
 import { withRouter } from 'react-router-dom';
 import { graphql, withApollo } from 'react-apollo';
 
-import { EDIT_PACKAGE, GET_ALL_PACKAGES, CREATE_PACKAGE } from '../../../utils/graphql';
+import { EDIT_PACKAGE, GET_ALL_PACKAGES, CREATE_PACKAGE, GET_FULL_USERS } from '../../../utils/graphql';
 import { ALERT_STATUS } from '../../../commons/enum';
 import AdminContentPackageFormComponent from '../../../components/admin/admin-content/admin-content-package-form';
 
@@ -14,6 +14,7 @@ export default compose(
     graphql(EDIT_PACKAGE, { name: 'editPackage' }),
     graphql(CREATE_PACKAGE, { name: 'createPackage' })
   ),
+  graphql(GET_FULL_USERS, { name: 'getUsers' }),
   withHandlers({
     renderTopTitle: ({ isEditedPackage }) => () => isEditedPackage ? 'Edit Package' : 'Add New Package',
   }),

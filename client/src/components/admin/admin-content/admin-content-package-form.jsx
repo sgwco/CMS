@@ -1,8 +1,9 @@
 import React from 'react';
 import { Row, Col, Form as BootstrapForm, Button, Alert } from 'reactstrap';
 import { Form } from 'react-form';
+import { compose, withHandlers } from 'recompose';
 
-import { BootstrapTextField } from '../../../shared/formFields';
+import { BootstrapTextField, BootstrapSelectField } from '../../../shared/formFields';
 import { requiredValidation, numberValidation } from '../../../utils/validation';
 import { ALERT_STATUS } from '../../../commons/enum';
 import Breadcrumb from '../../../shared/breadcrumb';
@@ -16,7 +17,9 @@ const AdminContentPackageFormComponent = ({
   alertContent,
   removeAlert,
   savePackage,
-  initValue
+  initValue,
+  userMapper,
+  getUsers: { users = [] },
 }) => (
   <Form onSubmit={savePackage} getApi={initValue}>
     {(formApi) => (
@@ -34,10 +37,13 @@ const AdminContentPackageFormComponent = ({
               <BoxBody>
                 <Row>
                   <Col sm={{ size: 6, offset: 3 }}>
-                    <BootstrapTextField
-                      field="name"
-                      label="Package Name"
-                      type="text"
+                    <BootstrapSelectField
+                      field="user"
+                      label="User"
+                      data={[
+                        { value: '', text: '-- Please Select --'},
+                        ...users.map(userMapper)
+                      ]}
                       validate={requiredValidation}
                     />
                     <BootstrapTextField
@@ -66,4 +72,11 @@ const AdminContentPackageFormComponent = ({
   </Form>
 );
 
-export default AdminContentPackageFormComponent;
+export default compose(
+  withHandlers({
+    userMapper: () => item => ({
+      text: item.username,
+      value: item.id
+    })
+  })
+)(AdminContentPackageFormComponent);

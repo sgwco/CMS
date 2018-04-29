@@ -38,48 +38,48 @@ export async function initDatabase(conn) {
     )`);
 
     // Post table
-    promiseQuery(`CREATE TABLE IF NOT EXISTS ${PREFIX}post (
-      id VARCHAR(50) NOT NULL PRIMARY KEY,
-      title VARCHAR(1000) NOT NULL,
-      content LONGTEXT NOT NULL,
-      excerpt LONGTEXT NOT NULL,
-      author VARCHAR(50) NOT NULL,
-      slug VARCHAR(1000) NOT NULL UNIQUE,
-      category VARCHAR(8000) NOT NULL,
-      thumbnail VARCHAR(50),
-      count INT(10) UNSIGNED DEFAULT 0,
-      publish_date DATETIME NOT NULL
-    )`);
+    // promiseQuery(`CREATE TABLE IF NOT EXISTS ${PREFIX}post (
+    //   id VARCHAR(50) NOT NULL PRIMARY KEY,
+    //   title VARCHAR(1000) NOT NULL,
+    //   content LONGTEXT NOT NULL,
+    //   excerpt LONGTEXT NOT NULL,
+    //   author VARCHAR(50) NOT NULL,
+    //   slug VARCHAR(1000) NOT NULL UNIQUE,
+    //   category VARCHAR(8000) NOT NULL,
+    //   thumbnail VARCHAR(50),
+    //   count INT(10) UNSIGNED DEFAULT 0,
+    //   publish_date DATETIME NOT NULL
+    // )`);
 
-    // Category table
-    promiseQuery(`CREATE TABLE IF NOT EXISTS ${PREFIX}category (
-      id VARCHAR(50) NOT NULL PRIMARY KEY,
-      name VARCHAR(1000) NOT NULL,
-      slug VARCHAR(1000) NOT NULL UNIQUE,
-      parent VARCHAR(50),
-      description LONGTEXT NOT NULL,
-      thumbnail VARCHAR(50) NOT NULL
-    )`);
+    // // Category table
+    // promiseQuery(`CREATE TABLE IF NOT EXISTS ${PREFIX}category (
+    //   id VARCHAR(50) NOT NULL PRIMARY KEY,
+    //   name VARCHAR(1000) NOT NULL,
+    //   slug VARCHAR(1000) NOT NULL UNIQUE,
+    //   parent VARCHAR(50),
+    //   description LONGTEXT NOT NULL,
+    //   thumbnail VARCHAR(50) NOT NULL
+    // )`);
 
-    // Media table
-    promiseQuery(`CREATE TABLE IF NOT EXISTS ${PREFIX}media (
-      id VARCHAR(50) NOT NULL PRIMARY KEY,
-      name VARCHAR(1000) NOT NULL,
-      url VARCHAR(2000) NOT NULL,
-      type VARCHAR(50) NOT NULL,
-      upload_date DATETIME NOT NULL,
-      upload_by VARCHAR(50) NOT NULL
-    )`);
+    // // Media table
+    // promiseQuery(`CREATE TABLE IF NOT EXISTS ${PREFIX}media (
+    //   id VARCHAR(50) NOT NULL PRIMARY KEY,
+    //   name VARCHAR(1000) NOT NULL,
+    //   url VARCHAR(2000) NOT NULL,
+    //   type VARCHAR(50) NOT NULL,
+    //   upload_date DATETIME NOT NULL,
+    //   upload_by VARCHAR(50) NOT NULL
+    // )`);
 
-    // Media Meta table
-    promiseQuery(`CREATE TABLE IF NOT EXISTS ${PREFIX}media_meta (
-      id VARCHAR(50) NOT NULL PRIMARY KEY,
-      name VARCHAR(1000) NOT NULL,
-      value VARCHAR(2000)
-    )`);
+    // // Media Meta table
+    // promiseQuery(`CREATE TABLE IF NOT EXISTS ${PREFIX}media_meta (
+    //   id VARCHAR(50) NOT NULL PRIMARY KEY,
+    //   name VARCHAR(1000) NOT NULL,
+    //   value VARCHAR(2000)
+    // )`);
 
     // User table
-    promiseQuery(`CREATE TABLE IF NOT EXISTS ${PREFIX}user (
+    await promiseQuery(`CREATE TABLE IF NOT EXISTS ${PREFIX}user (
       id VARCHAR(50) NOT NULL PRIMARY KEY,
       username VARCHAR(50) NOT NULL UNIQUE,
       password VARCHAR(50) NOT NULL,
@@ -93,24 +93,24 @@ export async function initDatabase(conn) {
       CONSTRAINT FK_ROLE FOREIGN KEY (role) REFERENCES ${PREFIX}role(id) ON DELETE CASCADE ON UPDATE CASCADE
     )`);
 
-    // Package table
-    await promiseQuery(`CREATE TABLE IF NOT EXISTS ${PREFIX}package (
-      id VARCHAR(50) NOT NULL PRIMARY KEY,
-      name VARCHAR(100) NOT NULL,
-      price INT(10) UNSIGNED NOT NULL,
-      interest_rate FLOAT(10, 5) UNSIGNED NOT NULL
-    )`);
-
-    // Subscription table
-    promiseQuery(`CREATE TABLE IF NOT EXISTS ${PREFIX}subscription (
+    promiseQuery(`CREATE TABLE IF NOT EXISTS ${PREFIX}user_meta (
       id VARCHAR(50) NOT NULL PRIMARY KEY,
       user_id VARCHAR(50) NOT NULL,
-      package_id VARCHAR(50) NOT NULL,
-      duration INT(10) NOT NULL,
-      subscribe_date DATETIME NOT NULL,
+      meta_key VARCHAR(50) NOT NULL,
+      meta_value VARCHAR(200) NOT NULL,
+      CONSTRAINT FK_USER FOREIGN KEY (user_id) REFERENCES ${PREFIX}user(id) ON DELETE CASCADE ON UPDATE CASCADE
+    )`);
+
+    // Package table
+    promiseQuery(`CREATE TABLE IF NOT EXISTS ${PREFIX}package (
+      id VARCHAR(50) NOT NULL PRIMARY KEY,
+      user_id VARCHAR(100) NOT NULL,
+      price FLOAT(10, 5) UNSIGNED NOT NULL,
+      unit VARCHAR(10) NOT NULL,
+      duration INT(10) UNSIGNED NOT NULL,
+      register_date DATETIME NOT NULL,
       status VARCHAR(50) NOT NULL,
-      CONSTRAINT FK_USER FOREIGN KEY (user_id) REFERENCES ${PREFIX}user(id) ON DELETE CASCADE ON UPDATE CASCADE,
-      CONSTRAINT FK_PACKAGE FOREIGN KEY (package_id) REFERENCES ${PREFIX}package(id) ON DELETE CASCADE ON UPDATE CASCADE
+      CONSTRAINT FK_USER FOREIGN KEY (user_id) REFERENCES ${PREFIX}user(id) ON DELETE CASCADE ON UPDATE CASCADE
     )`);
   });
 }

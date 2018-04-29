@@ -3,69 +3,26 @@ import { withProps, compose } from 'recompose';
 
 import AdminSidebarComponent from '../../../components/admin/admin-sidebar/admin-sidebar';
 import { GET_USER_TOKEN } from '../../../utils/graphql';
+import { roleCapabilities } from '../../../commons/enum';
 
 const data = [
   {
-    header: 'MAIN NAVIGATION',
+    header: 'COMMON',
     menus: [
-      {
-        title: 'Dashboard',
-        href: 'dashboard',
-        icon: 'tachometer-alt'
-      }
+      { title: 'Dashboard', href: 'dashboard', icon: 'tachometer-alt' }
     ]
   },
   {
     header: 'MANAGEMENT',
     menus: [
-      {
-        title: 'Posts',
-        href: 'post',
-        icon: 'file',
-        subMenu: [
-          {
-            title: 'All Posts',
-            href: 'post'
-          },
-          {
-            title: 'Post Categories',
-            href: 'post/category',
-          }
-        ]
-      },
-      {
-        title: 'Products',
-        href: 'product',
-        icon: 'shopping-cart',
-        badgePrimary: '4'
-      },
-      {
-        title: 'Package',
-        href: 'package',
-        icon: 'briefcase',
-        readPermission: Math.pow(2, 13)
-      },
-      {
-        title: 'Subscription',
-        href: 'subscription',
-        icon: 'cube',
-        readPermission: Math.pow(2, 15)
-      }
-    ]
-  },
-  {
-    header: 'CONFIGURATIONS',
-    menus: [
-      {
-        title: 'Users',
-        href: 'user',
-        icon: 'user'
-      },
-      {
-        title: 'Roles',
-        href: 'role',
-        icon: 'users'
-      }
+      { title: 'Posts', href: 'post', icon: 'file', readPermission: roleCapabilities.read_post.value, subMenu: [
+        { title: 'All Posts', href: 'post' },
+        { title: 'Post Categories', href: 'post/category' }
+      ] },
+      { title: 'Products', href: 'product', icon: 'shopping-cart', badgePrimary: '4', readPermission: roleCapabilities.read_products.value },
+      { title: 'Package', href: 'package', icon: 'briefcase', readPermission: roleCapabilities.read_packages.value },
+      { title: 'Users', href: 'user', icon: 'user', readPermission: roleCapabilities.read_user.value },
+      { title: 'Roles', href: 'role', icon: 'users', readPermission: roleCapabilities.read_roles.value }
     ]
   }
 ];

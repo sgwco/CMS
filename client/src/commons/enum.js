@@ -25,8 +25,6 @@ export const roleCapabilities = {
   write_taxonomy_items: { title: 'Write taxonomy items', value: Math.pow(2, 12) },
   read_packages: { title: 'Read roles', value: Math.pow(2, 13) },
   write_packages: { title: 'Write roles', value: Math.pow(2, 14) },
-  read_subscriptions: { title: 'Read subscriptions', value: Math.pow(2, 15) },
-  write_subscriptions: { title: 'Write subscriptions', value: Math.pow(2, 16) },
-  import: { title: 'Import', value: Math.pow(2, 17) },
-  export: { title: 'Export', value: Math.pow(2, 18) },
+  import: { title: 'Import', value: Math.pow(2, 15) },
+  export: { title: 'Export', value: Math.pow(2, 16) },
 };

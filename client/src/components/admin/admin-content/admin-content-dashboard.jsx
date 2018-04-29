@@ -1,8 +1,11 @@
 import React from 'react';
 
+import { ContentContainer } from '../../../shared/contentContainer';
+
 const AdminContentDashboardComponent = (
 ) => (
-  <div></div>
+  <ContentContainer>
+  </ContentContainer>
 );
 
 export default AdminContentDashboardComponent;

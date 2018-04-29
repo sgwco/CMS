@@ -57,13 +57,16 @@ const DivIcon = styled.div`
   top: 10px !important;
 `;
 
-const AdminContentSubscriptionMemberContainer = () => (
+const AdminContentSubscriptionMemberContainer = ({
+  getActiveSubscription: { activeSubscription = {} }
+}) => (
   <ContentContainer>
+    {console.log(activeSubscription)}
     <ContentBody>
       <Row>
         <Col md={3}>
           <PackageStyled>
-            <H3Styled><BStyled>Ủy thác</BStyled> <br/> cá nhân</H3Styled>
+            <H3Styled><BStyled>{activeSubscription.package_id.name}</BStyled></H3Styled>
             <PStyled>
               Lãi suất tối thiểu <SpanStyled>100%</SpanStyled> <br />
               trong <SpanStyled>365 ngày</SpanStyled>
