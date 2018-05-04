@@ -33,39 +33,45 @@ export default compose(
       removeAlert: () => () => ({ alertVisible: ALERT_STATUS.HIDDEN }),
     }),
   withHandlers({
-    savePackage: ({ isEditedPackage, match, editPackage, createPackage, setAlertContent, setAlert }) => async ({ name, price, interestRate }) => {
+    savePackage: ({ isEditedPackage, match, editPackage, createPackage, setAlertContent, setAlert }) => async ({ user, price, currency, duration, registerDate }) => {
       try {
         const variables = {
-          name,
+          user,
           price,
-          interestRate
+          currency,
+          duration,
+          registerDate
         };
+
+        console.log(variables);
     
         if (isEditedPackage) {
           variables.id = match.params.id;
           await editPackage({
             variables,
-            optimisticResponse: {
-              __typename: 'Mutation',
-              editPackage: {
-                __typename: 'Package',
-                id: Math.round(Math.random() * -1000000),
-                name,
-                price,
-                interestRate
-              }
-            },
-            update(cache, { data: { editPackage } }) {
-              try {
-                const { packages } = cache.readQuery({ query: GET_ALL_PACKAGES });
-                const index = packages.findIndex(item => item.id === match.params.id);
-                packages[index] = editPackage;
-                cache.writeQuery({ query: GET_ALL_PACKAGES, data: { packages } });
-              }
-              catch (e) {
-                // Nothing here
-              }
-            }
+            // optimisticResponse: {
+            //   __typename: 'Mutation',
+            //   editPackage: {
+            //     __typename: 'Package',
+            //     id: Math.round(Math.random() * -1000000),
+            //     userId,
+            //     price,
+            //     currency,
+            //     duration,
+            //     registerDate
+            //   }
+            // },
+            // update(cache, { data: { editPackage } }) {
+            //   try {
+            //     const { packages } = cache.readQuery({ query: GET_ALL_PACKAGES });
+            //     const index = packages.findIndex(item => item.id === match.params.id);
+            //     packages[index] = editPackage;
+            //     cache.writeQuery({ query: GET_ALL_PACKAGES, data: { packages } });
+            //   }
+            //   catch (e) {
+            //     // Nothing here
+            //   }
+            // }
           });
 
           setAlertContent('Edit package successfully');
@@ -74,26 +80,28 @@ export default compose(
         else {
           await createPackage({
             variables,
-            optimisticResponse: {
-              __typename: 'Mutation',
-              createPackage: {
-                __typename: 'Package',
-                id: Math.round(Math.random() * -1000000),
-                name,
-                price,
-                interestRate
-              }
-            },
-            update(cache, { data: { createPackage } }) {
-              try {
-                const { packages } = cache.readQuery({ query: GET_ALL_PACKAGES });
-                packages.push(createPackage);
-                cache.writeQuery({ query: GET_ALL_PACKAGES, data: { packages } });
-              }
-              catch (e) {
-                // Nothing here
-              }
-            }
+            // optimisticResponse: {
+            //   __typename: 'Mutation',
+            //   createPackage: {
+            //     __typename: 'Package',
+            //     id: Math.round(Math.random() * -1000000),
+            //     userId,
+            //     price,
+            //     currency,
+            //     duration,
+            //     registerDate
+            //   }
+            // },
+            // update(cache, { data: { createPackage } }) {
+            //   try {
+            //     const { packages } = cache.readQuery({ query: GET_ALL_PACKAGES });
+            //     packages.push(createPackage);
+            //     cache.writeQuery({ query: GET_ALL_PACKAGES, data: { packages } });
+            //   }
+            //   catch (e) {
+            //     // Nothing here
+            //   }
+            // }
           });
           setAlertContent('Add package successfully');
           setAlert(ALERT_STATUS.SUCCESS);

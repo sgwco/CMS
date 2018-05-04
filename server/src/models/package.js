@@ -10,8 +10,8 @@ export const PackageDuration = new GraphQLEnumType({
   }
 });
 
-export const PackageUnit = new GraphQLEnumType({
-  name: 'PackageUnit',
+export const PackageCurrency = new GraphQLEnumType({
+  name: 'PackageCurrency',
   values: {
     VND: { value: 'VND' },
     USD: { value: 'USD' }
@@ -32,13 +32,13 @@ export const Package = new GraphQLObjectType({
   fields: () => ({
     id: { type: GraphQLNonNull(GraphQLID) },
     user: {
-      type: GraphQLNonNull(GraphQLString),
+      type: GraphQLNonNull(User),
       async resolve({ user_id }, _, context) {
         return context.dataloaders.usersByIds.load(user_id);
       }
     },
     price: { type: GraphQLNonNull(GraphQLFloat) },
-    unit: { type: GraphQLNonNull(PackageUnit) },
+    currency: { type: GraphQLNonNull(PackageCurrency) },
     duration: { type: GraphQLNonNull(PackageDuration) },
     registerDate: {
       type: GraphQLNonNull(GraphQLString),

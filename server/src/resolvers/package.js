@@ -1,7 +1,7 @@
 import { GraphQLList, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLInt, GraphQLError, GraphQLFloat } from 'graphql';
 import uuid from 'uuid';
 import moment from 'moment';
-import { Package, PackageUnit, PackageDuration, PackageStatus } from '../models';
+import { Package, PackageCurrency, PackageDuration, PackageStatus } from '../models';
 import { promiseQuery, PREFIX } from '../config/database';
 import { convertCamelCaseToSnakeCase } from '../utils/utils';
 
@@ -40,9 +40,9 @@ export const Mutation = {
   createPackage: {
     type: Package,
     args: {
-      userId: { type: GraphQLNonNull(GraphQLString) },
+      user: { type: GraphQLNonNull(GraphQLString) },
       price: { type: GraphQLNonNull(GraphQLFloat) },
-      unit: { type: GraphQLNonNull(PackageUnit) },
+      currency: { type: GraphQLNonNull(PackageCurrency) },
       duration: { type: GraphQLNonNull(PackageDuration) },
       registerDate: { type: GraphQLString }
     },
@@ -51,7 +51,7 @@ export const Mutation = {
         throw new GraphQLError('Unauthorized');
       }
 
-      if (!args.userId) {
+      if (!args.user) {
         throw new GraphQLError('User cannot be null');
       }
 
@@ -59,23 +59,24 @@ export const Mutation = {
         throw new GraphQLError('Price invalid');
       }
 
-      if (!args.unit) {
-        throw new GraphQLError('Unit cannot be null');
+      if (!args.currency) {
+        throw new GraphQLError('Currency cannot be null');
       }
 
       if (!args.duration) {
         throw new GraphQLError('Duration cannot be null');
       }
-
-      const registerDate = args.registerDate || moment().format('YYYY-MM-DD HH:MM');
+      
+      const now = moment();
+      const registerDate = args.registerDate ? moment(args.registerDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : now.format('YYYY-MM-DD');
       const status = PackageStatus.getValue('ACTIVE').value;
       
       const id = uuid.v1();
       await promiseQuery(`INSERT INTO ${PREFIX}package VALUES (
         '${id}',
-        '${args.userId}',
+        '${args.user}',
         '${args.price}',
-        '${args.unit}',
+        '${args.currency}',
         '${args.duration}',
         '${registerDate}',
         '${status}'
@@ -84,11 +85,12 @@ export const Mutation = {
       return {
         id,
         status,
+        user_id: args.user,
         name: args.name,
         price: args.price,
-        unit: args.unit,
+        currency: args.currency,
         duration: args.duration,
-        register_date: registerDate
+        register_date: args.registerDate || now.format('DD/MM/YYYY')
       };
     }
   },
@@ -98,7 +100,7 @@ export const Mutation = {
       id: { type: GraphQLNonNull(GraphQLID) },
       userId: { type: GraphQLString },
       price: { type: GraphQLFloat },
-      unit: { type: PackageUnit },
+      currency: { type: PackageCurrency },
       duration: { type: PackageDuration },
       registerDate: { type: GraphQLString }
     },

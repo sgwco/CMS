@@ -9,6 +9,16 @@ export const ALERT_STATUS = {
   SUCCESS: 'success'
 };
 
+export const CURRENCY = {
+  VND: 'VND',
+  USD: 'USD'
+};
+
+export const DURATION_TYPE = {
+  MONTH_6: 6,
+  MONTH_12: 12
+};
+
 export const roleCapabilities = {
   read_user: { title: 'Read users', value: Math.pow(2, 0) },
   write_user: { title: 'Write users', value: Math.pow(2, 1) },

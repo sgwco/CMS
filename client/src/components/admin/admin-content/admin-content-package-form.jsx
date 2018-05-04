@@ -2,10 +2,11 @@ import React from 'react';
 import { Row, Col, Form as BootstrapForm, Button, Alert } from 'reactstrap';
 import { Form } from 'react-form';
 import { compose, withHandlers } from 'recompose';
+import moment from 'moment';
 
-import { BootstrapTextField, BootstrapSelectField } from '../../../shared/formFields';
+import { BootstrapTextField, BootstrapSelectField, BootstrapDatepickerField } from '../../../shared/formFields';
 import { requiredValidation, numberValidation } from '../../../utils/validation';
-import { ALERT_STATUS } from '../../../commons/enum';
+import { ALERT_STATUS, CURRENCY, DURATION_TYPE } from '../../../commons/enum';
 import Breadcrumb from '../../../shared/breadcrumb';
 import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/contentContainer';
 import { BoxWrapper, BoxBody, BoxFooter } from '../../../shared/boxWrapper';
@@ -19,6 +20,8 @@ const AdminContentPackageFormComponent = ({
   savePackage,
   initValue,
   userMapper,
+  currencyMapper,
+  durationMapper,
   getUsers: { users = [] },
 }) => (
   <Form onSubmit={savePackage} getApi={initValue}>
@@ -46,17 +49,40 @@ const AdminContentPackageFormComponent = ({
                       ]}
                       validate={requiredValidation}
                     />
-                    <BootstrapTextField
-                      field="price"
-                      label="Price"
-                      type="text"
-                      validate={numberValidation}
+                    <Row>
+                      <Col lg={9} sm={12}>
+                        <BootstrapTextField
+                          field="price"
+                          label="Price"
+                          type="text"
+                          validate={numberValidation}
+                        />
+                      </Col>
+                      <Col lg={3} sm={12}>
+                        <BootstrapSelectField
+                          field="currency"
+                          label="Currency"
+                          data={[
+                            { value: '', text: '-- Please Select --'},
+                            ...Object.keys(CURRENCY).map(currencyMapper)
+                          ]}
+                          validate={requiredValidation}
+                        />
+                      </Col>
+                    </Row>
+                    <BootstrapSelectField
+                      field="duration"
+                      label="Duration"
+                      data={[
+                        { value: '', text: '-- Please Select --'},
+                        ...Object.keys(DURATION_TYPE).map(durationMapper)
+                      ]}
+                      validate={requiredValidation}
                     />
-                    <BootstrapTextField
-                      field="interestRate"
-                      label="Interest Rate"
-                      type="text"
-                      validate={numberValidation}
+                    <BootstrapDatepickerField
+                      field="registerDate"
+                      label="Register Date"
+                      defaultValue={moment().format('DD/MM/YYYY')}
                     />
                   </Col>
                 </Row>
@@ -77,6 +103,14 @@ export default compose(
     userMapper: () => item => ({
       text: item.username,
       value: item.id
+    }),
+    currencyMapper: () => item => ({
+      text: item,
+      value: item
+    }),
+    durationMapper: () => item => ({
+      text: `${DURATION_TYPE[item]} Months`,
+      value: item
     })
   })
 )(AdminContentPackageFormComponent);

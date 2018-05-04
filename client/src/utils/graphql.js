@@ -245,20 +245,30 @@ export const GET_ALL_PACKAGES = gql`
 {
   packages {
     id
-    name
+    user {
+      fullname
+    }
     price
-    interestRate
+    currency
+    duration
+    registerDate
+    status
   }
 }
 `;
 
 export const CREATE_PACKAGE = gql`
-  mutation createPackage($name: String!, $price: Float!, $interestRate: Float!) {
-    createPackage(name: $name, price: $price, interestRate: $interestRate) {
+  mutation createPackage($user: String!, $price: Float!, $currency: PackageCurrency!, $duration: PackageDuration!, $registerDate: String) {
+    createPackage(user: $user, price: $price, currency: $currency, duration: $duration, registerDate: $registerDate) {
       id
-      name
+      user {
+        fullname
+      }
       price
-      interestRate
+      currency
+      duration
+      registerDate
+      status
     }
   }
 `;
@@ -316,50 +326,6 @@ export const GET_ACTIVE_SUBSCRIPTION = gql`
     status
   }
 }
-`;
-
-export const CREATE_SUBSCRIPTION = gql`
-  mutation createSubscription($user_id: String!, $package_id: String!, $duration: Int!, $subscribeDate: String, $status: Int) {
-    createSubscription(user_id: $user_id, package_id: $package_id, duration: $duration, subscribeDate: $subscribeDate, status: $status) {
-      id
-      user_id {
-        id
-        username
-      }
-      package_id {
-        id
-        name
-      }
-      duration
-      subscribeDate
-      status
-    }
-  }
-`;
-
-export const EDIT_SUBSCRIPTION = gql`
-  mutation editSubscription($id: ID!, $user_id: String!, $package_id: String!, $duration: Int!, $subscribeDate: String, $status: Int) {
-    editSubscription(id: $id, user_id: $user_id, package_id: $package_id, duration: $duration, subscribeDate: $subscribeDate, status: $status) {
-      id
-      user_id {
-        id
-        username
-      }
-      package_id {
-        id
-        name
-      }
-      duration
-      subscribeDate
-      status
-    }
-  }
-`;
-
-export const REMOVE_SUBSCRIPTION = gql`
-  mutation removeSubscription($id: ID!) {
-    removeSubscription(id: $id)
-  }
 `;
 
 export const LOGIN = gql`

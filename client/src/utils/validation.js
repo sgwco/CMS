@@ -2,7 +2,10 @@ import isEmail from 'validator/lib/isEmail';
 import isFloat from 'validator/lib/isFloat';
 
 export const requiredValidation = value => {
-  if (!value || value.trim() === '') {
+  if (typeof value === 'undefined') {
+    return { error: 'This field is required' };
+  }
+  else if (value.trim && value.trim() === '') {
     return { error: 'This field is required' };
   }
   return null;

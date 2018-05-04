@@ -56,6 +56,7 @@
     "react-apollo": "^2.1.1",
     "react-bootstrap-table-next": "^0.1.6",
     "react-bootstrap-table2-filter": "^0.1.4",
+    "react-datepicker": "^1.4.1",
     "react-dev-utils": "^5.0.0",
     "react-dom": "^16.2.0",
     "react-form": "^3.5.0",

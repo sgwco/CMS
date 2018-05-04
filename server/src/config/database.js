@@ -105,12 +105,12 @@ export async function initDatabase(conn) {
     promiseQuery(`CREATE TABLE IF NOT EXISTS ${PREFIX}package (
       id VARCHAR(50) NOT NULL PRIMARY KEY,
       user_id VARCHAR(100) NOT NULL,
-      price FLOAT(10, 5) UNSIGNED NOT NULL,
-      unit VARCHAR(10) NOT NULL,
+      price FLOAT(10, 2) UNSIGNED NOT NULL,
+      currency VARCHAR(10) NOT NULL,
       duration INT(10) UNSIGNED NOT NULL,
-      register_date DATETIME NOT NULL,
+      register_date DATE NOT NULL,
       status VARCHAR(50) NOT NULL,
-      CONSTRAINT FK_USER FOREIGN KEY (user_id) REFERENCES ${PREFIX}user(id) ON DELETE CASCADE ON UPDATE CASCADE
+      CONSTRAINT FK_PACKAGE FOREIGN KEY (user_id) REFERENCES ${PREFIX}user(id) ON DELETE CASCADE ON UPDATE CASCADE
     )`);
   });
 }
