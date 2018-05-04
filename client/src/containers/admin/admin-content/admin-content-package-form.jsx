@@ -1,6 +1,7 @@
 import { compose, branch, withProps, withState, withStateHandlers, withHandlers } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { graphql, withApollo } from 'react-apollo';
+import moment from 'moment';
 
 import { EDIT_PACKAGE, GET_ALL_PACKAGES, CREATE_PACKAGE, GET_FULL_USERS } from '../../../utils/graphql';
 import { ALERT_STATUS } from '../../../utils/enum';
@@ -33,43 +34,41 @@ export default compose(
       removeAlert: () => () => ({ alertVisible: ALERT_STATUS.HIDDEN }),
     }),
   withHandlers({
-    savePackage: ({ isEditedPackage, match, editPackage, createPackage, setAlertContent, setAlert }) => async ({ user, price, currency, duration, registerDate }) => {
+    savePackage: ({ isEditedPackage, match, editPackage, createPackage, setAlertContent, setAlert }) => async (data) => {
       try {
-        const variables = {
-          user,
-          price,
-          currency,
-          duration,
-          registerDate
-        };
+        const variables = Object.assign({}, data);
     
         if (isEditedPackage) {
           variables.id = match.params.id;
           await editPackage({
             variables,
-            // optimisticResponse: {
-            //   __typename: 'Mutation',
-            //   editPackage: {
-            //     __typename: 'Package',
-            //     id: Math.round(Math.random() * -1000000),
-            //     userId,
-            //     price,
-            //     currency,
-            //     duration,
-            //     registerDate
-            //   }
-            // },
-            // update(cache, { data: { editPackage } }) {
-            //   try {
-            //     const { packages } = cache.readQuery({ query: GET_ALL_PACKAGES });
-            //     const index = packages.findIndex(item => item.id === match.params.id);
-            //     packages[index] = editPackage;
-            //     cache.writeQuery({ query: GET_ALL_PACKAGES, data: { packages } });
-            //   }
-            //   catch (e) {
-            //     // Nothing here
-            //   }
-            // }
+            optimisticResponse: {
+              __typename: 'Mutation',
+              editPackage: {
+                __typename: 'Package',
+                id: Math.round(Math.random() * -1000000),
+                user: {
+                  __typename: 'User',
+                  username: '-',
+                  fullname: '-'
+                },
+                price: variables.price,
+                currency: variables.currency,
+                duration: variables.duration,
+                registerDate: variables.registerDate
+              }
+            },
+            update(cache, { data: { editPackage } }) {
+              try {
+                const { packages } = cache.readQuery({ query: GET_ALL_PACKAGES });
+                const index = packages.findIndex(item => item.id === match.params.id);
+                packages[index] = editPackage;
+                cache.writeQuery({ query: GET_ALL_PACKAGES, data: { packages } });
+              }
+              catch (e) {
+                // Nothing here
+              }
+            }
           });
 
           setAlertContent('Edit package successfully');
@@ -78,28 +77,32 @@ export default compose(
         else {
           await createPackage({
             variables,
-            // optimisticResponse: {
-            //   __typename: 'Mutation',
-            //   createPackage: {
-            //     __typename: 'Package',
-            //     id: Math.round(Math.random() * -1000000),
-            //     userId,
-            //     price,
-            //     currency,
-            //     duration,
-            //     registerDate
-            //   }
-            // },
-            // update(cache, { data: { createPackage } }) {
-            //   try {
-            //     const { packages } = cache.readQuery({ query: GET_ALL_PACKAGES });
-            //     packages.push(createPackage);
-            //     cache.writeQuery({ query: GET_ALL_PACKAGES, data: { packages } });
-            //   }
-            //   catch (e) {
-            //     // Nothing here
-            //   }
-            // }
+            optimisticResponse: {
+              __typename: 'Mutation',
+              createPackage: {
+                __typename: 'Package',
+                id: Math.round(Math.random() * -1000000),
+                user: {
+                  __typename: 'User',
+                  username: '-',
+                  fullname: '-'
+                },
+                price: variables.price,
+                currency: variables.currency,
+                duration: variables.duration,
+                registerDate: variables.registerDate
+              }
+            },
+            update(cache, { data: { createPackage } }) {
+              try {
+                const { packages } = cache.readQuery({ query: GET_ALL_PACKAGES });
+                packages.push(createPackage);
+                cache.writeQuery({ query: GET_ALL_PACKAGES, data: { packages } });
+              }
+              catch (e) {
+                // Nothing here
+              }
+            }
           });
           setAlertContent('Add package successfully');
           setAlert(ALERT_STATUS.SUCCESS);
@@ -116,9 +119,11 @@ export default compose(
           const { packages } = client.cache.readQuery({ query: GET_ALL_PACKAGES });
           const packageItem = packages.find(item => item.id === match.params.id);
 
-          formApi.setValue('name', packageItem.name);
+          formApi.setValue('userId', packageItem.user.id);
           formApi.setValue('price', packageItem.price);
-          formApi.setValue('interestRate', packageItem.interestRate);
+          formApi.setValue('currency', packageItem.currency);
+          formApi.setValue('duration', packageItem.duration);
+          formApi.setValue('registerDate', moment(packageItem.registerDate).format('DD/MM/YYYY'));
         }
         catch (e) {
           history.push('/admin/package');

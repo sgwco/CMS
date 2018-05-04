@@ -5,7 +5,7 @@ import { compose, withHandlers } from 'recompose';
 import moment from 'moment';
 
 import { BootstrapTextField, BootstrapSelectField, BootstrapDatepickerField } from '../../../shared/formFields';
-import { requiredValidation, numberValidation } from '../../../utils/validation';
+import { requiredValidation, numberValidation, dateValidation } from '../../../utils/validation';
 import { ALERT_STATUS, CURRENCY, DURATION_TYPE } from '../../../utils/enum';
 import Breadcrumb from '../../../shared/breadcrumb';
 import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/contentContainer';
@@ -41,7 +41,7 @@ const AdminContentPackageFormComponent = ({
                 <Row>
                   <Col sm={{ size: 6, offset: 3 }}>
                     <BootstrapSelectField
-                      field="user"
+                      field="userId"
                       label="User"
                       data={[
                         { value: '', text: '-- Please Select --'},
@@ -82,6 +82,7 @@ const AdminContentPackageFormComponent = ({
                     <BootstrapDatepickerField
                       field="registerDate"
                       label="Register Date"
+                      validate={dateValidation}
                       defaultValue={moment().format('DD/MM/YYYY')}
                     />
                   </Col>

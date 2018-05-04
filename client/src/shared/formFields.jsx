@@ -4,6 +4,7 @@ import { FormGroup, Label, Input, FormFeedback } from 'reactstrap';
 import { compose, withHandlers } from 'recompose';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
+import styled from 'styled-components';
 import 'react-datepicker/dist/react-datepicker.css';
 
 export const BootstrapTextField = ({ validate, field, onChange, onBlur, label, ...rest }) => (
@@ -74,30 +75,32 @@ export const BootstrapSelectField = compose(
   </Field>
 ));
 
-export const BootstrapDatepickerField = ({ validate, field, label, defaultValue }) => (
+const FormFeedbackAlwaysShow = styled(FormFeedback)`
+  display: block !important;
+`;
+
+export const BootstrapDatepickerField = ({ validate, field, label }) => (
   <Field validate={validate} field={field}>
-    {({ value, error, setValue, setTouched }) => {
-      if (!value && defaultValue) {
-        setValue(defaultValue);
-      }
-      return (
-        <FormGroup>
-          <Label for={field}>{label}</Label>
-          <DatePicker
-            className="form-control"
-            selected={moment(value, 'DD/MM/YYYY')}
-            onChange={e => {
-              setValue(e.format('DD/MM/YYYY'));
-            }}
-            placeholder={label}
-            dateFormat="DD/MM/YYYY"
-            onBlur={() => {
-              setTouched();
-            }}
-            invalid={error !== undefined}
-          />
-        </FormGroup>
-      );
-    }}
+    {({ value, error, setValue, setTouched }) => (
+      <FormGroup>
+        <Label for={field}>{label}</Label>
+        <DatePicker
+          className={`form-control ${error ? 'is-invalid' : null}`}
+          selected={value ? moment(value, 'DD/MM/YYYY') : null}
+          onChange={e => {
+            setValue(e ? e.format('DD/MM/YYYY') : undefined);
+          }}
+          placeholderText={label}
+          dateFormat="DD/MM/YYYY"
+          onBlur={() => {
+            setTouched();
+          }}
+          invalid={error !== undefined}
+        />
+        {error && (
+          <FormFeedbackAlwaysShow>{error}</FormFeedbackAlwaysShow>
+        )}
+      </FormGroup>
+    )}
   </Field>
 );

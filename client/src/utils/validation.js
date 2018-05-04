@@ -1,5 +1,6 @@
 import isEmail from 'validator/lib/isEmail';
 import isFloat from 'validator/lib/isFloat';
+import moment from 'moment';
 
 export const requiredValidation = value => {
   if (typeof value === 'undefined') {
@@ -40,6 +41,18 @@ export const emailValidation = value => {
 
   if (!isEmail(value)) {
     return { error: 'Email invalid' };
+  }
+
+  return null;
+};
+
+export const dateValidation = value => {
+  const required = requiredValidation(value);
+  if (required && required.error) return required;
+
+  const parsedFormat = moment(value, 'DD/MM/YYYY');
+  if (!parsedFormat.isValid()) {
+    return { error: 'Date invalid' };
   }
 
   return null;

@@ -246,6 +246,7 @@ export const GET_ALL_PACKAGES = gql`
   packages {
     id
     user {
+      id
       username
       fullname
     }
@@ -259,10 +260,11 @@ export const GET_ALL_PACKAGES = gql`
 `;
 
 export const CREATE_PACKAGE = gql`
-  mutation createPackage($user: String!, $price: Float!, $currency: PackageCurrency!, $duration: PackageDuration!, $registerDate: String) {
-    createPackage(user: $user, price: $price, currency: $currency, duration: $duration, registerDate: $registerDate) {
+  mutation createPackage($userId: String!, $price: Float!, $currency: PackageCurrency!, $duration: PackageDuration!, $registerDate: String) {
+    createPackage(userId: $userId, price: $price, currency: $currency, duration: $duration, registerDate: $registerDate) {
       id
       user {
+        id
         username
         fullname
       }
@@ -276,10 +278,11 @@ export const CREATE_PACKAGE = gql`
 `;
 
 export const EDIT_PACKAGE = gql`
-  mutation editPackage($id: ID!, $user: String!, $price: Float!, $currency: PackageCurrency!, $duration: PackageDuration!, $registerDate: String) {
-    editPackage(id: $id, user: $user, price: $price, currency: $currency, duration: $duration, registerDate: $registerDate) {
+  mutation editPackage($id: ID!, $userId: String, $price: Float, $currency: PackageCurrency, $duration: PackageDuration, $registerDate: String) {
+    editPackage(id: $id, userId: $userId, price: $price, currency: $currency, duration: $duration, registerDate: $registerDate) {
       id
       user {
+        id
         username
         fullname
       }
