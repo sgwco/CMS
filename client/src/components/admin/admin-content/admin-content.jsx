@@ -33,7 +33,7 @@ const AdminContentComponent = ({ match }) => (
 
     <Route exact path={`${match.url}/package`} component={AdminContentPackageContainer} />
     <Route exact path={`${match.url}/package/add-new`} component={AdminContentPackageFormContainer} />
-    <Route exact path={`${match.url}/package/edit/:id`} render={props => <AdminContentPackageFormContainer {...props} isEditedPackage={true}  />} />
+    {/* <Route exact path={`${match.url}/package/edit/:id`} render={props => <AdminContentPackageFormContainer {...props} isEditedPackage={true}  />} /> */}
     
     <Route exact path={`${match.url}/user`} component={AdminContentUsersContainer} />
     <Route exact path={`${match.url}/user/add-new`} component={AdminContentUsersFormContainer} />

@@ -2,7 +2,7 @@ import React from 'react';
 import FontAwesome from '@fortawesome/react-fontawesome';
 import { Link, withRouter } from 'react-router-dom';
 import { compose, withHandlers, withProps } from 'recompose';
-import { Alert, Badge } from 'reactstrap';
+import { Alert, Badge, Button } from 'reactstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, { textFilter, selectFilter } from 'react-bootstrap-table2-filter';
 import moment from 'moment';
@@ -14,11 +14,12 @@ import {
   ContentHeaderTitleStyled,
   MarginLeftButtonStyled,
   FunctionWrapperStyled,
-  FunctionCell
+  FunctionItem
 } from '../../../shared/components';
 import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/contentContainer';
 import { BoxWrapper, BoxBody } from '../../../shared/boxWrapper';
 import { ALERT_STATUS, DURATION_TYPE, CURRENCY, PACKAGE_STATUS } from '../../../utils/enum';
+import { uppercaseObjectValue, getKeyAsString } from '../../../utils/utils';
 
 const durationFilter = {
   'MONTH_6': '6 Months',
@@ -70,13 +71,14 @@ const AdminContentPackageComponent = ({
 export default compose(
   withRouter,
   withHandlers({
-    functionFormatter: ({ match, onRemovePackage }) => (cell, row) => {
+    functionFormatter: ({ onRemovePackage, onUpgradePackage, onDeactivePackage }) => (cell, row) => {
       let functionCell = null;
       functionCell = (
         <FunctionWrapperStyled>
           <LoadingIndicator />
         </FunctionWrapperStyled>
       );
+
       if (typeof row.id === 'number' && row.id < 0) {
         functionCell = (
           <FunctionWrapperStyled>
@@ -85,7 +87,36 @@ export default compose(
         );
       }
       else {
-        functionCell = <FunctionCell url={`${match.url}/edit/${row.id}`} onDelete={() => onRemovePackage(row.id)} />;
+        functionCell = (
+          <FunctionWrapperStyled>
+            {/* <FunctionItem>
+              <Link to={`${match.url}/edit/${row.id}`}>
+                <Button color="warning">
+                  <FontAwesome icon='edit' className="text-white" />
+                </Button>
+              </Link>
+            </FunctionItem> */}
+            {row.duration === getKeyAsString(DURATION_TYPE.MONTH_6, DURATION_TYPE) && (
+              <FunctionItem>
+                <Button color="success" onClick={() => onUpgradePackage(row.id)}>
+                  <FontAwesome icon='arrow-circle-up' className="text-white" />
+                </Button>
+              </FunctionItem>
+            )}
+            {row.status === getKeyAsString(PACKAGE_STATUS.ACTIVE, PACKAGE_STATUS) && (
+              <FunctionItem>
+                <Button color="secondary" onClick={() => onDeactivePackage(row.id)}>
+                  <FontAwesome icon='money-bill-alt' className="text-white" />
+                </Button>
+              </FunctionItem>
+            )}
+            <FunctionItem>
+              <Button color="danger" onClick={() => onRemovePackage(row.id)}>
+                <FontAwesome icon='trash' className="text-white" />
+              </Button>
+            </FunctionItem>
+          </FunctionWrapperStyled>
+        );
       }
       
       return functionCell;
@@ -109,8 +140,8 @@ export default compose(
       { text: 'Currency', dataField: 'currency', filter: selectFilter({ options: CURRENCY }) },
       { text: 'Package Type', dataField: 'duration', filter: selectFilter({ options: durationFilter }), formatter: cell => DURATION_TYPE[cell] + ' Months' },
       { text: 'Register Date', dataField: 'registerDate', filter: textFilter({ delay: 0 }), formatter: cell => moment(cell).format('DD/MM/YYYY') },
-      { text: 'Status', dataField: 'status', filter: selectFilter({ options: PACKAGE_STATUS }), formatter: packageStatusFormatter },
-      { text: 'Function', dataField: '', headerClasses: 'function-column', formatter: functionFormatter }
+      { text: 'Status', dataField: 'status', filter: selectFilter({ options: uppercaseObjectValue(PACKAGE_STATUS) }), formatter: packageStatusFormatter },
+      { text: 'Function', dataField: '', formatter: functionFormatter }
     ]
   }))
 )(AdminContentPackageComponent);

@@ -4,16 +4,26 @@ import FontAwesome from '@fortawesome/react-fontawesome';
 import { Button } from 'reactstrap';
 import styled, { keyframes } from 'styled-components';
 
+export const FunctionItem = styled.span`
+  display: inline-block;
+  margin-left: 5px;
+  margin-right: 5px;
+`;
+
 export const FunctionCell = ({ url, onDelete }) => (
   <FunctionWrapperStyled>
-    <Link to={url}>
-      <Button color="warning">
-        <FontAwesome icon='edit' className="text-white" />
+    <FunctionItem>
+      <Link to={url}>
+        <Button color="warning">
+          <FontAwesome icon='edit' className="text-white" />
+        </Button>
+      </Link>
+    </FunctionItem>
+    <FunctionItem>
+      <Button color="danger" onClick={onDelete}>
+        <FontAwesome icon='trash' className="text-white" />
       </Button>
-    </Link>
-    <Button color="danger" onClick={onDelete}>
-      <FontAwesome icon='trash' className="text-white" />
-    </Button>
+    </FunctionItem>
   </FunctionWrapperStyled>
 );
 
@@ -83,7 +93,7 @@ export const MarginLeftButtonStyled = styled(Button)`
 
 export const FunctionWrapperStyled = styled.div`
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
 `;
 
 export const OpacityTextStyled = styled.div`

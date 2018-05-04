@@ -16,13 +16,14 @@ export const CURRENCY = {
 
 export const DURATION_TYPE = {
   MONTH_6: 6,
-  MONTH_12: 12
+  MONTH_12: 12,
+  MONTH_6_TRANSFER_12: 18
 };
 
 export const PACKAGE_STATUS = {
-  ACTIVE: 'Active',
-  PENDING: 'Pending',
-  EXPIRED: 'Expired'
+  ACTIVE: 'active',
+  PENDING: 'pending',
+  EXPIRED: 'expired'
 };
 
 export const roleCapabilities = {

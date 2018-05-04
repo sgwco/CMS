@@ -67,7 +67,7 @@ export const Mutation = {
         throw new GraphQLError('Duration cannot be null');
       }
 
-      const existPackages = await promiseQuery(`SELECT id FROM ${PREFIX}package WHERE user_id='${args.userId}'`);
+      const existPackages = await promiseQuery(`SELECT id FROM ${PREFIX}package WHERE user_id=${args.userId} and status=${PackageDuration.getValue('ACTIVE').value}`);
       if (existPackages.length > 0) {
         throw new GraphQLError(`Cannot create new package for this user due to the existance of ${existPackages.length} active package(s)`);
       }
@@ -107,7 +107,8 @@ export const Mutation = {
       price: { type: GraphQLFloat },
       currency: { type: PackageCurrency },
       duration: { type: PackageDuration },
-      registerDate: { type: GraphQLString }
+      registerDate: { type: GraphQLString },
+      status: { type: PackageStatus }
     },
     async resolve(source, args, context) {
       if (!context.payload) {

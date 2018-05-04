@@ -278,8 +278,8 @@ export const CREATE_PACKAGE = gql`
 `;
 
 export const EDIT_PACKAGE = gql`
-  mutation editPackage($id: ID!, $userId: String, $price: Float, $currency: PackageCurrency, $duration: PackageDuration, $registerDate: String) {
-    editPackage(id: $id, userId: $userId, price: $price, currency: $currency, duration: $duration, registerDate: $registerDate) {
+  mutation editPackage($id: ID!, $userId: String, $price: Float, $currency: PackageCurrency, $duration: PackageDuration, $registerDate: String, $status: PackageStatus) {
+    editPackage(id: $id, userId: $userId, price: $price, currency: $currency, duration: $duration, registerDate: $registerDate, status: $status) {
       id
       user {
         id
