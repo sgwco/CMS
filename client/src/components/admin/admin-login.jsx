@@ -7,7 +7,7 @@ import { BootstrapTextField } from '../../shared/formFields';
 import { requiredValidation } from '../../utils/validation';
 import logo from '../../assets/img/logo.png';
 import wallpaper from '../../assets/img/wallpaper.jpg';
-import { ALERT_STATUS } from '../../commons/enum';
+import { ALERT_STATUS } from '../../utils/enum';
 
 const AdminLoginComponent = ({
   onLogin,

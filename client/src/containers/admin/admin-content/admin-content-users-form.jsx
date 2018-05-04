@@ -5,7 +5,7 @@ import moment from 'moment';
 
 import AdminContentUsersFormComponent from '../../../components/admin/admin-content/admin-content-users-form';
 import { GET_ROLES, CREATE_USER, GET_FULL_USERS, EDIT_USER } from '../../../utils/graphql';
-import { ALERT_STATUS, USER_STATUS } from '../../../commons/enum';
+import { ALERT_STATUS, USER_STATUS } from '../../../utils/enum';
 
 export default compose(
   withApollo,

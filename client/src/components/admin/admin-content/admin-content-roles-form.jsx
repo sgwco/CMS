@@ -7,7 +7,7 @@ import _ from 'lodash';
 
 import { BootstrapTextField } from '../../../shared/formFields';
 import { requiredValidation } from '../../../utils/validation';
-import { ALERT_STATUS, roleCapabilities } from '../../../commons/enum';
+import { ALERT_STATUS, roleCapabilities } from '../../../utils/enum';
 import Breadcrumb from '../../../shared/breadcrumb';
 import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/contentContainer';
 import { BoxWrapper, BoxBody, BoxFooter } from '../../../shared/boxWrapper';

@@ -2,9 +2,11 @@ import React from 'react';
 import FontAwesome from '@fortawesome/react-fontawesome';
 import { Link, withRouter } from 'react-router-dom';
 import { compose, withHandlers, withProps } from 'recompose';
-import { Alert } from 'reactstrap';
+import { Alert, Badge } from 'reactstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
-import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
+import filterFactory, { textFilter, selectFilter } from 'react-bootstrap-table2-filter';
+import moment from 'moment';
+import _ from 'lodash';
 
 import Breadcrumb from '../../../shared/breadcrumb';
 import {
@@ -16,7 +18,12 @@ import {
 } from '../../../shared/components';
 import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/contentContainer';
 import { BoxWrapper, BoxBody } from '../../../shared/boxWrapper';
-import { ALERT_STATUS } from '../../../commons/enum';
+import { ALERT_STATUS, DURATION_TYPE, CURRENCY, PACKAGE_STATUS } from '../../../utils/enum';
+
+const durationFilter = {
+  'MONTH_6': '6 Months',
+  'MONTH_12': '12 Months'
+};
 
 const AdminContentPackageComponent = ({
   match,
@@ -82,13 +89,27 @@ export default compose(
       }
       
       return functionCell;
+    },
+    packageStatusFormatter: () => cell => {
+      const cellFormatted = _.startCase(_.toLower(cell));
+      const COLOR_TYPE = {
+        ACTIVE: 'success',
+        PENDING: 'secondary',
+        EXPIRED: 'warning'
+      };
+      const badge = <h4><Badge color={COLOR_TYPE[cell]}>{cellFormatted}</Badge></h4>;
+      return badge;
     }
   }),
-  withProps(({ functionFormatter }) => ({
+  withProps(({ functionFormatter, packageStatusFormatter }) => ({
     tableHeaders: [
-      { text: 'Package Name', dataField: 'name', filter: textFilter({ delay: 0 }) },
-      { text: 'Price', dataField: 'price', filter: textFilter({ delay: 0 }) },
-      { text: 'Interest Rate', dataField: 'interestRate' },
+      { text: 'Username', dataField: 'user.username', filter: textFilter({ delay: 0 }) },
+      { text: 'Fullname', dataField: 'user.fullname', filter: textFilter({ delay: 0 }), formatter: cell => cell || '—' },
+      { text: 'Package Price', dataField: 'price', filter: textFilter({ delay: 0 }) },
+      { text: 'Currency', dataField: 'currency', filter: selectFilter({ options: CURRENCY }) },
+      { text: 'Package Type', dataField: 'duration', filter: selectFilter({ options: durationFilter }), formatter: cell => DURATION_TYPE[cell] + ' Months' },
+      { text: 'Register Date', dataField: 'registerDate', filter: textFilter({ delay: 0 }), formatter: cell => moment(cell).format('DD/MM/YYYY') },
+      { text: 'Status', dataField: 'status', filter: selectFilter({ options: PACKAGE_STATUS }), formatter: packageStatusFormatter },
       { text: 'Function', dataField: '', headerClasses: 'function-column', formatter: functionFormatter }
     ]
   }))

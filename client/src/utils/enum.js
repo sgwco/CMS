@@ -19,6 +19,12 @@ export const DURATION_TYPE = {
   MONTH_12: 12
 };
 
+export const PACKAGE_STATUS = {
+  ACTIVE: 'Active',
+  PENDING: 'Pending',
+  EXPIRED: 'Expired'
+};
+
 export const roleCapabilities = {
   read_user: { title: 'Read users', value: Math.pow(2, 0) },
   write_user: { title: 'Write users', value: Math.pow(2, 1) },

@@ -246,6 +246,7 @@ export const GET_ALL_PACKAGES = gql`
   packages {
     id
     user {
+      username
       fullname
     }
     price
@@ -262,6 +263,7 @@ export const CREATE_PACKAGE = gql`
     createPackage(user: $user, price: $price, currency: $currency, duration: $duration, registerDate: $registerDate) {
       id
       user {
+        username
         fullname
       }
       price
@@ -274,12 +276,18 @@ export const CREATE_PACKAGE = gql`
 `;
 
 export const EDIT_PACKAGE = gql`
-  mutation editPackage($id: ID!, $name: String, $price: Float, $interestRate: Float) {
-    editPackage(id: $id, name: $name, price: $price, interestRate: $interestRate) {
+  mutation editPackage($id: ID!, $user: String!, $price: Float!, $currency: PackageCurrency!, $duration: PackageDuration!, $registerDate: String) {
+    editPackage(id: $id, user: $user, price: $price, currency: $currency, duration: $duration, registerDate: $registerDate) {
       id
-      name
+      user {
+        username
+        fullname
+      }
       price
-      interestRate
+      currency
+      duration
+      registerDate
+      status
     }
   }
 `;
@@ -288,44 +296,6 @@ export const REMOVE_PACKAGE = gql`
   mutation removePackage($id: ID!) {
     removePackage(id: $id)
   }
-`;
-
-export const GET_ALL_SUBSCRIPTIONS = gql`
-{
-  subscriptions {
-    id
-    user_id {
-      id
-      username
-    }
-    package_id {
-      id
-      name
-    }
-    duration
-    subscribeDate
-    status
-  }
-}
-`;
-
-export const GET_ACTIVE_SUBSCRIPTION = gql`
-{
-  activeSubscription {
-    id
-    user_id {
-      id
-      username
-    }
-    package_id {
-      id
-      name
-    }
-    duration
-    subscribeDate
-    status
-  }
-}
 `;
 
 export const LOGIN = gql`

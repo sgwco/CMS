@@ -16,7 +16,7 @@ import {
 } from '../../../shared/components';
 import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/contentContainer';
 import { BoxWrapper, BoxBody } from '../../../shared/boxWrapper';
-import { ALERT_STATUS } from '../../../commons/enum';
+import { ALERT_STATUS } from '../../../utils/enum';
 
 const AdminContentSubscriptionComponent = ({
   match,

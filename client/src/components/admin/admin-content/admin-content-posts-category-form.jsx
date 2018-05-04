@@ -2,7 +2,7 @@ import React from 'react';
 import { Form as BootstrapForm, Alert, Row, Col, Button } from 'reactstrap';
 import { Form } from 'react-form';
 
-import { ALERT_STATUS } from '../../../commons/enum';
+import { ALERT_STATUS } from '../../../utils/enum';
 import { requiredValidation } from '../../../utils/validation';
 import Breadcrumb from '../../../shared/breadcrumb';
 import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/contentContainer';

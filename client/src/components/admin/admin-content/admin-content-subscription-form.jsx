@@ -5,7 +5,7 @@ import { compose, withHandlers } from 'recompose';
 
 import { BootstrapSelectField } from '../../../shared/formFields';
 import { requiredValidation } from '../../../utils/validation';
-import { ALERT_STATUS } from '../../../commons/enum';
+import { ALERT_STATUS } from '../../../utils/enum';
 import Breadcrumb from '../../../shared/breadcrumb';
 import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/contentContainer';
 import { BoxWrapper, BoxBody, BoxFooter } from '../../../shared/boxWrapper';

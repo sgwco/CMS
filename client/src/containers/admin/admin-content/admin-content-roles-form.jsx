@@ -3,9 +3,9 @@ import { withRouter } from 'react-router-dom';
 import { graphql, withApollo } from 'react-apollo';
 
 import { CREATE_ROLE, EDIT_ROLE, GET_ROLES } from '../../../utils/graphql';
-import { ALERT_STATUS } from '../../../commons/enum';
+import { ALERT_STATUS } from '../../../utils/enum';
 import AdminContentRolesFormComponent from '../../../components/admin/admin-content/admin-content-roles-form';
-import { roleCapabilities } from '../../../commons/enum';
+import { roleCapabilities } from '../../../utils/enum';
 
 function checkRoleAllowed(permission, role) {
   return permission & role;

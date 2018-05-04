@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 
 import AdminLoginContainer from '../../components/admin/admin-login';
 import { LOGIN } from '../../utils/graphql';
-import { ALERT_STATUS } from '../../commons/enum';
+import { ALERT_STATUS } from '../../utils/enum';
 
 export default compose(
   graphql(LOGIN, { name: 'loginApi' }),

@@ -6,7 +6,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import styled from 'styled-components';
 import { withProps, compose, withHandlers } from 'recompose';
 
-import { ALERT_STATUS, roleCapabilities } from '../../../commons/enum';
+import { ALERT_STATUS, roleCapabilities } from '../../../utils/enum';
 import Breadcrumb from '../../../shared/breadcrumb';
 import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/contentContainer';
 import { BoxWrapper, BoxBody } from '../../../shared/boxWrapper';

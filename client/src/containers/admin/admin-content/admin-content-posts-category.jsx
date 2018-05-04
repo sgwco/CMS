@@ -2,7 +2,7 @@ import { compose, withProps, withState, withStateHandlers, withHandlers } from '
 import { graphql } from 'react-apollo';
 
 import AdminContentPostsCategoryComponent from '../../../components/admin/admin-content/admin-content-posts-category';
-import { ALERT_STATUS } from '../../../commons/enum';
+import { ALERT_STATUS } from '../../../utils/enum';
 import { GET_FULL_CATEGORIES, REMOVE_CATEGORY } from '../../../utils/graphql';
 export default compose(
   graphql(GET_FULL_CATEGORIES, { name: 'getCategories' }),

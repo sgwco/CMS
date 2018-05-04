@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { graphql, withApollo } from 'react-apollo';
 
 import { EDIT_PACKAGE, GET_ALL_PACKAGES, CREATE_PACKAGE, GET_FULL_USERS } from '../../../utils/graphql';
-import { ALERT_STATUS } from '../../../commons/enum';
+import { ALERT_STATUS } from '../../../utils/enum';
 import AdminContentPackageFormComponent from '../../../components/admin/admin-content/admin-content-package-form';
 
 export default compose(
@@ -42,8 +42,6 @@ export default compose(
           duration,
           registerDate
         };
-
-        console.log(variables);
     
         if (isEditedPackage) {
           variables.id = match.params.id;

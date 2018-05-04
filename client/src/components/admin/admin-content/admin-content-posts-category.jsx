@@ -7,7 +7,7 @@ import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/co
 import { FunctionCell, ContentHeaderTitleStyled, MarginLeftButtonStyled, FunctionWrapperStyled, LoadingIndicator } from '../../../shared/components';
 import { BoxWrapper, BoxBody } from '../../../shared/boxWrapper';
 import { Breadcrumb, Alert } from 'reactstrap';
-import { ALERT_STATUS } from '../../../commons/enum';
+import { ALERT_STATUS } from '../../../utils/enum';
 import FontAwesome from '@fortawesome/react-fontawesome';
 // import SortableTree from 'react-sortable-tree';
 // import 'react-sortable-tree/style.css';

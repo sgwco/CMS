@@ -98,7 +98,7 @@ export const Mutation = {
     type: Package,
     args: {
       id: { type: GraphQLNonNull(GraphQLID) },
-      userId: { type: GraphQLString },
+      user: { type: GraphQLString },
       price: { type: GraphQLFloat },
       currency: { type: PackageCurrency },
       duration: { type: PackageDuration },

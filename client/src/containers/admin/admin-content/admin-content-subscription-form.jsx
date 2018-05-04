@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { graphql, withApollo } from 'react-apollo';
 
 import { EDIT_SUBSCRIPTION, CREATE_SUBSCRIPTION, GET_ALL_SUBSCRIPTIONS, GET_FULL_USERS, GET_ALL_PACKAGES } from '../../../utils/graphql';
-import { ALERT_STATUS } from '../../../commons/enum';
+import { ALERT_STATUS } from '../../../utils/enum';
 import AdminContentSubscriptionFormContainer from '../../../components/admin/admin-content/admin-content-subscription-form';
 
 export default compose(

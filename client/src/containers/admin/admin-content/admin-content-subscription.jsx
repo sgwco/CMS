@@ -3,7 +3,7 @@ import { graphql } from 'react-apollo';
 
 import AdminContentSubscriptionComponent from '../../../components/admin/admin-content/admin-content-subscription';
 import AdminContentSubscriptionMemberComponent from '../../../components/admin/admin-content/admin-content-subscription-member';
-import { ALERT_STATUS, roleCapabilities } from '../../../commons/enum';
+import { ALERT_STATUS, roleCapabilities } from '../../../utils/enum';
 import { GET_ALL_SUBSCRIPTIONS, REMOVE_SUBSCRIPTION, GET_USER_TOKEN, GET_ACTIVE_SUBSCRIPTION } from '../../../utils/graphql';
 
 export default compose(

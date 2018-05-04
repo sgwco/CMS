@@ -6,7 +6,7 @@ import moment from 'moment';
 
 import { BootstrapTextField, BootstrapSelectField, BootstrapDatepickerField } from '../../../shared/formFields';
 import { requiredValidation, numberValidation } from '../../../utils/validation';
-import { ALERT_STATUS, CURRENCY, DURATION_TYPE } from '../../../commons/enum';
+import { ALERT_STATUS, CURRENCY, DURATION_TYPE } from '../../../utils/enum';
 import Breadcrumb from '../../../shared/breadcrumb';
 import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/contentContainer';
 import { BoxWrapper, BoxBody, BoxFooter } from '../../../shared/boxWrapper';

@@ -7,7 +7,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, { textFilter, selectFilter } from 'react-bootstrap-table2-filter';
 import { compose, withHandlers, withProps } from 'recompose';
 
-import { ALERT_STATUS } from '../../../commons/enum';
+import { ALERT_STATUS } from '../../../utils/enum';
 import { BoxWrapper, BoxBody } from '../../../shared/boxWrapper';
 import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/contentContainer';
 import { FunctionCell, ContentHeaderTitleStyled, MarginLeftButtonStyled, FunctionWrapperStyled, LoadingIndicator } from '../../../shared/components';

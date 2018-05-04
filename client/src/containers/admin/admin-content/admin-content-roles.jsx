@@ -3,7 +3,7 @@ import { compose, withHandlers, withStateHandlers, withProps, withState } from '
 
 import AdminContentRolesComponent from '../../../components/admin/admin-content/admin-content-roles';
 import { GET_ROLES, REMOVE_ROLE } from '../../../utils/graphql';
-import { ALERT_STATUS } from '../../../commons/enum';
+import { ALERT_STATUS } from '../../../utils/enum';
 
 export default compose(
   graphql(GET_ROLES(['id', 'name', 'accessPermission']), { name: 'getRoles' }),

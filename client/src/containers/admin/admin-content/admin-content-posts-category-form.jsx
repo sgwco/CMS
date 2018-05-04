@@ -1,7 +1,7 @@
 import { compose, branch, withProps, withState, withStateHandlers, withHandlers } from 'recompose';
 import { graphql, withApollo } from 'react-apollo';
 
-import { ALERT_STATUS } from '../../../commons/enum';
+import { ALERT_STATUS } from '../../../utils/enum';
 import AdminContentPostsCategoryFormComponent from '../../../components/admin/admin-content/admin-content-posts-category-form';
 
 import { CREATE_CATEGORY, EDIT_CATEGORY, GET_FULL_CATEGORIES } from '../../../utils/graphql';

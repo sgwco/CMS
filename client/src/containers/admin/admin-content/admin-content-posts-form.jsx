@@ -2,7 +2,7 @@ import { compose, branch, withProps, withState, withStateHandlers, withHandlers 
 import { graphql, withApollo } from 'react-apollo';
 import moment from 'moment';
 
-import { ALERT_STATUS } from '../../../commons/enum';
+import { ALERT_STATUS } from '../../../utils/enum';
 import AdminContentPostsFormComponent from '../../../components/admin/admin-content/admin-content-posts-form';
 
 import { CREATE_POST, EDIT_POST, GET_FULL_POSTS, GET_FULL_USERS, GET_FULL_CATEGORIES } from '../../../utils/graphql';

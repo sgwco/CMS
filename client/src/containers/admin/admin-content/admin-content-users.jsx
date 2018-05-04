@@ -2,7 +2,7 @@ import { compose, withHandlers, withState, withStateHandlers, withProps } from '
 import { graphql } from 'react-apollo';
 
 import AdminContentUsersComponent from '../../../components/admin/admin-content/admin-content-users';
-import { ALERT_STATUS } from '../../../commons/enum';
+import { ALERT_STATUS } from '../../../utils/enum';
 import { GET_FULL_USERS, REMOVE_USER } from '../../../utils/graphql';
 
 export default compose(
