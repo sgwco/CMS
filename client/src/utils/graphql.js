@@ -255,6 +255,13 @@ export const GET_ALL_PACKAGES = gql`
     duration
     registerDate
     status
+    transferMoney {
+      id
+      amount
+      interestRate
+      date
+      status
+    }
   }
 }
 `;

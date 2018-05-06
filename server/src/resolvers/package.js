@@ -9,9 +9,9 @@ export const Query = {
   packages: {
     type: new GraphQLList(Package),
     async resolve(source, args, { payload }) {
-      // if (!payload) {
-      //   throw new GraphQLError('Unauthorized');
-      // }
+      if (!payload) {
+        throw new GraphQLError('Unauthorized');
+      }
 
       return await promiseQuery(`SELECT * FROM ${PREFIX}package`);
     }

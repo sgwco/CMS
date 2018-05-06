@@ -19,10 +19,11 @@ export default compose(
   withState('alertVisible', 'setAlert', ALERT_STATUS.HIDDEN),
   withState('alertContent', 'setAlertContent', ''),
   withStateHandlers(
-    ({ detailModalVisible = false }) => ({ detailModalVisible }),
+    ({ detailModalVisible = false, selectedPackage = {} }) => ({ detailModalVisible, selectedPackage }),
     {
       removeAlert: () => () => ({ alertVisible: ALERT_STATUS.HIDDEN }),
-      toggleDetailModal: ({ detailModalVisible }) => () => ({ detailModalVisible: !detailModalVisible })
+      toggleDetailModal: () => (selectedPackage = {}) =>
+        ({ detailModalVisible: Object.keys(selectedPackage).length > 0, selectedPackage })
     }
   ),
   withHandlers({
@@ -55,7 +56,7 @@ export default compose(
         }
       }
     },
-    onDeactivePackage: ({ editPackage, setAlertContent, setAlert }) => async id => {
+    onDeactivePackage: ({ editPackage, setAlertContent, setAlert, toggleDetailModal }) => async id => {
       const result = confirm('Do you want to withdraw this package?');
       if (result) {
         try {
@@ -85,6 +86,39 @@ export default compose(
           setAlert(ALERT_STATUS.ERROR);
         }
       }
+      toggleDetailModal();
+    },
+    onActivePackage: ({ editPackage, setAlertContent, setAlert, toggleDetailModal }) => async id => {
+      const result = confirm('Do you want to active this package?');
+      if (result) {
+        try {
+          await editPackage({
+            variables: {
+              id,
+              status: getKeyAsString(PACKAGE_STATUS.ACTIVE, PACKAGE_STATUS)
+            },
+            update(cache, { data: { editPackage } }) {
+              try {
+                const { packages } = cache.readQuery({ query: GET_ALL_PACKAGES });
+                const index = packages.findIndex(item => item.id === id);
+                packages[index] = editPackage;
+                cache.writeQuery({ query: GET_ALL_PACKAGES, data: { packages } });
+              }
+              catch (e) {
+                // Nothing here
+              }
+            }
+          });
+
+          setAlertContent('Active package successfully');
+          setAlert(ALERT_STATUS.SUCCESS);
+        }
+        catch (e) {
+          setAlertContent('Error: ' + e.graphQLErrors[0].message);
+          setAlert(ALERT_STATUS.ERROR);
+        }
+      }
+      toggleDetailModal();
     },
     onUpgradePackage: ({ editPackage, setAlertContent, setAlert }) => async id => {
       const result = confirm('Do you want to upgrade this package duration to 12 months?');

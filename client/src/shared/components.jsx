@@ -108,12 +108,15 @@ const CardViewWrapperStyled = styled.div`
   border-left: 4px solid ${props => props.color};
   box-shadow: 0px 5px 5px rgba(0,0,0,0.4);
   border-radius: 2px;
+  margin-bottom: 20px;
 `;
 
 const CardViewIconStyled = styled(FontAwesome)`
   color: ${props => props.color};
   font-size: 2rem;
   margin-left: 20px;
+  display: block;
+  width: 40px !important;
 `;
 
 const CardViewTextStyled = styled.div`
@@ -142,8 +145,10 @@ export const CardViewListStyled = ({ color, icon, label, buttonIcon, buttonFunc,
       <CardViewTextLabel>{label}</CardViewTextLabel>
       {children}
     </CardViewTextStyled>
-    <CardViewButtonStyled onClick={buttonFunc} color={color}>
-      <FontAwesome icon={buttonIcon} />
-    </CardViewButtonStyled>
+    {buttonFunc && (
+      <CardViewButtonStyled onClick={buttonFunc} color={color}>
+        <FontAwesome icon={buttonIcon} />
+      </CardViewButtonStyled>
+    )}
   </CardViewWrapperStyled>
 );
