@@ -1,4 +1,4 @@
-import { compose, withHandlers, withState, withStateHandlers, lifecycle } from 'recompose';
+import { compose, withHandlers, withState, lifecycle } from 'recompose';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 
@@ -11,12 +11,8 @@ export default compose(
   withRouter,
   withState('alertVisible', 'setAlert', ALERT_STATUS.HIDDEN),
   withState('alertContent', 'setAlertContent', ''),
-  withStateHandlers(
-    null,
-    {
-      removeAlert: () => () => ({ alertVisible: ALERT_STATUS.HIDDEN }),
-    }),
   withHandlers({
+    removeAlert: ({ setAlert }) => () => setAlert(ALERT_STATUS.HIDDEN),
     onLogin: ({ loginApi, setAlertContent, setAlert }) => async ({ username, password }) => {
       const variables = {
         username,
