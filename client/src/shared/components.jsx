@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import FontAwesome from '@fortawesome/react-fontawesome';
 import { Button } from 'reactstrap';
 import styled, { keyframes } from 'styled-components';
+import { chooseBlackOrWhiteDependOnHex } from '../utils/utils';
 
 export const FunctionItem = styled.span`
   display: inline-block;
@@ -99,3 +100,49 @@ export const FunctionWrapperStyled = styled.div`
 export const OpacityTextStyled = styled.div`
   opacity: 0.4;
 `;
+
+const CardViewWrapperStyled = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-left: 4px solid ${props => props.color};
+  box-shadow: 0px 5px 5px rgba(0,0,0,0.4);
+  border-radius: 2px;
+`;
+
+const CardViewIconStyled = styled(FontAwesome)`
+  color: ${props => props.color};
+  font-size: 2rem;
+  margin-left: 20px;
+`;
+
+const CardViewTextStyled = styled.div`
+  padding: 10px 20px;
+`;
+
+const CardViewTextLabel = styled.div`
+  color: rgba(0, 0, 0, 0.5);
+`;
+
+const CardViewButtonStyled = styled.button`
+  margin-left: auto;
+  background-color: ${props => props.color};
+  align-self: stretch;
+  width: 80px;
+  border: none;
+  font-size: 2rem;
+  color: ${props => chooseBlackOrWhiteDependOnHex(props.color)};
+`;
+
+export const CardViewListStyled = ({ color, icon, label, text, buttonIcon, buttonFunc }) => (
+  <CardViewWrapperStyled color={color}>
+    <CardViewIconStyled icon={icon} color={color} />
+    <CardViewTextStyled>
+      <CardViewTextLabel>{label}</CardViewTextLabel>
+      <h5>{text}</h5>
+    </CardViewTextStyled>
+    <CardViewButtonStyled onClick={buttonFunc} color={color}>
+      <FontAwesome icon={buttonIcon} />
+    </CardViewButtonStyled>
+  </CardViewWrapperStyled>
+);

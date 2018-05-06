@@ -2,7 +2,7 @@ import React from 'react';
 import FontAwesome from '@fortawesome/react-fontawesome';
 import { Link, withRouter } from 'react-router-dom';
 import { compose, withHandlers, withProps } from 'recompose';
-import { Alert, Badge, Button } from 'reactstrap';
+import { Alert, Badge, Button, Modal, ModalHeader, ModalBody } from 'reactstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, { textFilter, selectFilter } from 'react-bootstrap-table2-filter';
 import moment from 'moment';
@@ -14,7 +14,8 @@ import {
   ContentHeaderTitleStyled,
   MarginLeftButtonStyled,
   FunctionWrapperStyled,
-  FunctionItem
+  FunctionItem,
+  CardViewListStyled
 } from '../../../shared/components';
 import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/contentContainer';
 import { BoxWrapper, BoxBody } from '../../../shared/boxWrapper';
@@ -33,7 +34,9 @@ const AdminContentPackageComponent = ({
   alertVisible,
   removeAlert,
   tableHeaders,
-  getPackages: { packages = [] }
+  getPackages: { packages = [] },
+  detailModalVisible,
+  toggleDetailModal
 }) => (
   <ContentContainer>
     <ContentHeader>
@@ -62,6 +65,18 @@ const AdminContentPackageComponent = ({
             striped
             hover
           />
+          <Modal isOpen={detailModalVisible} toggle={toggleDetailModal}>
+            <ModalHeader toggle={toggleDetailModal}>Package detail</ModalHeader>
+            <ModalBody>
+              <CardViewListStyled
+                color='#e74c3c'
+                icon='user'
+                label='User'
+                text='Son Vo-Hoai'
+                buttonIcon='user'
+              />
+            </ModalBody>
+          </Modal>
         </BoxBody>
       </BoxWrapper>
     </ContentBody>
@@ -71,7 +86,7 @@ const AdminContentPackageComponent = ({
 export default compose(
   withRouter,
   withHandlers({
-    functionFormatter: ({ onRemovePackage, onUpgradePackage, onDeactivePackage }) => (cell, row) => {
+    functionFormatter: ({ onRemovePackage, onUpgradePackage, onDeactivePackage, toggleDetailModal }) => (cell, row) => {
       let functionCell = null;
       functionCell = (
         <FunctionWrapperStyled>
@@ -96,6 +111,11 @@ export default compose(
                 </Button>
               </Link>
             </FunctionItem> */}
+            <FunctionItem>
+              <Button color="info" onClick={toggleDetailModal}>
+                <FontAwesome icon='eye' />
+              </Button>
+            </FunctionItem>
             {row.duration === getKeyAsString(DURATION_TYPE.MONTH_6, DURATION_TYPE) && (
               <FunctionItem>
                 <Button color="success" onClick={() => onUpgradePackage(row.id)}>
@@ -134,12 +154,12 @@ export default compose(
   }),
   withProps(({ functionFormatter, packageStatusFormatter }) => ({
     tableHeaders: [
-      { text: 'Username', dataField: 'user.username', filter: textFilter({ delay: 0 }) },
-      { text: 'Fullname', dataField: 'user.fullname', filter: textFilter({ delay: 0 }), formatter: cell => cell || '—' },
-      { text: 'Package Price', dataField: 'price', filter: textFilter({ delay: 0 }) },
+      { text: 'Username', dataField: 'user.username', filter: textFilter({ delay: 0 }), sort: true },
+      { text: 'Fullname', dataField: 'user.fullname', filter: textFilter({ delay: 0 }), formatter: cell => cell || '—', sort: true },
+      { text: 'Package Price', dataField: 'price', filter: textFilter({ delay: 0 }), sort: true },
       { text: 'Currency', dataField: 'currency', filter: selectFilter({ options: CURRENCY }) },
       { text: 'Package Type', dataField: 'duration', filter: selectFilter({ options: durationFilter }), formatter: cell => DURATION_TYPE[cell] + ' Months' },
-      { text: 'Register Date', dataField: 'registerDate', filter: textFilter({ delay: 0 }), formatter: cell => moment(cell).format('DD/MM/YYYY') },
+      { text: 'Register Date', dataField: 'registerDate', filter: textFilter({ delay: 0 }), formatter: cell => moment(cell).format('DD/MM/YYYY'), sort: true },
       { text: 'Status', dataField: 'status', filter: selectFilter({ options: uppercaseObjectValue(PACKAGE_STATUS) }), formatter: packageStatusFormatter },
       { text: 'Function', dataField: '', formatter: functionFormatter }
     ]

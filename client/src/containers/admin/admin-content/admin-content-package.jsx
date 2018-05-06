@@ -19,9 +19,10 @@ export default compose(
   withState('alertVisible', 'setAlert', ALERT_STATUS.HIDDEN),
   withState('alertContent', 'setAlertContent', ''),
   withStateHandlers(
-    null,
+    ({ detailModalVisible = false }) => ({ detailModalVisible }),
     {
       removeAlert: () => () => ({ alertVisible: ALERT_STATUS.HIDDEN }),
+      toggleDetailModal: ({ detailModalVisible }) => () => ({ detailModalVisible: !detailModalVisible })
     }
   ),
   withHandlers({
