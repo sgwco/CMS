@@ -92,22 +92,20 @@ export const Mutation = {
         '12': { interestRate: 8, step: 4 }
       }
 
-      for (const duration in transferMoneyProgresses) {
-        const duration = transferMoneyProgresses[args.duration];
-        let paymentDate = moment(registerDate, 'YYYY-MM-DD');
+      const duration = transferMoneyProgresses[args.duration];
+      let paymentDate = moment(registerDate, 'YYYY-MM-DD');
 
-        for (let index = 0; index < duration.step; index += 1) {
-          const progressId = uuid.v1();
-          paymentDate = paymentDate.add(30, 'days');
-          await promiseQuery(`INSERT INTO ${PREFIX}package_progress VALUES (
-            '${progressId}',
-            '${id}',
-            '${args.price * duration.interestRate / 100}',
-            '${duration.interestRate}',
-            '${paymentDate.format('YYYY-MM-DD')}',
-            false
-          )`);
-        }
+      for (let index = 0; index < duration.step; index += 1) {
+        const progressId = uuid.v1();
+        paymentDate = paymentDate.add(30, 'days');
+        await promiseQuery(`INSERT INTO ${PREFIX}package_progress VALUES (
+          '${progressId}',
+          '${id}',
+          '${args.price * duration.interestRate / 100}',
+          '${duration.interestRate}',
+          '${paymentDate.format('YYYY-MM-DD')}',
+          false
+        )`);
       }
       
       return {

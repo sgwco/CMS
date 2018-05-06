@@ -121,6 +121,7 @@ const CardViewIconStyled = styled(FontAwesome)`
 
 const CardViewTextStyled = styled.div`
   padding: 10px 20px;
+  width: 100%;
 `;
 
 const CardViewTextLabel = styled.div`

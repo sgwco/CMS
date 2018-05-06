@@ -52,6 +52,7 @@
     "promise": "8.0.1",
     "prop-types": "^15.6.1",
     "raf": "3.4.0",
+    "rc-steps": "^3.1.1",
     "react": "^16.2.0",
     "react-apollo": "^2.1.1",
     "react-bootstrap-table-next": "^0.1.6",

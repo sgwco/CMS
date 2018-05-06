@@ -21,6 +21,7 @@ import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/co
 import { BoxWrapper, BoxBody } from '../../../shared/boxWrapper';
 import { ALERT_STATUS, DURATION_TYPE, CURRENCY, PACKAGE_STATUS } from '../../../utils/enum';
 import { uppercaseObjectValue, getKeyAsString } from '../../../utils/utils';
+import ProgressDot from '../../../commons/progress-dot';
 
 const durationFilter = {
   'MONTH_6': '6 Months',
@@ -70,7 +71,7 @@ const AdminContentPackageComponent = ({
             hover
           />
           {detailModalVisible && (
-            <Modal isOpen={detailModalVisible} toggle={() => toggleDetailModal()}>
+            <Modal isOpen={detailModalVisible} toggle={() => toggleDetailModal()} size="lg">
               <ModalHeader toggle={() => toggleDetailModal()}>Package detail</ModalHeader>
               <ModalBody>
                 {console.log(selectedPackage)}
@@ -112,6 +113,9 @@ const AdminContentPackageComponent = ({
                   }
                 >
                   {_.startCase(_.toLower(selectedPackage.status))}
+                </CardViewListStyled>
+                <CardViewListStyled color='#00b894' icon='spinner' label='Progress'>
+                  <ProgressDot transferMoneyItems={selectedPackage.transferMoney} />
                 </CardViewListStyled>
               </ModalBody>
             </Modal>
