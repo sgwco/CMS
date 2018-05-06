@@ -120,6 +120,7 @@ export async function initDatabase(conn) {
       interest_rate INT UNSIGNED NOT NULL,
       date DATE NOT NULL,
       status BOOLEAN NOT NULL,
+      withdraw_date DATE,
       CONSTRAINT FK_PACKAGE_PROGRESS FOREIGN KEY (package_id) REFERENCES ${PREFIX}package(id) ON DELETE CASCADE ON UPDATE CASCADE
     )`);
   });

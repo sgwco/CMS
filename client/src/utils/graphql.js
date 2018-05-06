@@ -260,7 +260,8 @@ export const GET_ALL_PACKAGES = gql`
       amount
       interestRate
       date
-      status
+      status,
+      withdrawDate
     }
   }
 }
@@ -298,6 +299,14 @@ export const EDIT_PACKAGE = gql`
       duration
       registerDate
       status
+      transferMoney {
+        id
+        amount
+        interestRate
+        date
+        status
+        withdrawDate
+      }
     }
   }
 `;
@@ -305,6 +314,32 @@ export const EDIT_PACKAGE = gql`
 export const REMOVE_PACKAGE = gql`
   mutation removePackage($id: ID!) {
     removePackage(id: $id)
+  }
+`;
+
+export const EDIT_PACKAGE_PROGRESS = gql`
+  mutation editPackageProgress($id: ID!, $amount: Float, $interestRate: Int, $date: String, $status: Boolean, $withdrawDate: String) {
+    editPackageProgress(id: $id, amount: $amount, interestRate: $interestRate, date: $date, status: $status, withdrawDate: $withdrawDate) {
+      id
+      user {
+        id
+        username
+        fullname
+      }
+      price
+      currency
+      duration
+      registerDate
+      status
+      transferMoney {
+        id
+        amount
+        interestRate
+        date
+        status
+        withdrawDate
+      }
+    }
   }
 `;
 

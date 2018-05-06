@@ -20,13 +20,8 @@ import {
 import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/contentContainer';
 import { BoxWrapper, BoxBody } from '../../../shared/boxWrapper';
 import { ALERT_STATUS, DURATION_TYPE, CURRENCY, PACKAGE_STATUS } from '../../../utils/enum';
-import { uppercaseObjectValue, getKeyAsString } from '../../../utils/utils';
-import ProgressDot from '../../../commons/progress-dot';
-
-const durationFilter = {
-  'MONTH_6': '6 Months',
-  'MONTH_12': '12 Months'
-};
+import { uppercaseObjectValue, getKeyAsString, concatObjectEnum } from '../../../utils/utils';
+import ProgressDot from '../../../shared/progress-dot';
 
 const AdminContentPackageComponent = ({
   match,
@@ -41,7 +36,8 @@ const AdminContentPackageComponent = ({
   toggleDetailModal,
   onUpgradePackage,
   onActivePackage,
-  onDeactivePackage
+  onDeactivePackage,
+  onWithdraw
 }) => (
   <ContentContainer>
     <ContentHeader>
@@ -74,7 +70,6 @@ const AdminContentPackageComponent = ({
             <Modal isOpen={detailModalVisible} toggle={() => toggleDetailModal()} size="lg">
               <ModalHeader toggle={() => toggleDetailModal()}>Package detail</ModalHeader>
               <ModalBody>
-                {console.log(selectedPackage)}
                 <CardViewListStyled color='#e74c3c' icon='user' label='User'>
                   {selectedPackage.user.username + (selectedPackage.user.fullname && ` (${selectedPackage.user.fullname})`)}
                 </CardViewListStyled>
@@ -91,6 +86,7 @@ const AdminContentPackageComponent = ({
                   buttonIcon='arrow-circle-up'
                   buttonFunc={
                     (selectedPackage.duration === getKeyAsString(DURATION_TYPE.MONTH_6, DURATION_TYPE) &&
+                    selectedPackage.status === getKeyAsString(PACKAGE_STATUS.ACTIVE, PACKAGE_STATUS) &&
                     moment().diff(moment(selectedPackage.registerDate), 'months') >= 4 &&
                     moment().diff(moment(selectedPackage.registerDate), 'months') <= 5) ? () => onUpgradePackage(selectedPackage.id) : null
                   }
@@ -114,9 +110,11 @@ const AdminContentPackageComponent = ({
                 >
                   {_.startCase(_.toLower(selectedPackage.status))}
                 </CardViewListStyled>
-                <CardViewListStyled color='#00b894' icon='spinner' label='Progress'>
-                  <ProgressDot transferMoneyItems={selectedPackage.transferMoney} />
-                </CardViewListStyled>
+                {selectedPackage.status !== getKeyAsString(PACKAGE_STATUS.PENDING, PACKAGE_STATUS) && (
+                  <CardViewListStyled color='#00b894' icon='spinner' label='Progress'>
+                    <ProgressDot selectedPackage={selectedPackage} transferMoneyItems={selectedPackage.transferMoney} onWithdraw={onWithdraw} />
+                  </CardViewListStyled>
+                )}
               </ModalBody>
             </Modal>
           )}
@@ -129,7 +127,7 @@ const AdminContentPackageComponent = ({
 export default compose(
   withRouter,
   withHandlers({
-    functionFormatter: ({ onRemovePackage, onDeactivePackage, toggleDetailModal }) => (cell, row) => {
+    functionFormatter: ({ onRemovePackage, toggleDetailModal }) => (cell, row) => {
       let functionCell = null;
       functionCell = (
         <FunctionWrapperStyled>
@@ -159,13 +157,6 @@ export default compose(
                 <FontAwesome icon='eye' />
               </Button>
             </FunctionItem>
-            {row.status === getKeyAsString(PACKAGE_STATUS.ACTIVE, PACKAGE_STATUS) && (
-              <FunctionItem>
-                <Button color="secondary" onClick={() => onDeactivePackage(row.id)}>
-                  <FontAwesome icon='money-bill-alt' className="text-white" />
-                </Button>
-              </FunctionItem>
-            )}
             <FunctionItem>
               <Button color="danger" onClick={() => onRemovePackage(row.id)}>
                 <FontAwesome icon='trash' className="text-white" />
@@ -194,7 +185,7 @@ export default compose(
       { text: 'Fullname', dataField: 'user.fullname', filter: textFilter({ delay: 0 }), formatter: cell => cell || '—', sort: true },
       { text: 'Package Price', dataField: 'price', filter: textFilter({ delay: 0 }), sort: true },
       { text: 'Currency', dataField: 'currency', filter: selectFilter({ options: CURRENCY }) },
-      { text: 'Package Type', dataField: 'duration', filter: selectFilter({ options: durationFilter }), formatter: cell => DURATION_TYPE[cell] + ' Months' },
+      { text: 'Package Type', dataField: 'duration', filter: selectFilter({ options: concatObjectEnum(DURATION_TYPE, ' Months') }), formatter: cell => DURATION_TYPE[cell] + ' Months' },
       { text: 'Register Date', dataField: 'registerDate', filter: textFilter({ delay: 0 }), formatter: cell => moment(cell).format('DD/MM/YYYY'), sort: true },
       { text: 'Status', dataField: 'status', filter: selectFilter({ options: uppercaseObjectValue(PACKAGE_STATUS) }), formatter: packageStatusFormatter },
       { text: 'Function', dataField: '', formatter: functionFormatter }

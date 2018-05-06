@@ -6,8 +6,7 @@ export const PackageDuration = new GraphQLEnumType({
   name: 'PackageDuration',
   values: {
     MONTH_6: { value: 6 },
-    MONTH_12: { value: 12 },
-    MONTH_6_TRANSFER_12: { value: 18 }
+    MONTH_12: { value: 12 }
   }
 });
 
@@ -69,6 +68,12 @@ export const PackageTransferMoneyProgress = new GraphQLObjectType({
       }
     },
     date: { type: GraphQLNonNull(GraphQLString) },
-    status: { type: GraphQLNonNull(GraphQLBoolean) }
+    status: { type: GraphQLNonNull(GraphQLBoolean) },
+    withdrawDate: {
+      type: GraphQLString,
+      resolve({ withdraw_date }) {
+        return withdraw_date;
+      }
+    }
   })
 })

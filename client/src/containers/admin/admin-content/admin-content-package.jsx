@@ -1,15 +1,17 @@
 import { compose, withHandlers, withState, withStateHandlers, withProps } from 'recompose';
 import { graphql } from 'react-apollo';
+import moment from 'moment';
 
 import AdminContentPackageComponent from '../../../components/admin/admin-content/admin-content-package';
 import { ALERT_STATUS, PACKAGE_STATUS, DURATION_TYPE } from '../../../utils/enum';
-import { GET_ALL_PACKAGES, REMOVE_PACKAGE, EDIT_PACKAGE } from '../../../utils/graphql';
+import { GET_ALL_PACKAGES, REMOVE_PACKAGE, EDIT_PACKAGE, EDIT_PACKAGE_PROGRESS } from '../../../utils/graphql';
 import { getKeyAsString } from '../../../utils/utils';
 
 export default compose(
   graphql(GET_ALL_PACKAGES, { name: 'getPackages' }),
   graphql(EDIT_PACKAGE, { name: 'editPackage' }),
   graphql(REMOVE_PACKAGE, { name: 'removePackage' }),
+  graphql(EDIT_PACKAGE_PROGRESS, { name: 'editPackageProgress' }),
   withProps(() => ({
     breadcrumbItems: [
       { url: '/admin', icon: 'home', text: 'Home' },
@@ -57,7 +59,7 @@ export default compose(
       }
     },
     onDeactivePackage: ({ editPackage, setAlertContent, setAlert, toggleDetailModal }) => async id => {
-      const result = confirm('Do you want to withdraw this package?');
+      const result = confirm('Do you want to deactive this package?');
       if (result) {
         try {
           await editPackage({
@@ -85,8 +87,9 @@ export default compose(
           setAlertContent('Error: ' + e.graphQLErrors[0].message);
           setAlert(ALERT_STATUS.ERROR);
         }
+
+        toggleDetailModal();
       }
-      toggleDetailModal();
     },
     onActivePackage: ({ editPackage, setAlertContent, setAlert, toggleDetailModal }) => async id => {
       const result = confirm('Do you want to active this package?');
@@ -117,17 +120,18 @@ export default compose(
           setAlertContent('Error: ' + e.graphQLErrors[0].message);
           setAlert(ALERT_STATUS.ERROR);
         }
+
+        toggleDetailModal();
       }
-      toggleDetailModal();
     },
-    onUpgradePackage: ({ editPackage, setAlertContent, setAlert }) => async id => {
+    onUpgradePackage: ({ editPackage, setAlertContent, setAlert, toggleDetailModal }) => async id => {
       const result = confirm('Do you want to upgrade this package duration to 12 months?');
       if (result) {
         try {
           await editPackage({
             variables: {
               id,
-              duration: getKeyAsString(DURATION_TYPE.MONTH_6_TRANSFER_12, DURATION_TYPE)
+              duration: getKeyAsString(DURATION_TYPE.MONTH_12, DURATION_TYPE)
             },
             update(cache, { data: { editPackage } }) {
               try {
@@ -149,6 +153,40 @@ export default compose(
           setAlertContent('Error: ' + e.graphQLErrors[0].message);
           setAlert(ALERT_STATUS.ERROR);
         }
+
+        toggleDetailModal();
+      }
+    },
+    onWithdraw: ({ editPackageProgress, toggleDetailModal }) => async (progressItem) => {
+      const result = confirm(`Do you want to withdraw this package at ${moment(progressItem.date).format('DD/MM/YYYY')}?`);
+      if (result) {
+        try {
+          await editPackageProgress({
+            variables: {
+              id: progressItem.id,
+              withdrawDate: moment().format('DD/MM/YYYY'),
+              status: true
+            },
+            update(cache, { data: { editPackageProgress } }) {
+              try {
+                const { packages } = cache.readQuery({ query: GET_ALL_PACKAGES });
+                const index = packages.findIndex(item => item.id === editPackageProgress.id);
+                packages[index] = editPackageProgress;
+                cache.writeQuery({ query: GET_ALL_PACKAGES, data: { packages } });
+              }
+              catch (e) {
+                // Nothing here
+              }
+            }
+          });
+
+          alert('Withdraw successfully!');
+        }
+        catch (e) {
+          alert('Error: ' + e.graphQLErrors[0].message);
+        }
+
+        toggleDetailModal();
       }
     }
   })

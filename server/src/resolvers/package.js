@@ -1,7 +1,7 @@
-import { GraphQLList, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLInt, GraphQLError, GraphQLFloat } from 'graphql';
+import { GraphQLList, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLInt, GraphQLError, GraphQLFloat, GraphQLBoolean } from 'graphql';
 import uuid from 'uuid';
 import moment from 'moment';
-import { Package, PackageCurrency, PackageDuration, PackageStatus } from '../models';
+import { Package, PackageCurrency, PackageDuration, PackageStatus, PackageTransferMoneyProgress } from '../models';
 import { promiseQuery, PREFIX } from '../config/database';
 import { convertCamelCaseToSnakeCase } from '../utils/utils';
 
@@ -97,14 +97,15 @@ export const Mutation = {
 
       for (let index = 0; index < duration.step; index += 1) {
         const progressId = uuid.v1();
-        paymentDate = paymentDate.add(30, 'days');
+        paymentDate = paymentDate.add(3, 'months');
         await promiseQuery(`INSERT INTO ${PREFIX}package_progress VALUES (
           '${progressId}',
           '${id}',
           '${args.price * duration.interestRate / 100}',
           '${duration.interestRate}',
           '${paymentDate.format('YYYY-MM-DD')}',
-          false
+          0,
+          NULL
         )`);
       }
       
@@ -132,10 +133,10 @@ export const Mutation = {
       registerDate: { type: GraphQLString },
       status: { type: PackageStatus }
     },
-    async resolve(source, args, context) {
-      if (!context.payload) {
-        throw new GraphQLError('Unauthorized');
-      }
+    async resolve(source, args, { payload, dataloaders }) {
+      // if (!payload) {
+      //   throw new GraphQLError('Unauthorized');
+      // }
 
       if (!args.id) {
         throw new GraphQLError('Edit package must have id');
@@ -144,6 +145,31 @@ export const Mutation = {
       if (args.price && args.price < 0) {
         throw new GraphQLError('Price invalid');
       }
+
+      if (args.duration && args.duration === PackageDuration.getValue('MONTH_12').value) {
+        const currentPackage = await dataloaders.packagesByIds.load(args.id);
+        let withdrawDate = moment(currentPackage.register_date).add(6, 'months');
+        console.log(currentPackage);
+        const packageProgressPromises = [];
+
+        for (let index = 0; index < 2; index += 1) {
+          const progressId = uuid.v1();
+          withdrawDate = withdrawDate.add(3, 'months');
+          packageProgressPromises.push(
+            promiseQuery(`INSERT INTO ${PREFIX}package_progress VALUES(
+              '${progressId}',
+              '${args.id}',
+              '${currentPackage.price * 0.08}',
+              '8',
+              '${withdrawDate.format('YYYY-MM-DD')}',
+              '0',
+              NULL
+            )`)
+          );
+        }
+
+        await Promise.all(packageProgressPromises);
+      }
       
       const listArgs = Object.keys(args).filter(item => item !== 'id');
       if (args.registerDate) args.registerDate = moment(args.registerDate, 'DD/MM/YYYY').format('YYYY-MM-DD');
@@ -151,9 +177,12 @@ export const Mutation = {
       const setStatement = listArgs.map(item => `${convertCamelCaseToSnakeCase(item)}='${args[item]}'`).join(',');
 
       await promiseQuery(`UPDATE ${PREFIX}package SET ${setStatement} WHERE id='${args.id}'`);
-      context.dataloaders.packagesByIds.clear(args.id);
+      dataloaders.packagesByIds.clear(args.id);
 
-      return context.dataloaders.packagesByIds.load(args.id);
+      return {
+        ...(await dataloaders.packagesByIds.load(args.id)),
+        transferMoney: args.id
+      }
     }
   },
   removePackage: {
@@ -172,6 +201,38 @@ export const Mutation = {
 
       promiseQuery(`DELETE FROM ${PREFIX}package WHERE id='${args.id}'`);
       return args.id;
+    }
+  },
+  editPackageProgress: {
+    type: Package,
+    args: {
+      id: { type: GraphQLNonNull(GraphQLID) },
+      amount: { type: GraphQLFloat },
+      interestRate: { type: GraphQLInt },
+      date: { type: GraphQLString },
+      status: { type: GraphQLBoolean },
+      withdrawDate: { type: GraphQLString }
+    },
+    async resolve(source, args, { payload, dataloaders }) {
+      if (!payload) {
+        throw new GraphQLError('Unauthorized');
+      }
+
+      if (!args.id) {
+        throw new GraphQLError('Id cannot be null');
+      }
+
+      args.status = args.status ? 1 : 0;
+      if (args.withdrawDate) args.withdrawDate = moment(args.withdrawDate, 'DD/MM/YYYY').format('YYYY-MM-DD');
+
+      const listArgs = Object.keys(args).filter(item => item !== 'id');
+      const setStatement = listArgs.map(item => `${convertCamelCaseToSnakeCase(item)}='${args[item]}'`).join(',');
+
+      await promiseQuery(`UPDATE ${PREFIX}package_progress SET ${setStatement} WHERE id='${args.id}'`);
+      dataloaders.packageProgressesByIds.clear(args.id);
+      const packageProgress = await dataloaders.packageProgressesByIds.load(args.id);
+
+      return dataloaders.packagesByIds.load(packageProgress.package_id);
     }
   }
 }

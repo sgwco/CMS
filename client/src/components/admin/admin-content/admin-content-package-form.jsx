@@ -7,7 +7,6 @@ import moment from 'moment';
 import { BootstrapTextField, BootstrapSelectField, BootstrapDatepickerField } from '../../../shared/formFields';
 import { requiredValidation, numberValidation, dateValidation } from '../../../utils/validation';
 import { ALERT_STATUS, CURRENCY, DURATION_TYPE } from '../../../utils/enum';
-import { getKeyAsString } from '../../../utils/utils';
 import Breadcrumb from '../../../shared/breadcrumb';
 import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/contentContainer';
 import { BoxWrapper, BoxBody, BoxFooter } from '../../../shared/boxWrapper';
@@ -111,7 +110,6 @@ export default compose(
       value: item
     }),
     durationSelectItems: () => () => Object.keys(DURATION_TYPE)
-      .filter(item => item !== getKeyAsString(DURATION_TYPE.MONTH_6_TRANSFER_12, DURATION_TYPE))
       .map(item => ({
         text: `${DURATION_TYPE[item]} Months`,
         value: item

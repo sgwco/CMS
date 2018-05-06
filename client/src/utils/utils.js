@@ -13,6 +13,19 @@ export function uppercaseObjectValue(object) {
   return object;
 }
 
+export function concatObjectEnum(objectEnum, dest) {
+  if (typeof objectEnum === 'object') {
+    const objectCloned = _.cloneDeep(objectEnum);
+    for (const key in objectCloned) {
+      objectCloned[key] += dest;
+    }
+
+    return objectCloned;
+  }
+
+  return objectEnum;
+}
+
 export function getKeyAsString(value, enumObject) {
   const enumInverted = _.invert(enumObject);
   return enumInverted[value];
