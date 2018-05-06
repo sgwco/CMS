@@ -4,7 +4,7 @@ export function uppercaseObjectValue(object) {
   if (typeof object === 'object') {
     const objectCloned = _.cloneDeep(object);
     for (const key in objectCloned) {
-      objectCloned[key] = _.upperFirst(objectCloned[key]);
+      objectCloned[key] = _.startCase(_.toLower(objectCloned[key]));
     }
 
     return objectCloned;

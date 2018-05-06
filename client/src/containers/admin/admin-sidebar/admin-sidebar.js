@@ -14,6 +14,7 @@ const data = [
   },
   {
     header: 'MANAGEMENT',
+    showPermission: roleCapabilities.read_packages.value + roleCapabilities.read_user.value + roleCapabilities.read_roles.value,
     menus: [
       // { title: 'Posts', href: 'post', icon: 'file', readPermission: roleCapabilities.read_post.value, subMenu: [
       //   { title: 'All Posts', href: 'post' },

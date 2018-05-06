@@ -343,6 +343,32 @@ export const EDIT_PACKAGE_PROGRESS = gql`
   }
 `;
 
+export const ACTIVE_PACKAGE = gql`
+  {
+    activePackage {
+      id
+      user {
+        id
+        username
+        fullname
+      }
+      price
+      currency
+      duration
+      registerDate
+      status
+      transferMoney {
+        id
+        amount
+        interestRate
+        date
+        status
+        withdrawDate
+      }
+    }
+  }
+`;
+
 export const LOGIN = gql`
   mutation login($username: String!, $password: String!) {
     login(username: $username, password: $password)

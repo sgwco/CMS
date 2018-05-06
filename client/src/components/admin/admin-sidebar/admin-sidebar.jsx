@@ -35,7 +35,9 @@ const AdminSidebarComponent = ({
       </form> */}
       <ul className="sidebar-menu" data-widget="tree">
         {menuData.map((item, itemIndex) => [
-          <li key={itemIndex} className="header">{item.header}</li>,
+          loggedInUser && checkRoleAllowed(loggedInUser.role.accessPermission, item.showPermission) !== 0 && (
+            <li key={itemIndex} className="header">{item.header}</li>
+          ),
           item.menus.map((menuItem, menuIndex) => (
             loggedInUser && checkRoleAllowed(loggedInUser.role.accessPermission, menuItem.readPermission) !== 0 && (
               <AdminSidebarMenuComponent

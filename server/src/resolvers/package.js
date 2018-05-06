@@ -21,7 +21,7 @@ export const Query = {
     args: {
       id: { type: new GraphQLNonNull(GraphQLID) }
     },
-    resolve: async (source, { id }, { payload }) => {
+    async resolve(source, { id }, { payload }) {
       if (!payload) {
         throw new GraphQLError('Unauthorized');
       }
@@ -30,6 +30,21 @@ export const Query = {
       
       if (rows.length > 0) {
         return rows[0];
+      }
+      else throw new GraphQLError('Package does not exist');
+    }
+  },
+  activePackage: {
+    type: Package,
+    async resolve(source, _, { payload }) {
+      if (!payload) {
+        throw new GraphQLError('Unauthorized');
+      }
+
+      const activePackage = await promiseQuery(`SELECT * FROM ${PREFIX}package WHERE user_id='${payload.id}' AND status='active'`);
+
+      if (activePackage.length > 0) {
+        return activePackage[0];
       }
       else throw new GraphQLError('Package does not exist');
     }
@@ -134,9 +149,9 @@ export const Mutation = {
       status: { type: PackageStatus }
     },
     async resolve(source, args, { payload, dataloaders }) {
-      // if (!payload) {
-      //   throw new GraphQLError('Unauthorized');
-      // }
+      if (!payload) {
+        throw new GraphQLError('Unauthorized');
+      }
 
       if (!args.id) {
         throw new GraphQLError('Edit package must have id');
@@ -149,7 +164,6 @@ export const Mutation = {
       if (args.duration && args.duration === PackageDuration.getValue('MONTH_12').value) {
         const currentPackage = await dataloaders.packagesByIds.load(args.id);
         let withdrawDate = moment(currentPackage.register_date).add(6, 'months');
-        console.log(currentPackage);
         const packageProgressPromises = [];
 
         for (let index = 0; index < 2; index += 1) {

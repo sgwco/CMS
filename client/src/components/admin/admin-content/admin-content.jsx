@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, withRouter, Switch } from 'react-router-dom';
-import { compose } from 'recompose';
+import { compose, lifecycle } from 'recompose';
 
 import AdminContentDashboardContainer from '../../../containers/admin//admin-content/admin-content-dashboard';
 
@@ -46,5 +46,12 @@ const AdminContentComponent = ({ match }) => (
 );
 
 export default compose(
-  withRouter
+  withRouter,
+  lifecycle({
+    componentWillMount() {
+      if (this.props.match.path === '/admin') {
+        this.props.history.push('/admin/dashboard');
+      }
+    }
+  })
 )(AdminContentComponent);

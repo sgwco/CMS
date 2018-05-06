@@ -22,6 +22,7 @@ export const DURATION_TYPE = {
 export const PACKAGE_STATUS = {
   ACTIVE: 'active',
   PENDING: 'pending',
+  PENDING_EXPIRED: 'pending_expired',
   EXPIRED: 'expired'
 };
 

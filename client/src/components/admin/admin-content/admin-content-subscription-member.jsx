@@ -61,7 +61,6 @@ const AdminContentSubscriptionMemberContainer = ({
   getActiveSubscription: { activeSubscription = {} }
 }) => (
   <ContentContainer>
-    {console.log(activeSubscription)}
     <ContentBody>
       <Row>
         <Col md={3}>

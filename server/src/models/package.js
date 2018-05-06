@@ -23,6 +23,7 @@ export const PackageStatus = new GraphQLEnumType({
   values: {
     ACTIVE: { value: 'active' },
     PENDING: { value: 'pending' },
+    PENDING_EXPIRED: { value: 'pending_expired' },
     EXPIRED: { value: 'expired' }
   }
 });

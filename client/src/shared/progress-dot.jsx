@@ -24,7 +24,7 @@ const ProgressStep = ({ progressItem, onWithdraw, currency }) => (
   <ProgressStepWrapper>
     <div>Interest Rate: {progressItem.interestRate}%</div>
     <div>Payment: {progressItem.amount} {currency}</div>
-    {moment() >= moment(progressItem.date) && !progressItem.status && (
+    {moment() >= moment(progressItem.date) && !progressItem.status && onWithdraw && (
       <div>
         <Button color='primary' size='sm' onClick={() => onWithdraw(progressItem)}>Withdraw</Button>
       </div>
@@ -37,8 +37,8 @@ const ProgressStep = ({ progressItem, onWithdraw, currency }) => (
 
 const ProgressDot = ({ selectedPackage, onWithdraw }) => (
   <ProgressDotWrapped>
-    <Steps labelPlacement="vertical" current={selectedPackage.transferMoney.filter(item => item.status).length}>
-      {selectedPackage.transferMoney.map(item => (
+    <Steps labelPlacement="vertical" current={(selectedPackage.transferMoney || []).filter(item => item.status).length}>
+      {(selectedPackage.transferMoney || []).map(item => (
         <StepStyled
           key={item.id} id={`id_${item.id}`}
           title={moment(item.date).format('DD/MM/YYYY')}

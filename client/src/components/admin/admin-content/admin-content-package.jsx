@@ -35,9 +35,8 @@ const AdminContentPackageComponent = ({
   selectedPackage,
   toggleDetailModal,
   onUpgradePackage,
-  onActivePackage,
-  onDeactivePackage,
-  onWithdraw
+  onWithdraw,
+  packageStatusCardButton
 }) => (
   <ContentContainer>
     <ContentHeader>
@@ -97,22 +96,14 @@ const AdminContentPackageComponent = ({
                   color='#00cec9'
                   icon='angle-double-right'
                   label='Status'
-                  buttonIcon={
-                    (selectedPackage.status === getKeyAsString(PACKAGE_STATUS.PENDING, PACKAGE_STATUS) ? 'check' :
-                      (selectedPackage.status === getKeyAsString(PACKAGE_STATUS.ACTIVE, PACKAGE_STATUS) ? 'ban' : null)
-                    )
-                  }
-                  buttonFunc={
-                    (selectedPackage.status === getKeyAsString(PACKAGE_STATUS.PENDING, PACKAGE_STATUS) ? () => onActivePackage(selectedPackage.id) :
-                      (selectedPackage.status === getKeyAsString(PACKAGE_STATUS.ACTIVE, PACKAGE_STATUS) ? () => onDeactivePackage(selectedPackage.id) : null)
-                    )
-                  }
+                  buttonIcon={(packageStatusCardButton[selectedPackage.status] || {}).icon}
+                  buttonFunc={() => (packageStatusCardButton[selectedPackage.status] || {}).func(selectedPackage.id)}
                 >
                   {_.startCase(_.toLower(selectedPackage.status))}
                 </CardViewListStyled>
                 {selectedPackage.status !== getKeyAsString(PACKAGE_STATUS.PENDING, PACKAGE_STATUS) && (
                   <CardViewListStyled color='#00b894' icon='spinner' label='Progress'>
-                    <ProgressDot selectedPackage={selectedPackage} transferMoneyItems={selectedPackage.transferMoney} onWithdraw={onWithdraw} />
+                    <ProgressDot selectedPackage={selectedPackage} onWithdraw={onWithdraw} />
                   </CardViewListStyled>
                 )}
               </ModalBody>
@@ -172,14 +163,15 @@ export default compose(
       const cellFormatted = _.startCase(_.toLower(cell));
       const COLOR_TYPE = {
         ACTIVE: 'success',
-        PENDING: 'secondary',
-        EXPIRED: 'warning'
+        PENDING: 'warning',
+        PENDING_EXPIRED: 'danger',
+        EXPIRED: 'secondary'
       };
       const badge = <h4><Badge color={COLOR_TYPE[cell]}>{cellFormatted}</Badge></h4>;
       return badge;
     }
   }),
-  withProps(({ functionFormatter, packageStatusFormatter }) => ({
+  withProps(({ functionFormatter, packageStatusFormatter, onDeactivePackage, onActivePackage }) => ({
     tableHeaders: [
       { text: 'Username', dataField: 'user.username', filter: textFilter({ delay: 0 }), sort: true },
       { text: 'Fullname', dataField: 'user.fullname', filter: textFilter({ delay: 0 }), formatter: cell => cell || '—', sort: true },
@@ -189,6 +181,20 @@ export default compose(
       { text: 'Register Date', dataField: 'registerDate', filter: textFilter({ delay: 0 }), formatter: cell => moment(cell).format('DD/MM/YYYY'), sort: true },
       { text: 'Status', dataField: 'status', filter: selectFilter({ options: uppercaseObjectValue(PACKAGE_STATUS) }), formatter: packageStatusFormatter },
       { text: 'Function', dataField: '', formatter: functionFormatter }
-    ]
+    ],
+    packageStatusCardButton: {
+      ACTIVE: {
+        icon: 'ban',
+        func: id => onDeactivePackage(id)
+      },
+      PENDING: {
+        icon: 'check',
+        func: id => onActivePackage(id)
+      },
+      PENDING_EXPIRED: {
+        icon: 'ban',
+        func: id => onDeactivePackage(id)
+      }
+    }
   }))
 )(AdminContentPackageComponent);

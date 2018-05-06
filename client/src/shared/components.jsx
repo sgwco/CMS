@@ -146,7 +146,7 @@ export const CardViewListStyled = ({ color, icon, label, buttonIcon, buttonFunc,
       <CardViewTextLabel>{label}</CardViewTextLabel>
       {children}
     </CardViewTextStyled>
-    {buttonFunc && (
+    {buttonIcon && (
       <CardViewButtonStyled onClick={buttonFunc} color={color}>
         <FontAwesome icon={buttonIcon} />
       </CardViewButtonStyled>
