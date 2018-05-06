@@ -68,13 +68,9 @@ const AdminContentPackageComponent = ({
           <Modal isOpen={detailModalVisible} toggle={toggleDetailModal}>
             <ModalHeader toggle={toggleDetailModal}>Package detail</ModalHeader>
             <ModalBody>
-              <CardViewListStyled
-                color='#e74c3c'
-                icon='user'
-                label='User'
-                text='Son Vo-Hoai'
-                buttonIcon='user'
-              />
+              <CardViewListStyled color='#e74c3c' icon='user' label='User' buttonIcon='user'>
+                Son Vo-Hoai
+              </CardViewListStyled>
             </ModalBody>
           </Modal>
         </BoxBody>

@@ -26,16 +26,10 @@ const getPackagesByIds = packageIds => {
   return promiseQuery(`SELECT * FROM ${PREFIX}package WHERE id IN (${params})`);
 }
 
-const getSubscriptionsByIds = subscriptionIds => {
-  const params = subscriptionIds.map(id => `'${id}'`).join(', ');
-  return promiseQuery(`SELECT * FROM ${PREFIX}subscription WHERE id IN (${params})`);
-}
-
 export default {
   rolesByIds: new DataLoader(getRolesByIds),
   usersByIds: new DataLoader(getUsersByIds),
   postsByIds: new DataLoader(getPostsByIds),
   categoriesByIds: new DataLoader(getCategoriesByIds),
-  packagesByIds: new DataLoader(getPackagesByIds),
-  subscriptionsByIds: new DataLoader(getSubscriptionsByIds)
+  packagesByIds: new DataLoader(getPackagesByIds)
 }

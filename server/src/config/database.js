@@ -102,7 +102,7 @@ export async function initDatabase(conn) {
     )`);
 
     // Package table
-    promiseQuery(`CREATE TABLE IF NOT EXISTS ${PREFIX}package (
+    await promiseQuery(`CREATE TABLE IF NOT EXISTS ${PREFIX}package (
       id VARCHAR(50) NOT NULL PRIMARY KEY,
       user_id VARCHAR(100) NOT NULL,
       price FLOAT(20, 2) UNSIGNED NOT NULL,
@@ -111,6 +111,16 @@ export async function initDatabase(conn) {
       register_date DATE NOT NULL,
       status VARCHAR(50) NOT NULL,
       CONSTRAINT FK_PACKAGE FOREIGN KEY (user_id) REFERENCES ${PREFIX}user(id) ON DELETE CASCADE ON UPDATE CASCADE
+    )`);
+
+    promiseQuery(`CREATE TABLE IF NOT EXISTS ${PREFIX}package_progress (
+      id VARCHAR(50) NOT NULL PRIMARY KEY,
+      package_id VARCHAR(50) NOT NULL,
+      amount FLOAT(10, 2) UNSIGNED NOT NULL,
+      interest_rate INT UNSIGNED NOT NULL,
+      date DATE NOT NULL,
+      status BOOLEAN NOT NULL,
+      CONSTRAINT FK_PACKAGE_PROGRESS FOREIGN KEY (package_id) REFERENCES ${PREFIX}package(id) ON DELETE CASCADE ON UPDATE CASCADE
     )`);
   });
 }

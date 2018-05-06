@@ -9,9 +9,9 @@ export const Query = {
   packages: {
     type: new GraphQLList(Package),
     async resolve(source, args, { payload }) {
-      if (!payload) {
-        throw new GraphQLError('Unauthorized');
-      }
+      // if (!payload) {
+      //   throw new GraphQLError('Unauthorized');
+      // }
 
       return await promiseQuery(`SELECT * FROM ${PREFIX}package`);
     }
@@ -67,14 +67,14 @@ export const Mutation = {
         throw new GraphQLError('Duration cannot be null');
       }
 
-      const existPackages = await promiseQuery(`SELECT id FROM ${PREFIX}package WHERE user_id=${args.userId} and status=${PackageDuration.getValue('ACTIVE').value}`);
+      const existPackages = await promiseQuery(`SELECT id FROM ${PREFIX}package WHERE user_id='${args.userId}' AND status='active'`);
       if (existPackages.length > 0) {
         throw new GraphQLError(`Cannot create new package for this user due to the existance of ${existPackages.length} active package(s)`);
       }
       
       const now = moment();
       const registerDate = args.registerDate ? moment(args.registerDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : now.format('YYYY-MM-DD');
-      const status = PackageStatus.getValue('ACTIVE').value;
+      const status = PackageStatus.getValue('PENDING').value;
       
       const id = uuid.v1();
       await promiseQuery(`INSERT INTO ${PREFIX}package VALUES (
@@ -86,6 +86,29 @@ export const Mutation = {
         '${registerDate}',
         '${status}'
       )`);
+
+      const transferMoneyProgresses = {
+        '6': { interestRate: 6, step: 2 },
+        '12': { interestRate: 8, step: 4 }
+      }
+
+      for (const duration in transferMoneyProgresses) {
+        const duration = transferMoneyProgresses[args.duration];
+        let paymentDate = moment(registerDate, 'YYYY-MM-DD');
+
+        for (let index = 0; index < duration.step; index += 1) {
+          const progressId = uuid.v1();
+          paymentDate = paymentDate.add(30, 'days');
+          await promiseQuery(`INSERT INTO ${PREFIX}package_progress VALUES (
+            '${progressId}',
+            '${id}',
+            '${args.price * duration.interestRate / 100}',
+            '${duration.interestRate}',
+            '${paymentDate.format('YYYY-MM-DD')}',
+            false
+          )`);
+        }
+      }
       
       return {
         id,
@@ -95,7 +118,8 @@ export const Mutation = {
         price: args.price,
         currency: args.currency,
         duration: args.duration,
-        register_date: args.registerDate || now.format('DD/MM/YYYY')
+        register_date: args.registerDate || now.format('DD/MM/YYYY'),
+        transferMoney: id
       };
     }
   },

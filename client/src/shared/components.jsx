@@ -122,6 +122,7 @@ const CardViewTextStyled = styled.div`
 
 const CardViewTextLabel = styled.div`
   color: rgba(0, 0, 0, 0.5);
+  font-size: 0.8rem;
 `;
 
 const CardViewButtonStyled = styled.button`
@@ -134,12 +135,12 @@ const CardViewButtonStyled = styled.button`
   color: ${props => chooseBlackOrWhiteDependOnHex(props.color)};
 `;
 
-export const CardViewListStyled = ({ color, icon, label, text, buttonIcon, buttonFunc }) => (
+export const CardViewListStyled = ({ color, icon, label, buttonIcon, buttonFunc, children }) => (
   <CardViewWrapperStyled color={color}>
     <CardViewIconStyled icon={icon} color={color} />
     <CardViewTextStyled>
       <CardViewTextLabel>{label}</CardViewTextLabel>
-      <h5>{text}</h5>
+      {children}
     </CardViewTextStyled>
     <CardViewButtonStyled onClick={buttonFunc} color={color}>
       <FontAwesome icon={buttonIcon} />
