@@ -1,6 +1,5 @@
 import { GraphQLList, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLError, GraphQLInt } from 'graphql';
 import { Post } from '../models';
-import uuid from 'uuid';
 import moment from 'moment';
 import { promiseQuery, PREFIX } from '../config/database';
 import { convertCamelCaseToSnakeCase } from '../utils/utils';
@@ -53,10 +52,9 @@ export const Mutation = {
 
       const publishDate = moment().format('YYYY-MM-DD HH:MM');
 
-      const id = uuid.v1();
       try {
         await promiseQuery(`INSERT INTO ${PREFIX}post VALUES (
-          '${id}',
+          NULL,
           '${title}',
           '${content}',
           '${excerpt}',

@@ -1,31 +1,23 @@
 import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLInt, GraphQLList, GraphQLEnumType, GraphQLFloat, GraphQLBoolean } from 'graphql';
+import _ from 'lodash';
+
 import { User } from './user';
 import { promiseQuery, PREFIX } from '../config/database';
+import { PACKAGE_DURATION, CURRENCY, PACKAGE_STATUS } from '../enum';
 
 export const PackageDuration = new GraphQLEnumType({
   name: 'PackageDuration',
-  values: {
-    MONTH_6: { value: 6 },
-    MONTH_12: { value: 12 }
-  }
+  values: _.transform(PACKAGE_DURATION, (result, value, key) => result[key] = { value })
 });
 
 export const PackageCurrency = new GraphQLEnumType({
   name: 'PackageCurrency',
-  values: {
-    VND: { value: 'VND' },
-    USD: { value: 'USD' }
-  }
+  values: _.transform(CURRENCY, (result, value, key) => result[key] = { value })
 })
 
 export const PackageStatus = new GraphQLEnumType({
   name: 'PackageStatus',
-  values: {
-    ACTIVE: { value: 'active' },
-    PENDING: { value: 'pending' },
-    PENDING_EXPIRED: { value: 'pending_expired' },
-    EXPIRED: { value: 'expired' }
-  }
+  values: _.transform(PACKAGE_STATUS, (result, value, key) => result[key] = { value })
 });
 
 export const Package = new GraphQLObjectType({

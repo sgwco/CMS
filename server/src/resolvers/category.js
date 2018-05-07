@@ -1,6 +1,5 @@
 import { GraphQLList, GraphQLNonNull, GraphQLID, GraphQLString } from 'graphql';
 import { Category } from '../models';
-import uuid from 'uuid';
 import { promiseQuery, PREFIX } from '../config/database';
 import { convertCamelCaseToSnakeCase } from '../utils/utils';
 
@@ -39,10 +38,9 @@ export const Mutation = {
         throw new GraphQLError('Name cannot be null');
       }
 
-      const id = uuid.v1();
       try {
         await promiseQuery(`INSERT INTO ${PREFIX}category VALUES (
-          '${id}',
+          NULL,
           '${name}',
           '${slug}',
           '${parent}',

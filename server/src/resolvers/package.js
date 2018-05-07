@@ -1,5 +1,4 @@
 import { GraphQLList, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLInt, GraphQLError, GraphQLFloat, GraphQLBoolean } from 'graphql';
-import uuid from 'uuid';
 import moment from 'moment';
 import { Package, PackageCurrency, PackageDuration, PackageStatus, PackageTransferMoneyProgress } from '../models';
 import { promiseQuery, PREFIX } from '../config/database';
@@ -55,7 +54,7 @@ export const Mutation = {
   createPackage: {
     type: Package,
     args: {
-      userId: { type: GraphQLNonNull(GraphQLString) },
+      userId: { type: GraphQLNonNull(GraphQLID) },
       price: { type: GraphQLNonNull(GraphQLFloat) },
       currency: { type: GraphQLNonNull(PackageCurrency) },
       duration: { type: GraphQLNonNull(PackageDuration) },
@@ -90,10 +89,10 @@ export const Mutation = {
       const now = moment();
       const registerDate = args.registerDate ? moment(args.registerDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : now.format('YYYY-MM-DD');
       const status = PackageStatus.getValue('PENDING').value;
+      let id = null;
       
-      const id = uuid.v1();
       await promiseQuery(`INSERT INTO ${PREFIX}package VALUES (
-        '${id}',
+        NULL,
         '${args.userId}',
         '${args.price}',
         '${args.currency}',
@@ -101,6 +100,12 @@ export const Mutation = {
         '${registerDate}',
         '${status}'
       )`);
+
+      const lastId = await promiseQuery(`SELECT LAST_INSERT_ID()`);
+      if (lastId.length > 0) {
+        id = lastId[0]['LAST_INSERT_ID()'];
+      }
+      else throw new GraphQLError('Cannot insert new role.');
 
       const transferMoneyProgresses = {
         '6': { interestRate: 6, step: 2 },
@@ -111,10 +116,9 @@ export const Mutation = {
       let paymentDate = moment(registerDate, 'YYYY-MM-DD');
 
       for (let index = 0; index < duration.step; index += 1) {
-        const progressId = uuid.v1();
         paymentDate = paymentDate.add(3, 'months');
         await promiseQuery(`INSERT INTO ${PREFIX}package_progress VALUES (
-          '${progressId}',
+          NULL,
           '${id}',
           '${args.price * duration.interestRate / 100}',
           '${duration.interestRate}',
@@ -141,7 +145,7 @@ export const Mutation = {
     type: Package,
     args: {
       id: { type: GraphQLNonNull(GraphQLID) },
-      userId: { type: GraphQLString },
+      userId: { type: GraphQLID },
       price: { type: GraphQLFloat },
       currency: { type: PackageCurrency },
       duration: { type: PackageDuration },
@@ -167,11 +171,10 @@ export const Mutation = {
         const packageProgressPromises = [];
 
         for (let index = 0; index < 2; index += 1) {
-          const progressId = uuid.v1();
           withdrawDate = withdrawDate.add(3, 'months');
           packageProgressPromises.push(
             promiseQuery(`INSERT INTO ${PREFIX}package_progress VALUES(
-              '${progressId}',
+              NULL,
               '${args.id}',
               '${currentPackage.price * 0.08}',
               '8',

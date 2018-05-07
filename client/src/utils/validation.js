@@ -3,7 +3,7 @@ import isFloat from 'validator/lib/isFloat';
 import moment from 'moment';
 
 export const requiredValidation = value => {
-  if (typeof value === 'undefined') {
+  if (!value || typeof value === 'undefined') {
     return { error: 'This field is required' };
   }
   else if (value.trim && value.trim() === '') {
@@ -36,7 +36,7 @@ export const passwordMatchValidation = (currentPassword, abovePassword) => {
 };
 
 export const emailValidation = (value = '') => {
-  if (value.length > 0) {
+  if (value && value.length > 0) {
     if (!isEmail(value)) {
       return { error: 'Email invalid' };
     }

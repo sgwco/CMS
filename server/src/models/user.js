@@ -1,14 +1,13 @@
 import { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLNonNull, GraphQLInt, GraphQLEnumType, GraphQLList } from 'graphql';
+import _ from 'lodash';
+
 import { Role } from './role';
 import { promiseQuery, PREFIX } from '../config/database';
+import { USER_STATUS } from '../enum';
 
 export const UserStatus = new GraphQLEnumType({
   name: 'UserStatus',
-  values: {
-    ACTIVE: { value: 'active' },
-    BANNED: { value: 'banned' },
-    PENDING: { value: 'pending' }
-  }
+  values: _.transform(USER_STATUS, (result, value, key) => result[key] = { value })
 });
 
 export const UserMeta = new GraphQLObjectType({
@@ -52,8 +51,8 @@ export const User = new GraphQLObjectType({
     },
     role: {
       type: GraphQLNonNull(Role),
-      async resolve({ role }, _, context) {
-        return context.dataloaders.rolesByIds.load(role);
+      async resolve({ role }, _, { dataloaders }) {
+        return dataloaders.rolesByIds.load(role);
       }
     },
     address: { type: GraphQLString },

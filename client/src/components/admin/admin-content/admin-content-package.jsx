@@ -78,17 +78,18 @@ const AdminContentPackageComponent = ({
                 <CardViewListStyled color='#fd79a8' icon='clock' label='Registered Date'>
                   {moment(selectedPackage.registerDate).format('DD/MM/YYYY')}
                 </CardViewListStyled>
+                {console.log(selectedPackage.duration === getKeyAsString(DURATION_TYPE.MONTH_6, DURATION_TYPE))}
                 <CardViewListStyled
                   color='#a29bfe'
                   icon='briefcase'
                   label='Package Type'
-                  buttonIcon='arrow-circle-up'
-                  buttonFunc={
+                  buttonIcon={
                     (selectedPackage.duration === getKeyAsString(DURATION_TYPE.MONTH_6, DURATION_TYPE) &&
                     selectedPackage.status === getKeyAsString(PACKAGE_STATUS.ACTIVE, PACKAGE_STATUS) &&
                     moment().diff(moment(selectedPackage.registerDate), 'months') >= 4 &&
-                    moment().diff(moment(selectedPackage.registerDate), 'months') <= 5) ? () => onUpgradePackage(selectedPackage.id) : null
+                    moment().diff(moment(selectedPackage.registerDate), 'months') <= 5) ? 'arrow-circle-up' : null
                   }
+                  buttonFunc={() => onUpgradePackage(selectedPackage.id)}
                 >
                   {`${DURATION_TYPE[selectedPackage.duration]} Months`}
                 </CardViewListStyled>

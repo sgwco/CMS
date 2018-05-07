@@ -1,5 +1,4 @@
 import { GraphQLList, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLInt, GraphQLError, GraphQLBoolean } from 'graphql';
-import uuid from 'uuid';
 import moment from 'moment';
 import isEmail from 'validator/lib/isEmail';
 import sha1 from 'sha1';
@@ -13,9 +12,9 @@ export const Query = {
   users: {
     type: new GraphQLList(User),
     resolve: (source, args, { payload }) => {
-      // if (!payload) {
-      //   throw new GraphQLError('Unauthorized');
-      // }
+      if (!payload) {
+        throw new GraphQLError('Unauthorized');
+      }
 
       return promiseQuery(`SELECT * FROM ${PREFIX}user`);
     }
@@ -86,11 +85,11 @@ export const Mutation = {
       }
 
       const registrationDate = moment().format('YYYY-MM-DD HH:MM');
+      let id = null;
 
-      const id = uuid.v1();
       try {
         await promiseQuery(`INSERT INTO ${PREFIX}user VALUES (
-          '${id}',
+          NULL,
           '${username}',
           '${password}',
           '${fullname || ''}',
@@ -111,14 +110,18 @@ export const Mutation = {
         }
       }
 
+      const lastId = await promiseQuery(`SELECT LAST_INSERT_ID()`);
+      if (lastId.length > 0) {
+        id = lastId[0]['LAST_INSERT_ID()'];
+      }
+      else throw new GraphQLError('Cannot insert new role.');
+
       if (args.userMeta) {
         const userMeta = JSON.parse(args.userMeta);
         const userMetaPromises = [];
         for (const index in userMeta) {
-          const metaId = uuid.v1();
-
           userMetaPromises.push(promiseQuery(`INSERT INTO ${PREFIX}user_meta VALUES (
-            '${metaId}',
+            NULL,
             '${id}',
             '${userMeta[index].metaKey}',
             '${userMeta[index].metaValue}'
@@ -128,7 +131,7 @@ export const Mutation = {
       }
 
       return {
-        id,
+        id: lastId[0]['LAST_INSERT_ID()'],
         username,
         password,
         fullname,
@@ -162,17 +165,13 @@ export const Mutation = {
         throw new GraphQLError('Email invalid');
       }
 
-      const criteria = Object.keys(args).map(item => {
-        switch (typeof args[item]) {
-          case 'number':
-            return `${item}=${args[item]}`;
-          default:
-            return `${item}='${args[item]}'`;
-        }
-      }).join(', ');
+      const setStatement = Object.keys(args)
+        .filter(item => item !== 'id' && item !== 'userMeta' && args[item])
+        .map(item => `${convertCamelCaseToSnakeCase(item)}='${args[item]}'`)
+        .join(',');
 
       try {
-        await promiseQuery(`UPDATE ${PREFIX}user SET ${criteria} WHERE id='${args.id}'`);
+        await promiseQuery(`UPDATE ${PREFIX}user SET ${setStatement} WHERE id='${args.id}'`);
       }
       catch (e) {
         switch (e.code) {
@@ -186,10 +185,19 @@ export const Mutation = {
       if (args.userMeta) {
         const userMeta = JSON.parse(args.userMeta);
         const userMetaPromises = [];
+        const existMeta = await promiseQuery(`SELECT * from ${PREFIX}user_meta WHERE user_id='${args.id}'`);
+
         for (const meta of userMeta) {
-          userMetaPromises.push(
-            promiseQuery(`UPDATE ${PREFIX}user_meta SET meta_value='${meta.metaValue}' WHERE user_id='${args.id}' AND meta_key='${meta.metaKey}'`)
-          );
+          if (existMeta.length === 0 || existMeta.findIndex(item => item.meta_key === meta.metaKey) === -1) {
+            userMetaPromises.push(
+              promiseQuery(`INSERT INTO ${PREFIX}user_meta VALUES(NULL, '${args.id}', '${meta.metaKey}', '${meta.metaValue}')`)
+            );
+          }
+          else {
+            userMetaPromises.push(
+              promiseQuery(`UPDATE ${PREFIX}user_meta SET meta_value='${meta.metaValue}' WHERE user_id='${args.id}' AND meta_key='${meta.metaKey}'`)
+            );
+          }
         }
         await Promise.all(userMetaPromises);
       }
@@ -232,7 +240,8 @@ export const Mutation = {
 
       args.password = sha1(args.password);
 
-      const rows = await promiseQuery(`SELECT id, username, email, fullname, role FROM ${PREFIX}user WHERE username='${args.username}' AND password='${args.password}'`);
+      const rows = await promiseQuery(`SELECT * FROM ${PREFIX}user WHERE username='${args.username}' AND password='${args.password}'`);
+      
       if (rows.length > 0) {
         const role = await context.dataloaders.rolesByIds.load(rows[0].role);
         rows[0].role = role.access_permission;

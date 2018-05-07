@@ -9,10 +9,6 @@ var _graphql = require('graphql');
 
 var _models = require('../models');
 
-var _uuid = require('uuid');
-
-var _uuid2 = _interopRequireDefault(_uuid);
-
 var _moment = require('moment');
 
 var _moment2 = _interopRequireDefault(_moment);
@@ -64,7 +60,7 @@ var Mutation = exports.Mutation = {
       var _this = this;
 
       return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-        var title, content, excerpt, author, slug, category, thumbnail, count, publishDate, id;
+        var title, content, excerpt, author, slug, category, thumbnail, count, publishDate;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -96,29 +92,28 @@ var Mutation = exports.Mutation = {
 
               case 7:
                 publishDate = (0, _moment2.default)().format('YYYY-MM-DD HH:MM');
-                id = _uuid2.default.v1();
-                _context.prev = 9;
-                _context.next = 12;
-                return (0, _database.promiseQuery)('INSERT INTO ' + _database.PREFIX + 'post VALUES (\n          \'' + id + '\',\n          \'' + title + '\',\n          \'' + content + '\',\n          \'' + excerpt + '\',\n          \'' + author + '\',\n          \'' + slug + '\',\n          \'' + category + '\',\n          \'' + thumbnail + '\',\n          \'' + count + '\',\n          \'' + publishDate + '\'\n        )');
+                _context.prev = 8;
+                _context.next = 11;
+                return (0, _database.promiseQuery)('INSERT INTO ' + _database.PREFIX + 'post VALUES (\n          NULL,\n          \'' + title + '\',\n          \'' + content + '\',\n          \'' + excerpt + '\',\n          \'' + author + '\',\n          \'' + slug + '\',\n          \'' + category + '\',\n          \'' + thumbnail + '\',\n          \'' + count + '\',\n          \'' + publishDate + '\'\n        )');
 
-              case 12:
-                _context.next = 21;
+              case 11:
+                _context.next = 20;
                 break;
 
-              case 14:
-                _context.prev = 14;
-                _context.t0 = _context['catch'](9);
+              case 13:
+                _context.prev = 13;
+                _context.t0 = _context['catch'](8);
                 _context.t1 = _context.t0.code;
-                _context.next = _context.t1 === 'ER_DUP_ENTRY' ? 19 : _context.t1 === 'ER_NO_REFERENCED_ROW_2' ? 20 : 21;
+                _context.next = _context.t1 === 'ER_DUP_ENTRY' ? 18 : _context.t1 === 'ER_NO_REFERENCED_ROW_2' ? 19 : 20;
                 break;
 
-              case 19:
+              case 18:
                 throw new _graphql.GraphQLError('Post existed');
 
-              case 20:
+              case 19:
                 throw new _graphql.GraphQLError('Post data invalid');
 
-              case 21:
+              case 20:
                 return _context.abrupt('return', {
                   id: id,
                   title: title,
@@ -132,12 +127,12 @@ var Mutation = exports.Mutation = {
                   publish_date: publishDate
                 });
 
-              case 22:
+              case 21:
               case 'end':
                 return _context.stop();
             }
           }
-        }, _callee, _this, [[9, 14]]);
+        }, _callee, _this, [[8, 13]]);
       }))();
     }
   },

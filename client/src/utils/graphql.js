@@ -215,7 +215,6 @@ export const REMOVE_POST = gql`
   }
 `;
 
-
 export const GET_FULL_CATEGORIES = gql`
   {
     categories {
@@ -262,33 +261,33 @@ export const REMOVE_CATEGORY = gql`
 `;
 
 export const GET_ALL_PACKAGES = gql`
-{
-  packages {
-    id
-    user {
+  {
+    packages {
       id
-      username
-      fullname
-    }
-    price
-    currency
-    duration
-    registerDate
-    status
-    transferMoney {
-      id
-      amount
-      interestRate
-      date
-      status,
-      withdrawDate
+      user {
+        id
+        username
+        fullname
+      }
+      price
+      currency
+      duration
+      registerDate
+      status
+      transferMoney {
+        id
+        amount
+        interestRate
+        date
+        status,
+        withdrawDate
+      }
     }
   }
-}
 `;
 
 export const CREATE_PACKAGE = gql`
-  mutation createPackage($userId: String!, $price: Float!, $currency: PackageCurrency!, $duration: PackageDuration!, $registerDate: String) {
+  mutation createPackage($userId: ID!, $price: Float!, $currency: PackageCurrency!, $duration: PackageDuration!, $registerDate: String) {
     createPackage(userId: $userId, price: $price, currency: $currency, duration: $duration, registerDate: $registerDate) {
       id
       user {
@@ -306,7 +305,7 @@ export const CREATE_PACKAGE = gql`
 `;
 
 export const EDIT_PACKAGE = gql`
-  mutation editPackage($id: ID!, $userId: String, $price: Float, $currency: PackageCurrency, $duration: PackageDuration, $registerDate: String, $status: PackageStatus) {
+  mutation editPackage($id: ID!, $userId: ID, $price: Float, $currency: PackageCurrency, $duration: PackageDuration, $registerDate: String, $status: PackageStatus) {
     editPackage(id: $id, userId: $userId, price: $price, currency: $currency, duration: $duration, registerDate: $registerDate, status: $status) {
       id
       user {

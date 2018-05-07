@@ -14,14 +14,14 @@ const data = [
   },
   {
     header: 'MANAGEMENT',
-    showPermission: roleCapabilities.read_packages.value + roleCapabilities.read_user.value + roleCapabilities.read_roles.value,
+    showPermission: roleCapabilities.write_packages.value + roleCapabilities.read_user.value + roleCapabilities.read_roles.value,
     menus: [
       // { title: 'Posts', href: 'post', icon: 'file', readPermission: roleCapabilities.read_post.value, subMenu: [
       //   { title: 'All Posts', href: 'post' },
       //   { title: 'Post Categories', href: 'post/category' }
       // ] },
       // { title: 'Products', href: 'product', icon: 'shopping-cart', badgePrimary: '4', readPermission: roleCapabilities.read_products.value },
-      { title: 'Package', href: 'package', icon: 'briefcase', readPermission: roleCapabilities.read_packages.value },
+      { title: 'Package', href: 'package', icon: 'briefcase', readPermission: roleCapabilities.write_packages.value },
       { title: 'Users', href: 'user', icon: 'user', readPermission: roleCapabilities.read_user.value },
       { title: 'Roles', href: 'role', icon: 'users', readPermission: roleCapabilities.read_roles.value }
     ]

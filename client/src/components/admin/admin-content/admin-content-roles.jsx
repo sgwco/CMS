@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import FontAwesome from '@fortawesome/react-fontawesome';
-import { Alert, Badge } from 'reactstrap';
+import { Alert, Badge, Button } from 'reactstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import styled from 'styled-components';
 import { withProps, compose, withHandlers } from 'recompose';
@@ -15,8 +15,8 @@ import {
   ContentHeaderTitleStyled,
   MarginLeftButtonStyled,
   FunctionWrapperStyled,
-  FunctionCell,
-  OpacityTextStyled
+  OpacityTextStyled,
+  FunctionItem
 } from '../../../shared/components';
 
 const AdminContentRolesComponent = ({
@@ -26,7 +26,8 @@ const AdminContentRolesComponent = ({
   alertContent,
   breadcrumbItems,
   tableHeaders,
-  getRoles: { roles = [] }
+  getRoles: { roles = [] },
+  
 }) => (
   <ContentContainer>
     <ContentHeader>
@@ -91,7 +92,7 @@ export default compose(
 
       return badges;
     },
-    functionFormatter: ({ match, onRemoveRole }) => (cell, row) => {
+    functionFormatter: ({ match, onRemoveRole, getUserToken: { loggedInUser = {} } }) => (cell, row) => {
       let functionCell = null;
       functionCell = (
         <FunctionWrapperStyled>
@@ -106,7 +107,24 @@ export default compose(
         );
       }
       else {
-        functionCell = <FunctionCell url={`${match.url}/edit/${row.id}`} onDelete={() => onRemoveRole(row.id)} />;
+        functionCell = (
+          <FunctionWrapperStyled>
+            <FunctionItem>
+              <Link to={`${match.url}/edit/${row.id}`}>
+                <Button color="warning">
+                  <FontAwesome icon='edit' className="text-white" />
+                </Button>
+              </Link>
+            </FunctionItem>
+            {(loggedInUser.role || {}).name !== row.name && (
+              <FunctionItem>
+                <Button color="danger" onClick={() => onRemoveRole(row.id)}>
+                  <FontAwesome icon='trash' className="text-white" />
+                </Button>
+              </FunctionItem>
+            )}
+          </FunctionWrapperStyled>
+        );
       }
       
       return functionCell;

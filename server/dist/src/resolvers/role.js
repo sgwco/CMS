@@ -7,10 +7,6 @@ exports.Mutation = exports.Query = undefined;
 
 var _graphql = require('graphql');
 
-var _uuid = require('uuid');
-
-var _uuid2 = _interopRequireDefault(_uuid);
-
 var _moment = require('moment');
 
 var _moment2 = _interopRequireDefault(_moment);
@@ -108,7 +104,6 @@ var Mutation = exports.Mutation = {
     },
     resolve: function () {
       var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(source, args) {
-        var id;
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
@@ -129,18 +124,17 @@ var Mutation = exports.Mutation = {
                 throw new _graphql.GraphQLError('Role Capabilities invalid');
 
               case 4:
-                id = _uuid2.default.v1();
-                _context3.next = 7;
-                return (0, _database.promiseQuery)('INSERT INTO ' + _database.PREFIX + 'role VALUES (\n        \'' + id + '\',\n        \'' + args.name + '\',\n        \'' + args.accessPermission + '\'\n      )');
+                _context3.next = 6;
+                return (0, _database.promiseQuery)('INSERT INTO ' + _database.PREFIX + 'role VALUES (\n        NULL,\n        \'' + args.name + '\',\n        \'' + args.accessPermission + '\'\n      )');
 
-              case 7:
+              case 6:
                 return _context3.abrupt('return', {
                   id: id,
                   name: args.name,
                   access_permission: args.accessPermission
                 });
 
-              case 8:
+              case 7:
               case 'end':
                 return _context3.stop();
             }

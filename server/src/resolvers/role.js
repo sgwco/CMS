@@ -1,5 +1,4 @@
 import { GraphQLList, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLInt, GraphQLError } from 'graphql';
-import uuid from 'uuid';
 import moment from 'moment';
 import { Role } from '../models';
 import { promiseQuery, PREFIX } from '../config/database';
@@ -44,18 +43,21 @@ export const Mutation = {
         throw new GraphQLError('Role Capabilities invalid');
       }
       
-      const id = uuid.v1();
       await promiseQuery(`INSERT INTO ${PREFIX}role VALUES (
-        '${id}',
+        NULL,
         '${args.name}',
         '${args.accessPermission}'
       )`);
-      
-      return {
-        id,
-        name: args.name,
-        access_permission: args.accessPermission
-      };
+
+      const lastId = await promiseQuery(`SELECT LAST_INSERT_ID()`);
+      if (lastId.length > 0) {
+        return {
+          id: lastId[0]['LAST_INSERT_ID()'],
+          name: args.name,
+          access_permission: args.accessPermission
+        };
+      }
+      else throw new GraphQLError('Cannot insert new role.');
     }
   },
   editRole: {

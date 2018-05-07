@@ -2,10 +2,11 @@ import { graphql } from 'react-apollo';
 import { compose, withHandlers, withStateHandlers, withProps, withState } from 'recompose';
 
 import AdminContentRolesComponent from '../../../components/admin/admin-content/admin-content-roles';
-import { GET_ROLES, REMOVE_ROLE } from '../../../utils/graphql';
+import { GET_ROLES, REMOVE_ROLE, GET_USER_TOKEN } from '../../../utils/graphql';
 import { ALERT_STATUS } from '../../../utils/enum';
 
 export default compose(
+  graphql(GET_USER_TOKEN, { name: 'getUserToken' }),
   graphql(GET_ROLES(['id', 'name', 'accessPermission']), { name: 'getRoles' }),
   graphql(REMOVE_ROLE, { name: 'removeRole' }),
   withProps(() => ({
