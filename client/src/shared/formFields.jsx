@@ -7,11 +7,17 @@ import DatePicker from 'react-datepicker';
 import styled from 'styled-components';
 import 'react-datepicker/dist/react-datepicker.css';
 
-export const BootstrapTextField = ({ validate, field, onChange, onBlur, label, ...rest }) => (
+const RequiredStar = styled.span`
+  color: red;
+`;
+
+export const BootstrapTextField = ({ validate, field, onChange, onBlur, label, required, ...rest }) => (
   <Field validate={validate} field={field}>
     {({ value, error, setValue, setTouched }) => (
       <FormGroup>
-        <Label for={field}>{label}</Label>
+        <Label for={field}>
+          {label} {required && (<RequiredStar>*</RequiredStar>)}
+        </Label>
         <Input
           id={field}
           placeholder={label}
@@ -44,11 +50,13 @@ export const BootstrapSelectField = compose(
       return option;
     }
   })
-)(({ validate, field, onChange, onBlur, label, data, renderOptionItem }) => (
+)(({ validate, field, onChange, onBlur, label, data, renderOptionItem, required }) => (
   <Field validate={validate} field={field} shouldUpdate={data}>
     {({ value, error, setValue, setTouched }) => (
       <FormGroup>
-        <Label for={field}>{label}</Label>
+        <Label for={field}>
+          {label} {required && (<RequiredStar>*</RequiredStar>)}
+        </Label>
         <Input
           id={field}
           type="select"
@@ -79,11 +87,13 @@ const FormFeedbackAlwaysShow = styled(FormFeedback)`
   display: block !important;
 `;
 
-export const BootstrapDatepickerField = ({ validate, field, label }) => (
+export const BootstrapDatepickerField = ({ validate, field, label, required }) => (
   <Field validate={validate} field={field}>
     {({ value, error, setValue, setTouched }) => (
       <FormGroup>
-        <Label for={field}>{label}</Label>
+        <Label for={field}>
+          {label} {required && (<RequiredStar>*</RequiredStar>)}
+        </Label>
         <DatePicker
           className={`form-control ${error ? 'is-invalid' : null}`}
           selected={value ? moment(value, 'DD/MM/YYYY') : null}

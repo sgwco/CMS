@@ -48,6 +48,7 @@ const AdminContentUsersFormComponent = ({
                       field="username"
                       label="Username"
                       type="text"
+                      required={true}
                       validate={requiredValidation}
                       disabled={isEditedUser}
                     />
@@ -64,22 +65,18 @@ const AdminContentUsersFormComponent = ({
                           field="password"
                           label="Password"
                           type="password"
+                          required={true}
                           validate={requiredValidation}
                         />
                         <BootstrapTextField
                           field="retype_password"
                           label="Retype Password"
                           type="password"
+                          required={true}
                           validate={value => passwordMatchValidation(value, formApi.values.password)}
                         />
                       </div>
                     )}
-                    <BootstrapTextField
-                      field="email"
-                      label="Email"
-                      type="text"
-                      validate={emailValidation}
-                    />
                     <BootstrapSelectField
                       field="role"
                       label="Role"
@@ -87,6 +84,21 @@ const AdminContentUsersFormComponent = ({
                         { value: '', text: '-- Please Select --'},
                         ...roles.map(roleMapper)
                       ]}
+                      required={true}
+                      validate={requiredValidation}
+                    />
+                    <BootstrapTextField
+                      field="identityCard"
+                      label="Identity Card"
+                      type="text"
+                      required={true}
+                      validate={requiredValidation}
+                    />
+                    <BootstrapTextField
+                      field="phone"
+                      label="Phone"
+                      type="text"
+                      required={true}
                       validate={requiredValidation}
                     />
                   </Col>
@@ -116,8 +128,24 @@ const AdminContentUsersFormComponent = ({
                             type="text"
                           />
                           <BootstrapTextField
-                            field="phone"
-                            label="Phone"
+                            field="email"
+                            label="Email"
+                            type="text"
+                            validate={emailValidation}
+                          />
+                          <BootstrapTextField
+                            field="banking"
+                            label="Banking"
+                            type="text"
+                          />
+                          <BootstrapTextField
+                            field="bankingNumber"
+                            label="Banking Number"
+                            type="text"
+                          />
+                          <BootstrapTextField
+                            field="bankingOwner"
+                            label="Banking Owner"
                             type="text"
                           />
                         </Collapse>

@@ -4,7 +4,7 @@ import moment from 'moment';
 import isEmail from 'validator/lib/isEmail';
 import sha1 from 'sha1';
 
-import { User, UserStatus, Role } from '../models';
+import { User, UserStatus, Role, UserMeta } from '../models';
 import { promiseQuery, PREFIX } from '../config/database';
 import { createToken } from '../config/auth';
 
@@ -56,9 +56,10 @@ export const Mutation = {
       password: { type: GraphQLNonNull(GraphQLString) },
       email: { type: GraphQLNonNull(GraphQLString) },
       role: { type: GraphQLNonNull(GraphQLID) },
-      fullname: { type: GraphQLString, defaultValue: '' },
-      address: { type: GraphQLString, defaultValue: '' },
-      phone: { type: GraphQLString, defaultValue: '' }
+      fullname: { type: GraphQLString },
+      address: { type: GraphQLString },
+      phone: { type: GraphQLString },
+      // userMeta: { type: GraphQLList(UserMeta) }
     },
     async resolve(source, args, context) {
       if (!context.payload) {
@@ -90,28 +91,28 @@ export const Mutation = {
       const registrationDate = moment().format('YYYY-MM-DD HH:MM');
 
       const id = uuid.v1();
-      try {
-        await promiseQuery(`INSERT INTO ${PREFIX}user VALUES (
-          '${id}',
-          '${username}',
-          '${password}',
-          '${fullname}',
-          '${email}',
-          '${registrationDate}',
-          '${role}',
-          '${address}',
-          '${phone}',
-          '${UserStatus.getValue('ACTIVE').value}'
-        )`);
-      }
-      catch (e) {
-        switch (e.code) {
-          case 'ER_DUP_ENTRY':
-            throw new GraphQLError('User existed');
-          case 'ER_NO_REFERENCED_ROW_2':
-            throw new GraphQLError('User data invalid');
-        }
-      }
+      // try {
+      //   await promiseQuery(`INSERT INTO ${PREFIX}user VALUES (
+      //     '${id}',
+      //     '${username}',
+      //     '${password}',
+      //     '${fullname}',
+      //     '${email}',
+      //     '${registrationDate}',
+      //     '${role}',
+      //     '${address}',
+      //     '${phone}',
+      //     '${UserStatus.getValue('ACTIVE').value}'
+      //   )`);
+      // }
+      // catch (e) {
+      //   switch (e.code) {
+      //     case 'ER_DUP_ENTRY':
+      //       throw new GraphQLError('User existed');
+      //     case 'ER_NO_REFERENCED_ROW_2':
+      //       throw new GraphQLError('User data invalid');
+      //   }
+      // }
 
       return {
         id,

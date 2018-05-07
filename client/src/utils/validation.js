@@ -35,14 +35,12 @@ export const passwordMatchValidation = (currentPassword, abovePassword) => {
   return null;
 };
 
-export const emailValidation = value => {
-  const required = requiredValidation(value);
-  if (required && required.error) return required;
-
-  if (!isEmail(value)) {
-    return { error: 'Email invalid' };
+export const emailValidation = (value = '') => {
+  if (value.length > 0) {
+    if (!isEmail(value)) {
+      return { error: 'Email invalid' };
+    }
   }
-
   return null;
 };
 

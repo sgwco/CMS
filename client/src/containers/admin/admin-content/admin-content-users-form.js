@@ -28,6 +28,7 @@ export default compose(
   withHandlers({
     renderTopTitle: ({ isEditedUser }) => () => isEditedUser ? 'Edit User' : 'Add New User',
     submitForm: ({ createUser, setAlertContent, setAlert, isEditedUser, editUser, match }) => async (data) => {
+      console.log(data);
       try {
         if (data.password) {
           data.password = sha1(data.password);
