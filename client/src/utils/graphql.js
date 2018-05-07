@@ -53,12 +53,17 @@ export const GET_FULL_USERS = gql`
       username
       fullname
       email
+      phone
       registrationDate
       role {
         id
         name
       }
       userStatus
+      userMeta {
+        metaKey
+        metaValue
+      }
     }
   }
 `;
@@ -72,44 +77,59 @@ export const GET_USER_BY_ID = gql`
       phone
       address
       email
+      phone
       role {
         id
         name
+      }
+      userMeta {
+        metaKey
+        metaValue
       }
     }
   }
 `;
 
 export const CREATE_USER = gql`
-  mutation createUser($username: String!, $password: String!, $email: String!, $role: ID!, $fullname: String, $address: String, $phone: String) {
-    createUser(username: $username, password: $password, email: $email, role: $role, fullname: $fullname, address: $address, phone: $phone) {
+  mutation createUser($username: String!, $password: String!, $role: ID!, $email: String, $fullname: String, $address: String, $phone: String, $userMeta: String) {
+    createUser(username: $username, password: $password, role: $role, email: $email, fullname: $fullname, address: $address, phone: $phone, userMeta: $userMeta) {
       id
       username
       fullname
       email
+      phone
       registrationDate
       role {
         id
         name
       }
       userStatus
+      userMeta {
+        metaKey
+        metaValue
+      }
     }
   }
 `;
 
 export const EDIT_USER = gql`
-  mutation editUser($id: ID! $password: String, $email: String, $role: ID, $fullname: String, $address: String, $phone: String) {
-    editUser(id: $id, password: $password, email: $email, role: $role, fullname: $fullname, address: $address, phone: $phone) {
+  mutation editUser($id: ID! $password: String, $email: String, $role: ID, $fullname: String, $address: String, $phone: String, $userMeta: String) {
+    editUser(id: $id, password: $password, email: $email, role: $role, fullname: $fullname, address: $address, phone: $phone, userMeta: $userMeta) {
       id
       username
       fullname
       email
+      phone
       registrationDate
       role {
         id
         name
       }
       userStatus
+      userMeta {
+        metaKey
+        metaValue
+      }
     }
   }
 `;

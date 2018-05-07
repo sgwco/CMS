@@ -7,14 +7,15 @@ import sha1 from 'sha1';
 import { User, UserStatus, Role, UserMeta } from '../models';
 import { promiseQuery, PREFIX } from '../config/database';
 import { createToken } from '../config/auth';
+import { convertCamelCaseToSnakeCase } from '../utils/utils';
 
 export const Query = {
   users: {
     type: new GraphQLList(User),
     resolve: (source, args, { payload }) => {
-      if (!payload) {
-        throw new GraphQLError('Unauthorized');
-      }
+      // if (!payload) {
+      //   throw new GraphQLError('Unauthorized');
+      // }
 
       return promiseQuery(`SELECT * FROM ${PREFIX}user`);
     }
@@ -54,12 +55,12 @@ export const Mutation = {
     args: {
       username: { type: GraphQLNonNull(GraphQLString) },
       password: { type: GraphQLNonNull(GraphQLString) },
-      email: { type: GraphQLNonNull(GraphQLString) },
       role: { type: GraphQLNonNull(GraphQLID) },
+      email: { type: GraphQLString },
       fullname: { type: GraphQLString },
       address: { type: GraphQLString },
       phone: { type: GraphQLString },
-      // userMeta: { type: GraphQLList(UserMeta) }
+      userMeta: { type: GraphQLString }
     },
     async resolve(source, args, context) {
       if (!context.payload) {
@@ -76,11 +77,7 @@ export const Mutation = {
         throw new GraphQLError('Password cannot be null');
       }
 
-      if (!email) {
-        throw new GraphQLError('Email cannot be null');
-      }
-
-      if (!isEmail(email)) {
+      if (email && !isEmail(email)) {
         throw new GraphQLError('Email invalid');
       }
 
@@ -91,28 +88,44 @@ export const Mutation = {
       const registrationDate = moment().format('YYYY-MM-DD HH:MM');
 
       const id = uuid.v1();
-      // try {
-      //   await promiseQuery(`INSERT INTO ${PREFIX}user VALUES (
-      //     '${id}',
-      //     '${username}',
-      //     '${password}',
-      //     '${fullname}',
-      //     '${email}',
-      //     '${registrationDate}',
-      //     '${role}',
-      //     '${address}',
-      //     '${phone}',
-      //     '${UserStatus.getValue('ACTIVE').value}'
-      //   )`);
-      // }
-      // catch (e) {
-      //   switch (e.code) {
-      //     case 'ER_DUP_ENTRY':
-      //       throw new GraphQLError('User existed');
-      //     case 'ER_NO_REFERENCED_ROW_2':
-      //       throw new GraphQLError('User data invalid');
-      //   }
-      // }
+      try {
+        await promiseQuery(`INSERT INTO ${PREFIX}user VALUES (
+          '${id}',
+          '${username}',
+          '${password}',
+          '${fullname || ''}',
+          '${email || ''}',
+          '${registrationDate}',
+          '${role}',
+          '${address || ''}',
+          '${phone || ''}',
+          '${UserStatus.getValue('ACTIVE').value}'
+        )`);
+      }
+      catch (e) {
+        switch (e.code) {
+          case 'ER_DUP_ENTRY':
+            throw new GraphQLError('User existed');
+          case 'ER_NO_REFERENCED_ROW_2':
+            throw new GraphQLError('User data invalid');
+        }
+      }
+
+      if (args.userMeta) {
+        const userMeta = JSON.parse(args.userMeta);
+        const userMetaPromises = [];
+        for (const index in userMeta) {
+          const metaId = uuid.v1();
+
+          userMetaPromises.push(promiseQuery(`INSERT INTO ${PREFIX}user_meta VALUES (
+            '${metaId}',
+            '${id}',
+            '${userMeta[index].metaKey}',
+            '${userMeta[index].metaValue}'
+          )`));
+        }
+        await Promise.all(userMetaPromises);
+      }
 
       return {
         id,
@@ -137,7 +150,8 @@ export const Mutation = {
       role: { type: GraphQLID },
       fullname: { type: GraphQLString },
       address: { type: GraphQLString },
-      phone: { type: GraphQLString }
+      phone: { type: GraphQLString },
+      userMeta: { type: GraphQLString }
     },
     async resolve(source, args, context) {
       if (!args.id) {
@@ -167,6 +181,17 @@ export const Mutation = {
           case 'ER_NO_REFERENCED_ROW_2':
             throw new GraphQLError('User data invalid');
         }
+      }
+
+      if (args.userMeta) {
+        const userMeta = JSON.parse(args.userMeta);
+        const userMetaPromises = [];
+        for (const meta of userMeta) {
+          userMetaPromises.push(
+            promiseQuery(`UPDATE ${PREFIX}user_meta SET meta_value='${meta.metaValue}' WHERE user_id='${args.id}' AND meta_key='${meta.metaKey}'`)
+          );
+        }
+        await Promise.all(userMetaPromises);
       }
 
       context.dataloaders.usersByIds.clear(args.id);

@@ -21,18 +21,29 @@ export default compose(
   withStateHandlers(
     ({ additionalInformationVisible = false }) => ({ additionalInformationVisible }),
     {
-      removeAlert: () => () => ({ alertVisible: ALERT_STATUS.HIDDEN }),
+      removeAlert: ({ setAlert }) => () => setAlert(ALERT_STATUS.HIDDEN),
       toggleAdditionalForm: ({ additionalInformationVisible }) => () => ({ additionalInformationVisible: !additionalInformationVisible })
     }
   ),
   withHandlers({
     renderTopTitle: ({ isEditedUser }) => () => isEditedUser ? 'Edit User' : 'Add New User',
     submitForm: ({ createUser, setAlertContent, setAlert, isEditedUser, editUser, match }) => async (data) => {
-      console.log(data);
       try {
         if (data.password) {
           data.password = sha1(data.password);
           delete data.retype_password;
+        }
+
+        const userMetaKey = ['identityCard', 'banking', 'bankingNumber', 'bankingOwner'];
+        const userMeta = userMetaKey.map(item => ({
+          metaKey: item,
+          metaValue: data[item] || ''
+        }));
+        if (userMeta.length > 0) {
+          data.userMeta = JSON.stringify(userMeta);
+          for (const key of userMetaKey) {
+            delete data[key];
+          }
         }
 
         if (isEditedUser) {
@@ -67,7 +78,7 @@ export default compose(
               }
             }
           });
-          setAlertContent('Create user successfully!');
+          setAlertContent('Edit user successfully!');
           setAlert(ALERT_STATUS.SUCCESS);
         }
         else {
@@ -100,7 +111,7 @@ export default compose(
               }
             }
           });
-          setAlertContent('Edit user successfully!');
+          setAlertContent('Create user successfully!');
           setAlert(ALERT_STATUS.SUCCESS);
         }
       }
@@ -121,6 +132,10 @@ export default compose(
           formApi.setValue('fullname', user.fullname);
           formApi.setValue('address', user.address);
           formApi.setValue('phone', user.phone);
+          formApi.setValue('identityCard', (user.userMeta.find(item => item.metaKey === 'identityCard') || {}).metaValue);
+          formApi.setValue('banking', (user.userMeta.find(item => item.metaKey === 'banking') || {}).metaValue);
+          formApi.setValue('bankingNumber', (user.userMeta.find(item => item.metaKey === 'bankingNumber') || {}).metaValue);
+          formApi.setValue('bankingOwner', (user.userMeta.find(item => item.metaKey === 'bankingOwner') || {}).metaValue);
         }
         catch (e) {
           history.push('/admin/user');

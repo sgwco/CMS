@@ -23,7 +23,7 @@ export default compose(
   withStateHandlers(
     ({ detailModalVisible = false, selectedPackage = {} }) => ({ detailModalVisible, selectedPackage }),
     {
-      removeAlert: () => () => ({ alertVisible: ALERT_STATUS.HIDDEN }),
+      removeAlert: ({ setAlert }) => () => setAlert(ALERT_STATUS.HIDDEN),
       toggleDetailModal: () => (selectedPackage = {}) =>
         ({ detailModalVisible: Object.keys(selectedPackage).length > 0, selectedPackage })
     }

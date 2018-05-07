@@ -1,5 +1,6 @@
 import { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLNonNull, GraphQLInt, GraphQLEnumType, GraphQLList } from 'graphql';
 import { Role } from './role';
+import { promiseQuery, PREFIX } from '../config/database';
 
 export const UserStatus = new GraphQLEnumType({
   name: 'UserStatus',
@@ -14,9 +15,24 @@ export const UserMeta = new GraphQLObjectType({
   name: 'UserMeta',
   fields: {
     id: { type: GraphQLNonNull(GraphQLID) },
-    userId: { type: GraphQLNonNull(GraphQLString) },
-    metaKey: { type: GraphQLNonNull(GraphQLString) },
-    metaValue: { type: GraphQLString }
+    userId: {
+      type: GraphQLNonNull(GraphQLString),
+      resolve({ user_id }) {
+        return user_id;
+      }
+    },
+    metaKey: {
+      type: GraphQLNonNull(GraphQLString),
+      resolve({ meta_key }) {
+        return meta_key;
+      }
+    },
+    metaValue: {
+      type: GraphQLString,
+      resolve({ meta_value }) {
+        return meta_value;
+      }
+    }
   }
 });
 
@@ -26,8 +42,8 @@ export const User = new GraphQLObjectType({
     id: { type: GraphQLNonNull(GraphQLID) },
     username: { type: GraphQLNonNull(GraphQLString) },
     password: { type: GraphQLNonNull(GraphQLString) },
-    fullname: { type: GraphQLNonNull(GraphQLString) },
-    email: { type: GraphQLNonNull(GraphQLString) },
+    fullname: { type: GraphQLString },
+    email: { type: GraphQLString },
     registrationDate: {
       type: GraphQLNonNull(GraphQLString),
       resolve({ registration_date }) {
@@ -48,6 +64,11 @@ export const User = new GraphQLObjectType({
         return user_status;
       }
     },
-    userMeta: { type: GraphQLList(UserMeta) }
+    userMeta: {
+      type: GraphQLList(UserMeta),
+      resolve({ id }) {
+        return promiseQuery(`SELECT * FROM ${PREFIX}user_meta WHERE user_id='${id}'`);
+      }
+    }
   }
 });

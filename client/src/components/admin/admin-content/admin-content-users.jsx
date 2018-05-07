@@ -110,7 +110,7 @@ export default compose(
     tableHeaders: [
       { text: 'User Name', dataField: 'username', filter: textFilter({ delay: 0 }) },
       { text: 'Full Name', dataField: 'fullname', filter: textFilter({ delay: 0 }), formatter: cell => cell || '—' },
-      { text: 'Email', dataField: 'email', filter: textFilter({ delay: 0 }) },
+      { text: 'Email', dataField: 'email', filter: textFilter({ delay: 0 }), formatter: cell => cell || '—' },
       { text: 'Registration Date', dataField: 'registrationDate', formatter: (cell) => moment(cell).format('DD/MM/YYYY') },
       { text: 'Role', dataField: 'role.name' },
       { text: 'User Status', dataField: 'userStatus', filter: selectFilter({ options: userStatusFilterEnum }), classes: 'user-status-cell' },
