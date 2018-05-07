@@ -44,3 +44,8 @@ export function chooseBlackOrWhiteDependOnHex(hex) {
   const rgb = hexToRgb(hex);
   return rgb.r * 0.299 + rgb.g * 0.587 + rgb.b * 0.114 > 186 ? '#000' : '#fff';
 }
+
+export function checkRoleIsAllowed(role, permission) {
+  if (!permission) return 1;
+  return role & permission;
+}

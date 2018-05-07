@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment';
 import FontAwesome from '@fortawesome/react-fontawesome';
-import { Breadcrumb, BreadcrumbItem, Alert } from 'reactstrap';
+import { Breadcrumb, BreadcrumbItem, Alert, Button } from 'reactstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, { textFilter, selectFilter } from 'react-bootstrap-table2-filter';
 import { compose, withHandlers, withProps } from 'recompose';
@@ -10,7 +10,7 @@ import { compose, withHandlers, withProps } from 'recompose';
 import { ALERT_STATUS } from '../../../utils/enum';
 import { BoxWrapper, BoxBody } from '../../../shared/boxWrapper';
 import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/contentContainer';
-import { FunctionCell, ContentHeaderTitleStyled, MarginLeftButtonStyled, FunctionWrapperStyled, LoadingIndicator } from '../../../shared/components';
+import { ContentHeaderTitleStyled, MarginLeftButtonStyled, FunctionWrapperStyled, LoadingIndicator, FunctionItem } from '../../../shared/components';
 
 const userStatusFilterEnum = {
   'ACTIVE': 'Active',
@@ -68,7 +68,7 @@ const AdminContentUsersComponent = ({
 export default compose(
   withRouter,
   withHandlers({
-    functionFormatter: ({ onRemoveUser, match }) => (cell, row) => {
+    functionFormatter: ({ onRemoveUser, match, getUserToken: { loggedInUser = {} } }) => (cell, row) => {
       let functionCell = null;
       functionCell = (
         <FunctionWrapperStyled>
@@ -83,7 +83,24 @@ export default compose(
         );
       }
       else {
-        functionCell = <FunctionCell url={`${match.url}/edit/${row.id}`} onDelete={() => onRemoveUser(row.id)} />;
+        functionCell = (
+          <FunctionWrapperStyled>
+            <FunctionItem>
+              <Link to={`${match.url}/edit/${row.id}`}>
+                <Button color="warning">
+                  <FontAwesome icon='edit' className="text-white" />
+                </Button>
+              </Link>
+            </FunctionItem>
+            {loggedInUser.username !== row.username && (
+              <FunctionItem>
+                <Button color="danger" onClick={() => onRemoveUser(row.id)}>
+                  <FontAwesome icon='trash' className="text-white" />
+                </Button>
+              </FunctionItem>
+            )}
+          </FunctionWrapperStyled>
+        );
       }
       
       return functionCell;

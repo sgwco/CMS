@@ -49,7 +49,7 @@ export default compose(
   withRouter,
   lifecycle({
     componentWillMount() {
-      if (this.props.match.path === '/admin') {
+      if (this.props.location.pathname === '/admin') {
         this.props.history.push('/admin/dashboard');
       }
     }

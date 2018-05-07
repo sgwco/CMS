@@ -3,11 +3,12 @@ import { graphql } from 'react-apollo';
 
 import AdminContentUsersComponent from '../../../components/admin/admin-content/admin-content-users';
 import { ALERT_STATUS } from '../../../utils/enum';
-import { GET_FULL_USERS, REMOVE_USER } from '../../../utils/graphql';
+import { GET_FULL_USERS, REMOVE_USER, GET_USER_TOKEN } from '../../../utils/graphql';
 
 export default compose(
   graphql(GET_FULL_USERS, { name: 'getUsers' }),
   graphql(REMOVE_USER, { name: 'removeUser' }),
+  graphql(GET_USER_TOKEN, { name: 'getUserToken' }),
   withProps(() => ({
     breadcrumbItems: [
       { url: '/admin', icon: 'home', text: 'Home' },
