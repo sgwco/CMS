@@ -78,7 +78,6 @@ const AdminContentPackageComponent = ({
                 <CardViewListStyled color='#fd79a8' icon='clock' label='Registered Date'>
                   {moment(selectedPackage.registerDate).format('DD/MM/YYYY')}
                 </CardViewListStyled>
-                {console.log(selectedPackage.duration === getKeyAsString(DURATION_TYPE.MONTH_6, DURATION_TYPE))}
                 <CardViewListStyled
                   color='#a29bfe'
                   icon='briefcase'

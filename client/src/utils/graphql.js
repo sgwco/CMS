@@ -54,6 +54,7 @@ export const GET_FULL_USERS = gql`
       fullname
       email
       phone
+      address
       registrationDate
       role {
         id
@@ -74,14 +75,15 @@ export const GET_USER_BY_ID = gql`
       id
       username
       fullname
-      phone
-      address
       email
       phone
+      address
+      registrationDate
       role {
         id
         name
       }
+      userStatus
       userMeta {
         metaKey
         metaValue
@@ -98,6 +100,7 @@ export const CREATE_USER = gql`
       fullname
       email
       phone
+      address
       registrationDate
       role {
         id
@@ -120,6 +123,7 @@ export const EDIT_USER = gql`
       fullname
       email
       phone
+      address
       registrationDate
       role {
         id

@@ -132,6 +132,7 @@ export default compose(
           formApi.setValue('fullname', user.fullname);
           formApi.setValue('address', user.address);
           formApi.setValue('phone', user.phone);
+          formApi.setValue('address', user.address);
           formApi.setValue('identityCard', (user.userMeta.find(item => item.metaKey === 'identityCard') || {}).metaValue);
           formApi.setValue('banking', (user.userMeta.find(item => item.metaKey === 'banking') || {}).metaValue);
           formApi.setValue('bankingNumber', (user.userMeta.find(item => item.metaKey === 'bankingNumber') || {}).metaValue);

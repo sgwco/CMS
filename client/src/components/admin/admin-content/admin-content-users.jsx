@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment';
 import FontAwesome from '@fortawesome/react-fontawesome';
-import { Breadcrumb, BreadcrumbItem, Alert, Button } from 'reactstrap';
+import { Breadcrumb, BreadcrumbItem, Alert, Button, Modal, ModalBody, ModalHeader } from 'reactstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, { textFilter, selectFilter } from 'react-bootstrap-table2-filter';
 import { compose, withHandlers, withProps } from 'recompose';
@@ -10,7 +10,14 @@ import { compose, withHandlers, withProps } from 'recompose';
 import { ALERT_STATUS } from '../../../utils/enum';
 import { BoxWrapper, BoxBody } from '../../../shared/boxWrapper';
 import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/contentContainer';
-import { ContentHeaderTitleStyled, MarginLeftButtonStyled, FunctionWrapperStyled, LoadingIndicator, FunctionItem } from '../../../shared/components';
+import {
+  ContentHeaderTitleStyled,
+  MarginLeftButtonStyled,
+  FunctionWrapperStyled,
+  LoadingIndicator,
+  FunctionItem,
+  CardViewListStyled
+} from '../../../shared/components';
 
 const userStatusFilterEnum = {
   'ACTIVE': 'Active',
@@ -24,7 +31,10 @@ const AdminContentUsersComponent = ({
   removeAlert,
   alertContent,
   tableHeaders,
-  getUsers: { users = [] }
+  getUsers: { users = [] },
+  detailModalVisible,
+  toggleDetailModal,
+  selectedUser
 }) => (
   <ContentContainer>
     <ContentHeader>
@@ -59,6 +69,52 @@ const AdminContentUsersComponent = ({
             striped
             hover
           />
+          {detailModalVisible && (
+            <Modal isOpen={detailModalVisible} toggle={() => toggleDetailModal()} size="lg">
+              <ModalHeader toggle={() => toggleDetailModal()}>Package detail</ModalHeader>
+              <ModalBody>
+                <CardViewListStyled color='#e74c3c' icon='user' label='User'>
+                  {selectedUser.username + (selectedUser.fullname && ` (${selectedUser.fullname})`)}
+                </CardViewListStyled>
+                {console.log(selectedUser)}
+                {selectedUser.phone && (
+                  <CardViewListStyled color='#00b894' icon='phone' label='Phone'>
+                    {selectedUser.phone}
+                  </CardViewListStyled>
+                )}
+                {selectedUser.email && (
+                  <CardViewListStyled color='#fd79a8' icon='envelope' label='Email'>
+                    <a href={`mailto:${selectedUser.email}`}>{selectedUser.email}</a>
+                  </CardViewListStyled>
+                )}
+                {selectedUser.registrationDate && (
+                  <CardViewListStyled color='#6c5ce7' icon='calendar' label='Registered Date'>
+                    {moment(selectedUser.registrationDate).format('DD/MM/YYYY')}
+                  </CardViewListStyled>
+                )}
+                {selectedUser.address && (
+                  <CardViewListStyled color='#e056fd' icon='location-arrow' label='Address'>
+                    {selectedUser.address}
+                  </CardViewListStyled>
+                )}
+                {selectedUser.role && (
+                  <CardViewListStyled color='#ff7979' icon='address-card' label='Role'>
+                    {selectedUser.role.name}
+                  </CardViewListStyled>
+                )}
+                {selectedUser.userMeta && [
+                  <CardViewListStyled color='#6ab04c' icon='id-card' label='Identity Card' key={1}>
+                    {selectedUser.userMeta.find(item => item.metaKey === 'identityCard').metaValue}
+                  </CardViewListStyled>,
+                  <CardViewListStyled color='#7ed6df' icon='university' label='Banking' key={2}>
+                    <div>Banking: <strong>{selectedUser.userMeta.find(item => item.metaKey === 'banking').metaValue || 'Unknown'}</strong></div>
+                    <div>Number: <strong>{selectedUser.userMeta.find(item => item.metaKey === 'bankingNumber').metaValue || 'Unknown'}</strong></div>
+                    <div>Owner: <strong>{selectedUser.userMeta.find(item => item.metaKey === 'bankingOwner').metaValue || 'Unknown'}</strong></div>
+                  </CardViewListStyled>
+                ]}
+              </ModalBody>
+            </Modal>
+          )}
         </BoxBody>
       </BoxWrapper>
     </ContentBody>
@@ -68,7 +124,7 @@ const AdminContentUsersComponent = ({
 export default compose(
   withRouter,
   withHandlers({
-    functionFormatter: ({ onRemoveUser, match, getUserToken: { loggedInUser = {} } }) => (cell, row) => {
+    functionFormatter: ({ onRemoveUser, match, getUserToken: { loggedInUser = {} }, toggleDetailModal }) => (cell, row) => {
       let functionCell = null;
       functionCell = (
         <FunctionWrapperStyled>
@@ -85,6 +141,11 @@ export default compose(
       else {
         functionCell = (
           <FunctionWrapperStyled>
+            <FunctionItem>
+              <Button color="info" onClick={() => toggleDetailModal(row)}>
+                <FontAwesome icon='eye' />
+              </Button>
+            </FunctionItem>
             <FunctionItem>
               <Link to={`${match.url}/edit/${row.id}`}>
                 <Button color="warning">
