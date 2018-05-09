@@ -136,20 +136,17 @@ var _sha = require('sha1');
 
 var _sha2 = _interopRequireDefault(_sha);
 
-var _config = require('../../config.json');
-
-var _config2 = _interopRequireDefault(_config);
-
 var _enum = require('../enum');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
-var HOSTING = '127.0.0.1';
-var USER = 'root';
-var PASSWORD = 'password';
-var DATABASE = 'sgw_cms';
+var _require = require(process.env.NODE_ENV === 'production' ? '../../../config.json' : '../../config.json'),
+    HOSTING = _require.HOSTING,
+    USER = _require.USER,
+    PASSWORD = _require.PASSWORD,
+    DATABASE = _require.DATABASE;
 
 var PREFIX = exports.PREFIX = 'sgw_';
 

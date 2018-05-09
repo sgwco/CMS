@@ -9,7 +9,7 @@ import AdminSidebarMenuComponent from './admin-sidebar-menu';
 const AdminSidebarComponent = ({
   getUserToken: { loggedInUser },
   profile: { avatar },
-  menuData,
+  listMenus,
   checkRoleAllowed
 }) => (
   <aside className="main-sidebar">
@@ -34,22 +34,20 @@ const AdminSidebarComponent = ({
         </InputGroup>
       </form> */}
       <ul className="sidebar-menu" data-widget="tree">
-        {menuData.map((item, itemIndex) => [
-          loggedInUser && checkRoleAllowed(loggedInUser.role.accessPermission, item.showPermission) !== 0 && (
-            <li key={itemIndex} className="header">{item.header}</li>
-          ),
-          item.menus.map((menuItem, menuIndex) => (
-            loggedInUser && checkRoleAllowed(loggedInUser.role.accessPermission, menuItem.readPermission) !== 0 && (
-              <AdminSidebarMenuComponent
-                key={menuIndex}
-                title={menuItem.title}
-                href={menuItem.href}
-                icon={menuItem.icon}
-                subMenu={menuItem.subMenu}
-                badgePrimary={menuItem.badgePrimary}
-              />
-            )
-          ))
+        <li className="header">MAIN NAVIGATION</li>
+        {listMenus.map((item, index) => [
+          loggedInUser && checkRoleAllowed(loggedInUser.role.accessPermission, item.readPermission) !== 0 && (
+            <AdminSidebarMenuComponent
+              key={index}
+              menuItem={item}
+              title={item.title}
+              href={item.href}
+              icon={item.icon}
+              subMenu={item.subMenu}
+              badgePrimary={item.badgePrimary}
+              isSeparator={item.separator}
+            />
+          )
         ])}
       </ul>
     </section>

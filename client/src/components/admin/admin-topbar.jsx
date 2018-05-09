@@ -10,7 +10,8 @@ const AdminTopbarProfileComponent = ({
 }) => (
   <UncontrolledDropdownStyled className="user user-menu" nav inNavbar>
     <DropdownToggle nav caret>
-      <img src="https://graph.facebook.com/100006945288953/picture?type=square" className="user-image" alt="User Image" />
+      {/* <img src="https://graph.facebook.com/100006945288953/picture?type=square" className="user-image" alt="User Image" /> */}
+      <FontAwesome icon="user" className="user-image" />
       <span className="hidden-xs">{loggedInUser && (loggedInUser.fullname || loggedInUser.username)}</span>
     </DropdownToggle>
     <DropdownMenuStyled className="dropdown">
@@ -32,7 +33,8 @@ const AdminTopbarComponent = ({
   companyName,
   logo,
   getUserToken,
-  logout
+  logout,
+  toggleSidebar
 }) => (
   <header className="main-header">
     <a href="#" className="logo">
@@ -45,7 +47,7 @@ const AdminTopbarComponent = ({
     </a>
     <NavbarStyled className="navbar navbar-static-top">
       <NavItemStyled className="nav-item">
-        <a href="#" className="sidebar-toggle" data-toggle="push-menu" role="button">
+        <a href="#" className="sidebar-toggle" data-toggle="push-menu" role="button" onClick={toggleSidebar}>
           <FontAwesome icon='bars' />
         </a>
       </NavItemStyled>

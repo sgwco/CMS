@@ -1,10 +1,16 @@
-import { compose, lifecycle } from 'recompose';
+import { compose, lifecycle, withStateHandlers } from 'recompose';
 import { withRouter } from 'react-router-dom';
 
 import AdminComponent from '../../components/admin/admin';
 
 export default compose(
   withRouter,
+  withStateHandlers(
+    ({ collapseSidebar = false }) => ({ collapseSidebar }),
+    {
+      toggleSidebar: ({ collapseSidebar }) => () => ({ collapseSidebar: !collapseSidebar })
+    }
+  ),
   lifecycle({
     componentWillMount() {
       const token = localStorage.getItem('token');

@@ -4,9 +4,9 @@ import AdminSidebarContainer from '../../containers/admin/admin-sidebar/admin-si
 import AdminContentContainer from '../../containers/admin/admin-content/admin-content';
 import logo from '../../assets/img/logo.png';
 
-const AdminComponent = () => (
-  <div className="wrapper">
-    <AdminTopBarContainer logo={logo} companyName="Sai Gon Web" />
+const AdminComponent = ({ collapseSidebar, toggleSidebar }) => (
+  <div className={`wrapper sidebar-mini ${collapseSidebar && 'sidebar-collapse'}`}>
+    <AdminTopBarContainer logo={logo} companyName="Sai Gon Web" toggleSidebar={toggleSidebar} />
     <AdminSidebarContainer />
     <AdminContentContainer />
   </div>

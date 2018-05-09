@@ -1,7 +1,7 @@
 import mysql from 'mysql';
 import moment from 'moment';
 import sha1 from 'sha1';
-import { HOSTING, USER, PASSWORD, DATABASE } from '../../config.json';
+const { HOSTING, USER, PASSWORD, DATABASE } = require(process.env.NODE_ENV === 'production' ? '../../../config.json' : '../../config.json');
 
 import { ROLE_CAPABILITIES } from '../enum';
 

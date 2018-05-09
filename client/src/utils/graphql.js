@@ -300,9 +300,18 @@ export const CREATE_PACKAGE = gql`
         fullname
       }
       price
+      currency
       duration
       registerDate
       status
+      transferMoney {
+        id
+        amount
+        interestRate
+        date
+        status
+        withdrawDate
+      }
     }
   }
 `;
@@ -317,6 +326,7 @@ export const EDIT_PACKAGE = gql`
         fullname
       }
       price
+      currency
       duration
       registerDate
       status

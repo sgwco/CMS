@@ -38,7 +38,7 @@ const AdminPackageModal = ({
         {selectedPackage.user.username + (selectedPackage.user.fullname && ` (${selectedPackage.user.fullname})`)}
       </CardViewListStyled>
       <CardViewListStyled color='#00b894' icon='money-bill-alt' label='Package Price'>
-        {`${selectedPackage.price} ${selectedPackage.currency}`}
+        {`${selectedPackage.price.toLocaleString('vi')} ${selectedPackage.currency}`}
       </CardViewListStyled>
       <CardViewListStyled color='#fd79a8' icon='clock' label='Registered Date'>
         {moment(selectedPackage.registerDate).format('DD/MM/YYYY')}
@@ -192,10 +192,32 @@ export default compose(
     tableHeaders: [
       { text: 'Username', dataField: 'user.username', filter: textFilter({ delay: 0 }), sort: true },
       { text: 'Fullname', dataField: 'user.fullname', filter: textFilter({ delay: 0 }), formatter: cell => cell || '—', sort: true },
-      { text: 'Package Price', dataField: 'price', filter: textFilter({ delay: 0 }), sort: true },
-      { text: 'Package Type', dataField: 'duration', filter: selectFilter({ options: concatObjectEnum(DURATION_TYPE, ' Months') }), formatter: cell => DURATION_TYPE[cell] + ' Months' },
-      { text: 'Register Date', dataField: 'registerDate', filter: textFilter({ delay: 0 }), formatter: cell => moment(cell).format('DD/MM/YYYY'), sort: true },
-      { text: 'Status', dataField: 'status', filter: selectFilter({ options: uppercaseObjectValue(PACKAGE_STATUS) }), formatter: packageStatusFormatter },
+      {
+        text: 'Package Price',
+        dataField: 'price',
+        filter: textFilter({ delay: 0 }),
+        sort: true,
+        formatter: (cell, row) => `${cell.toLocaleString('vi')} ${row.currency}`
+      },
+      {
+        text: 'Package Type',
+        dataField: 'duration',
+        filter: selectFilter({ options: concatObjectEnum(DURATION_TYPE, ' Months') }),
+        formatter: cell => DURATION_TYPE[cell] + ' Months'
+      },
+      {
+        text: 'Register Date',
+        dataField: 'registerDate',
+        filter: textFilter({ delay: 0 }),
+        formatter: cell => moment(cell).format('DD/MM/YYYY'),
+        sort: true
+      },
+      {
+        text: 'Status',
+        dataField: 'status',
+        filter: selectFilter({ options: uppercaseObjectValue(PACKAGE_STATUS) }),
+        formatter: packageStatusFormatter
+      },
       { text: 'Function', dataField: '', formatter: functionFormatter }
     ],
     packageStatusCardButton: {
