@@ -21,11 +21,11 @@ export default compose(
   withStateHandlers(
     ({ additionalInformationVisible = false }) => ({ additionalInformationVisible }),
     {
-      removeAlert: ({ setAlert }) => () => setAlert(ALERT_STATUS.HIDDEN),
       toggleAdditionalForm: ({ additionalInformationVisible }) => () => ({ additionalInformationVisible: !additionalInformationVisible })
     }
   ),
   withHandlers({
+    removeAlert: ({ setAlert }) => () => setAlert(ALERT_STATUS.HIDDEN),
     renderTopTitle: ({ isEditedUser }) => () => isEditedUser ? 'Edit User' : 'Add New User',
     submitForm: ({ createUser, setAlertContent, setAlert, isEditedUser, editUser, match }) => async (data) => {
       try {

@@ -21,14 +21,13 @@ export default compose(
   withState('alertVisible', 'setAlert', ALERT_STATUS.HIDDEN),
   withState('alertContent', 'setAlertContent', ''),
   withStateHandlers(
-    ({ detailModalVisible = false, selectedPackage = {} }) => ({ detailModalVisible, selectedPackage }),
+    ({ selectedPackageIndex = -1 }) => ({ selectedPackageIndex }),
     {
-      removeAlert: ({ setAlert }) => () => setAlert(ALERT_STATUS.HIDDEN),
-      toggleDetailModal: () => (selectedPackage = {}) =>
-        ({ detailModalVisible: Object.keys(selectedPackage).length > 0, selectedPackage })
+      toggleDetailModal: () => (selectedPackageIndex = -1) => ({ selectedPackageIndex })
     }
   ),
   withHandlers({
+    removeAlert: ({ setAlert }) => () => setAlert(ALERT_STATUS.HIDDEN),
     onRemovePackage: ({ removePackage, setAlertContent, setAlert }) => async id => {
       const result = confirm('Do you want to remove this package?');
       if (result) {
@@ -58,7 +57,7 @@ export default compose(
         }
       }
     },
-    onDeactivePackage: ({ editPackage, setAlertContent, setAlert, toggleDetailModal }) => async id => {
+    onDeactivePackage: ({ editPackage, setAlertContent, setAlert }) => async id => {
       const result = confirm('Do you want to deactive this package?');
       if (result) {
         try {
@@ -87,11 +86,9 @@ export default compose(
           setAlertContent('Error: ' + e.graphQLErrors[0].message);
           setAlert(ALERT_STATUS.ERROR);
         }
-
-        toggleDetailModal();
       }
     },
-    onActivePackage: ({ editPackage, setAlertContent, setAlert, toggleDetailModal }) => async id => {
+    onActivePackage: ({ editPackage, setAlertContent, setAlert }) => async id => {
       const result = confirm('Do you want to active this package?');
       if (result) {
         try {
@@ -120,11 +117,9 @@ export default compose(
           setAlertContent('Error: ' + e.graphQLErrors[0].message);
           setAlert(ALERT_STATUS.ERROR);
         }
-
-        toggleDetailModal();
       }
     },
-    onUpgradePackage: ({ editPackage, setAlertContent, setAlert, toggleDetailModal }) => async id => {
+    onUpgradePackage: ({ editPackage, setAlertContent, setAlert }) => async id => {
       const result = confirm('Do you want to upgrade this package duration to 12 months?');
       if (result) {
         try {
@@ -153,11 +148,9 @@ export default compose(
           setAlertContent('Error: ' + e.graphQLErrors[0].message);
           setAlert(ALERT_STATUS.ERROR);
         }
-
-        toggleDetailModal();
       }
     },
-    onWithdraw: ({ editPackageProgress, toggleDetailModal }) => async (progressItem) => {
+    onWithdraw: ({ editPackageProgress }) => async (progressItem) => {
       const result = confirm(`Do you want to withdraw this package at ${moment(progressItem.date).format('DD/MM/YYYY')}?`);
       if (result) {
         try {
@@ -185,8 +178,6 @@ export default compose(
         catch (e) {
           alert('Error: ' + e.graphQLErrors[0].message);
         }
-
-        toggleDetailModal();
       }
     }
   })

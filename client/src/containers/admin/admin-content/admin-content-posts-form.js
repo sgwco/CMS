@@ -1,4 +1,4 @@
-import { compose, branch, withProps, withState, withStateHandlers, withHandlers } from 'recompose';
+import { compose, branch, withProps, withState, withHandlers } from 'recompose';
 import { graphql, withApollo } from 'react-apollo';
 import moment from 'moment';
 
@@ -18,13 +18,8 @@ export default compose(
   graphql(GET_FULL_CATEGORIES, { name: 'getCategories' }),
   withState('alertVisible', 'setAlert', ALERT_STATUS.HIDDEN),
   withState('alertContent', 'setAlertContent', ''),
-  withStateHandlers(
-    null,
-    {
-      removeAlert: ({ setAlert }) => () => setAlert(ALERT_STATUS.HIDDEN),
-    }
-  ),
   withHandlers({
+    removeAlert: ({ setAlert }) => () => setAlert(ALERT_STATUS.HIDDEN),
     renderTopTitle: ({ isEditedUser }) => () => isEditedUser ? 'Edit Post' : 'Add New Post',
     submitForm: ({ createPost, setAlertContent, setAlert, isEditedUser, editPost, match }) => async (data) => {
       try {

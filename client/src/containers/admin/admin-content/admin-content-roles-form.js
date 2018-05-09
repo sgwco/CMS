@@ -1,4 +1,4 @@
-import { compose, branch, withProps, withState, withStateHandlers, withHandlers } from 'recompose';
+import { compose, branch, withProps, withState, withHandlers } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { graphql, withApollo } from 'react-apollo';
 
@@ -32,12 +32,8 @@ export default compose(
   })),
   withState('alertVisible', 'setAlert', ALERT_STATUS.HIDDEN),
   withState('alertContent', 'setAlertContent', ''),
-  withStateHandlers(
-    null,
-    {
-      removeAlert: ({ setAlert }) => () => setAlert(ALERT_STATUS.HIDDEN),
-    }),
   withHandlers({
+    removeAlert: ({ setAlert }) => () => setAlert(ALERT_STATUS.HIDDEN),
     selectAllRoles: ({ listRoles }) => (e, formApi) => {
       const roles = listRoles.map(item => {
         const obj = {};

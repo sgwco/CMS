@@ -1,4 +1,4 @@
-import { compose, withProps, withState, withStateHandlers, withHandlers } from 'recompose';
+import { compose, withProps, withState, withHandlers } from 'recompose';
 import { graphql } from 'react-apollo';
 
 import AdminContentPostsComponent from '../../../components/admin/admin-content/admin-content-posts';
@@ -16,13 +16,8 @@ export default compose(
   })),
   withState('alertVisible', 'setAlert', ALERT_STATUS.HIDDEN),
   withState('alertContent', 'setAlertContent', ''),
-  withStateHandlers(
-    null,
-    {
-      removeAlert: ({ setAlert }) => () => setAlert(ALERT_STATUS.HIDDEN),
-    }
-  ),
   withHandlers({
+    removeAlert: ({ setAlert }) => () => setAlert(ALERT_STATUS.HIDDEN),
     onRemovePost: ({ removePost, setAlertContent, setAlert }) => async id => {
       const result = confirm('Do you want to remove this post?');
       if (result) {

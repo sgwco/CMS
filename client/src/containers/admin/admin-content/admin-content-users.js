@@ -20,12 +20,12 @@ export default compose(
   withStateHandlers(
     ({ detailModalVisible = false, selectedUser = {} }) => ({ detailModalVisible, selectedUser }),
     {
-      removeAlert: ({ setAlert }) => () => setAlert(ALERT_STATUS.HIDDEN),
       toggleDetailModal: () => (selectedUser = {}) =>
         ({ detailModalVisible: Object.keys(selectedUser).length > 0, selectedUser })
     }
   ),
   withHandlers({
+    removeAlert: ({ setAlert }) => () => setAlert(ALERT_STATUS.HIDDEN),
     onRemoveUser: ({ removeUser, setAlertContent, setAlert }) => async id => {
       const result = confirm('Do you want to remove this user?');
       if (result) {

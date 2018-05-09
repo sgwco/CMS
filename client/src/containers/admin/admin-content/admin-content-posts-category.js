@@ -1,4 +1,4 @@
-import { compose, withProps, withState, withStateHandlers, withHandlers } from 'recompose';
+import { compose, withProps, withState, withHandlers } from 'recompose';
 import { graphql } from 'react-apollo';
 
 import AdminContentPostsCategoryComponent from '../../../components/admin/admin-content/admin-content-posts-category';
@@ -15,13 +15,8 @@ export default compose(
   })),
   withState('alertVisible', 'setAlert', ALERT_STATUS.HIDDEN),
   withState('alertContent', 'setAlertContent', ''),
-  withStateHandlers(
-    null,
-    {
-      removeAlert: ({ setAlert }) => () => setAlert(ALERT_STATUS.HIDDEN),
-    }
-  ),
   withHandlers({
+    removeAlert: ({ setAlert }) => () => setAlert(ALERT_STATUS.HIDDEN),
     onRemoveCategory: ({ removeCategory, setAlertContent, setAlert }) => async id => {
       const result = confirm('Do you want to remove this category?');
       if (result) {

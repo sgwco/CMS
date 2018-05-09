@@ -23,6 +23,58 @@ import { ALERT_STATUS, DURATION_TYPE, CURRENCY, PACKAGE_STATUS } from '../../../
 import { uppercaseObjectValue, getKeyAsString, concatObjectEnum } from '../../../utils/utils';
 import ProgressDot from '../../../shared/progress-dot';
 
+const AdminPackageModal = ({
+  selectedPackage,
+  detailModalVisible,
+  toggleDetailModal,
+  onUpgradePackage,
+  packageStatusCardButton,
+  onWithdraw
+}) => (
+  <Modal isOpen={detailModalVisible} toggle={() => toggleDetailModal()} size="lg">
+    <ModalHeader toggle={() => toggleDetailModal()}>Package detail</ModalHeader>
+    <ModalBody>
+      <CardViewListStyled color='#e74c3c' icon='user' label='User'>
+        {selectedPackage.user.username + (selectedPackage.user.fullname && ` (${selectedPackage.user.fullname})`)}
+      </CardViewListStyled>
+      <CardViewListStyled color='#00b894' icon='money-bill-alt' label='Package Price'>
+        {`${selectedPackage.price} ${selectedPackage.currency}`}
+      </CardViewListStyled>
+      <CardViewListStyled color='#fd79a8' icon='clock' label='Registered Date'>
+        {moment(selectedPackage.registerDate).format('DD/MM/YYYY')}
+      </CardViewListStyled>
+      <CardViewListStyled
+        color='#a29bfe'
+        icon='briefcase'
+        label='Package Type'
+        buttonIcon={
+          (selectedPackage.duration === getKeyAsString(DURATION_TYPE.MONTH_6, DURATION_TYPE) &&
+          selectedPackage.status === getKeyAsString(PACKAGE_STATUS.ACTIVE, PACKAGE_STATUS) &&
+          moment().diff(moment(selectedPackage.registerDate), 'months') >= 4 &&
+          moment().diff(moment(selectedPackage.registerDate), 'months') <= 5) ? 'arrow-circle-up' : null
+        }
+        buttonFunc={() => onUpgradePackage(selectedPackage.id)}
+      >
+        {`${DURATION_TYPE[selectedPackage.duration]} Months`}
+      </CardViewListStyled>
+      <CardViewListStyled
+        color='#00cec9'
+        icon='angle-double-right'
+        label='Status'
+        buttonIcon={(packageStatusCardButton[selectedPackage.status] || {}).icon}
+        buttonFunc={() => (packageStatusCardButton[selectedPackage.status] || {}).func(selectedPackage.id)}
+      >
+        {_.startCase(_.toLower(selectedPackage.status))}
+      </CardViewListStyled>
+      {selectedPackage.status !== getKeyAsString(PACKAGE_STATUS.PENDING, PACKAGE_STATUS) && (
+        <CardViewListStyled color='#00b894' icon='spinner' label='Progress'>
+          <ProgressDot selectedPackage={selectedPackage} onWithdraw={onWithdraw} />
+        </CardViewListStyled>
+      )}
+    </ModalBody>
+  </Modal>
+);
+
 const AdminContentPackageComponent = ({
   match,
   breadcrumbItems = [],
@@ -31,8 +83,7 @@ const AdminContentPackageComponent = ({
   removeAlert,
   tableHeaders,
   getPackages: { packages = [] },
-  detailModalVisible,
-  selectedPackage,
+  selectedPackageIndex,
   toggleDetailModal,
   onUpgradePackage,
   onWithdraw,
@@ -65,49 +116,15 @@ const AdminContentPackageComponent = ({
             striped
             hover
           />
-          {detailModalVisible && (
-            <Modal isOpen={detailModalVisible} toggle={() => toggleDetailModal()} size="lg">
-              <ModalHeader toggle={() => toggleDetailModal()}>Package detail</ModalHeader>
-              <ModalBody>
-                <CardViewListStyled color='#e74c3c' icon='user' label='User'>
-                  {selectedPackage.user.username + (selectedPackage.user.fullname && ` (${selectedPackage.user.fullname})`)}
-                </CardViewListStyled>
-                <CardViewListStyled color='#00b894' icon='money-bill-alt' label='Package Price'>
-                  {`${selectedPackage.price} ${selectedPackage.currency}`}
-                </CardViewListStyled>
-                <CardViewListStyled color='#fd79a8' icon='clock' label='Registered Date'>
-                  {moment(selectedPackage.registerDate).format('DD/MM/YYYY')}
-                </CardViewListStyled>
-                <CardViewListStyled
-                  color='#a29bfe'
-                  icon='briefcase'
-                  label='Package Type'
-                  buttonIcon={
-                    (selectedPackage.duration === getKeyAsString(DURATION_TYPE.MONTH_6, DURATION_TYPE) &&
-                    selectedPackage.status === getKeyAsString(PACKAGE_STATUS.ACTIVE, PACKAGE_STATUS) &&
-                    moment().diff(moment(selectedPackage.registerDate), 'months') >= 4 &&
-                    moment().diff(moment(selectedPackage.registerDate), 'months') <= 5) ? 'arrow-circle-up' : null
-                  }
-                  buttonFunc={() => onUpgradePackage(selectedPackage.id)}
-                >
-                  {`${DURATION_TYPE[selectedPackage.duration]} Months`}
-                </CardViewListStyled>
-                <CardViewListStyled
-                  color='#00cec9'
-                  icon='angle-double-right'
-                  label='Status'
-                  buttonIcon={(packageStatusCardButton[selectedPackage.status] || {}).icon}
-                  buttonFunc={() => (packageStatusCardButton[selectedPackage.status] || {}).func(selectedPackage.id)}
-                >
-                  {_.startCase(_.toLower(selectedPackage.status))}
-                </CardViewListStyled>
-                {selectedPackage.status !== getKeyAsString(PACKAGE_STATUS.PENDING, PACKAGE_STATUS) && (
-                  <CardViewListStyled color='#00b894' icon='spinner' label='Progress'>
-                    <ProgressDot selectedPackage={selectedPackage} onWithdraw={onWithdraw} />
-                  </CardViewListStyled>
-                )}
-              </ModalBody>
-            </Modal>
+          {selectedPackageIndex > -1 && (
+            <AdminPackageModal
+              selectedPackage={packages[selectedPackageIndex]}
+              detailModalVisible={selectedPackageIndex > -1}
+              toggleDetailModal={toggleDetailModal}
+              onUpgradePackage={onUpgradePackage}
+              packageStatusCardButton={packageStatusCardButton}
+              onWithdraw={onWithdraw}
+            />
           )}
         </BoxBody>
       </BoxWrapper>
@@ -118,7 +135,7 @@ const AdminContentPackageComponent = ({
 export default compose(
   withRouter,
   withHandlers({
-    functionFormatter: ({ onRemovePackage, toggleDetailModal }) => (cell, row) => {
+    functionFormatter: ({ onRemovePackage, toggleDetailModal, getPackages: { packages = [] } }) => (cell, row) => {
       let functionCell = null;
       functionCell = (
         <FunctionWrapperStyled>
@@ -144,7 +161,7 @@ export default compose(
               </Link>
             </FunctionItem> */}
             <FunctionItem>
-              <Button color="info" onClick={() => toggleDetailModal(row)}>
+              <Button color="info" onClick={() => toggleDetailModal(packages.findIndex(item => item.id === row.id))}>
                 <FontAwesome icon='eye' />
               </Button>
             </FunctionItem>

@@ -1,4 +1,4 @@
-import { compose, branch, withProps, withState, withStateHandlers, withHandlers } from 'recompose';
+import { compose, branch, withProps, withState, withHandlers } from 'recompose';
 import { graphql, withApollo } from 'react-apollo';
 
 import { ALERT_STATUS } from '../../../utils/enum';
@@ -15,13 +15,8 @@ export default compose(
   ),
   withState('alertVisible', 'setAlert', ALERT_STATUS.HIDDEN),
   withState('alertContent', 'setAlertContent', ''),
-  withStateHandlers(
-    null,
-    {
-      removeAlert: ({ setAlert }) => () => setAlert(ALERT_STATUS.HIDDEN),
-    }
-  ),
   withHandlers({
+    removeAlert: ({ setAlert }) => () => setAlert(ALERT_STATUS.HIDDEN),
     renderTopTitle: ({ isEditedUser }) => () => isEditedUser ? 'Edit Category' : 'Add New Category',
     submitForm: ({ createCategory, setAlertContent, setAlert, isEditedUser, editCategory, match }) => async (data) => {
       try {

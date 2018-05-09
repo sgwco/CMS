@@ -1,13 +1,15 @@
 import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment';
+import _ from 'lodash';
 import FontAwesome from '@fortawesome/react-fontawesome';
-import { Breadcrumb, BreadcrumbItem, Alert, Button, Modal, ModalBody, ModalHeader } from 'reactstrap';
+import { Breadcrumb, BreadcrumbItem, Alert, Button, Modal, ModalBody, ModalHeader, Badge } from 'reactstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, { textFilter, selectFilter } from 'react-bootstrap-table2-filter';
 import { compose, withHandlers, withProps } from 'recompose';
 
-import { ALERT_STATUS } from '../../../utils/enum';
+import { ALERT_STATUS, USER_STATUS } from '../../../utils/enum';
+import { uppercaseObjectValue } from '../../../utils/utils';
 import { BoxWrapper, BoxBody } from '../../../shared/boxWrapper';
 import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/contentContainer';
 import {
@@ -18,11 +20,6 @@ import {
   FunctionItem,
   CardViewListStyled
 } from '../../../shared/components';
-
-const userStatusFilterEnum = {
-  'ACTIVE': 'Active',
-  'DEACTIVE': 'Deactive'
-};
 
 const AdminContentUsersComponent = ({
   match,
@@ -165,16 +162,25 @@ export default compose(
       }
       
       return functionCell;
+    },
+    userStatusFormatter: () => cell => {
+      const cellFormatted = _.startCase(_.toLower(cell));
+      const COLOR_TYPE = {
+        ACTIVE: 'success',
+        DEACTIVE: 'secondary'
+      };
+      const badge = <h4><Badge color={COLOR_TYPE[cell]}>{cellFormatted}</Badge></h4>;
+      return badge;
     }
   }),
-  withProps(({ functionFormatter }) => ({
+  withProps(({ functionFormatter, userStatusFormatter }) => ({
     tableHeaders: [
       { text: 'User Name', dataField: 'username', filter: textFilter({ delay: 0 }) },
       { text: 'Full Name', dataField: 'fullname', filter: textFilter({ delay: 0 }), formatter: cell => cell || '—' },
       { text: 'Email', dataField: 'email', filter: textFilter({ delay: 0 }), formatter: cell => cell || '—' },
       { text: 'Registration Date', dataField: 'registrationDate', formatter: (cell) => moment(cell).format('DD/MM/YYYY') },
       { text: 'Role', dataField: 'role.name' },
-      { text: 'User Status', dataField: 'userStatus', filter: selectFilter({ options: userStatusFilterEnum }), classes: 'user-status-cell' },
+      { text: 'User Status', dataField: 'userStatus', filter: selectFilter({ options: uppercaseObjectValue(USER_STATUS) }), formatter: userStatusFormatter, classes: 'user-status-cell' },
       { text: 'Function', dataField: '', headerClasses: 'function-column', formatter: functionFormatter }
     ]
   }))

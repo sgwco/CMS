@@ -1,5 +1,5 @@
 import { graphql } from 'react-apollo';
-import { compose, withHandlers, withStateHandlers, withProps, withState } from 'recompose';
+import { compose, withHandlers, withProps, withState } from 'recompose';
 
 import AdminContentRolesComponent from '../../../components/admin/admin-content/admin-content-roles';
 import { GET_ROLES, REMOVE_ROLE, GET_USER_TOKEN } from '../../../utils/graphql';
@@ -17,13 +17,8 @@ export default compose(
   })),
   withState('alertVisible', 'setAlert', ALERT_STATUS.HIDDEN),
   withState('alertContent', 'setAlertContent', ''),
-  withStateHandlers(
-    null,
-    {
-      removeAlert: ({ setAlert }) => () => setAlert(ALERT_STATUS.HIDDEN),
-    }
-  ),
   withHandlers({
+    removeAlert: ({ setAlert }) => () => setAlert(ALERT_STATUS.HIDDEN),
     onRemoveRole: ({ removeRole, setAlert, setAlertContent }) => async id => {
       const result = confirm('Do you want to remove this role?');
       if (result) {
