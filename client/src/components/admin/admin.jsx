@@ -1,7 +1,7 @@
 import React from 'react';
 import AdminTopBarContainer from '../../containers/admin/admin-topbar';
 import AdminSidebarContainer from '../../containers/admin/admin-sidebar/admin-sidebar';
-import AdminContentContainer from './admin-content/admin-content';
+import AdminContentContainer from '../../containers/admin/admin-content/admin-content';
 import logo from '../../assets/img/logo.png';
 
 const AdminComponent = () => (

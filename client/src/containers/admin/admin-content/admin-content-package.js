@@ -1,13 +1,20 @@
-import { compose, withHandlers, withState, withStateHandlers, withProps } from 'recompose';
+import { compose, withHandlers, withState, withStateHandlers, withProps, branch, renderNothing } from 'recompose';
 import { graphql } from 'react-apollo';
 import moment from 'moment';
+import _ from 'lodash';
 
 import AdminContentPackageComponent from '../../../components/admin/admin-content/admin-content-package';
-import { ALERT_STATUS, PACKAGE_STATUS, DURATION_TYPE } from '../../../utils/enum';
-import { GET_ALL_PACKAGES, REMOVE_PACKAGE, EDIT_PACKAGE, EDIT_PACKAGE_PROGRESS } from '../../../utils/graphql';
-import { getKeyAsString } from '../../../utils/utils';
+import { ALERT_STATUS, PACKAGE_STATUS, DURATION_TYPE, ROLE_CAPABILITIES } from '../../../utils/enum';
+import { GET_ALL_PACKAGES, REMOVE_PACKAGE, EDIT_PACKAGE, EDIT_PACKAGE_PROGRESS, GET_USER_TOKEN } from '../../../utils/graphql';
+import { getKeyAsString, checkRoleIsAllowed } from '../../../utils/utils';
 
 export default compose(
+  graphql(GET_USER_TOKEN, { name: 'getUserToken' }),
+  branch(
+    ({getUserToken: { loggedInUser = {} }}) =>
+      _.isEmpty(loggedInUser) || !checkRoleIsAllowed(loggedInUser.role.accessPermission, ROLE_CAPABILITIES.read_packages.value),
+    renderNothing
+  ),
   graphql(GET_ALL_PACKAGES, { name: 'getPackages' }),
   graphql(EDIT_PACKAGE, { name: 'editPackage' }),
   graphql(REMOVE_PACKAGE, { name: 'removePackage' }),

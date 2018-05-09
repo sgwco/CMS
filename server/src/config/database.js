@@ -2,7 +2,7 @@ import mysql from 'mysql';
 import moment from 'moment';
 import sha1 from 'sha1';
 
-import { roleCapabilities } from '../enum';
+import { ROLE_CAPABILITIES } from '../enum';
 
 const HOSTING = '127.0.0.1';
 const USER = 'root';
@@ -33,7 +33,7 @@ async function initData() {
   await promiseQuery(`INSERT INTO ${PREFIX}role VALUES (
     NULL,
     'Admin',
-    ${Object.keys(roleCapabilities).map(item => roleCapabilities[item].value).reduce((total, item) => total + item, 0)}
+    ${Object.keys(ROLE_CAPABILITIES).map(item => ROLE_CAPABILITIES[item].value).reduce((total, item) => total + item, 0)}
   )`);
 
   const adminRole = await promiseQuery(`SELECT id FROM ${PREFIX}role WHERE name='Admin'`);

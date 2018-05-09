@@ -21,7 +21,7 @@ export const PACKAGE_STATUS = {
   EXPIRED: 'expired'
 };
 
-export const roleCapabilities = {
+export const ROLE_CAPABILITIES = {
   read_user: { title: 'Read users', value: Math.pow(2, 0) },
   write_user: { title: 'Write users', value: Math.pow(2, 1) },
   promote_users: { title: 'Promote users', value: Math.pow(2, 2) },

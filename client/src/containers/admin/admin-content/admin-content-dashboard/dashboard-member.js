@@ -4,13 +4,13 @@ import { graphql } from 'react-apollo';
 import DashboardMember from '../../../../components/admin/admin-content/admin-content-dashboard/dashboard-member';
 import { ACTIVE_PACKAGE, EDIT_PACKAGE, GET_USER_TOKEN } from '../../../../utils/graphql';
 import { getKeyAsString, checkRoleIsAllowed } from '../../../../utils/utils';
-import { PACKAGE_STATUS, roleCapabilities } from '../../../../utils/enum';
+import { PACKAGE_STATUS, ROLE_CAPABILITIES } from '../../../../utils/enum';
 
 export default compose(
   graphql(GET_USER_TOKEN, { name: 'getUserToken' }),
   branch(
     ({getUserToken: { loggedInUser = {} }}) =>
-      Object.keys(loggedInUser).length === 0 || checkRoleIsAllowed(loggedInUser.role.accessPermission, roleCapabilities.write_packages.value),
+      Object.keys(loggedInUser).length === 0 || checkRoleIsAllowed(loggedInUser.role.accessPermission, ROLE_CAPABILITIES.write_packages.value),
     renderNothing
   ),
   graphql(ACTIVE_PACKAGE, { name: 'activePackage' }),

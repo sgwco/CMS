@@ -1,13 +1,21 @@
-import { compose, branch, withProps, withState, withHandlers } from 'recompose';
+import { compose, branch, withProps, withState, withHandlers, renderNothing } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { graphql, withApollo } from 'react-apollo';
 import moment from 'moment';
+import _ from 'lodash';
 
-import { EDIT_PACKAGE, GET_ALL_PACKAGES, CREATE_PACKAGE, GET_FULL_USERS } from '../../../utils/graphql';
-import { ALERT_STATUS } from '../../../utils/enum';
+import { EDIT_PACKAGE, GET_ALL_PACKAGES, CREATE_PACKAGE, GET_FULL_USERS, GET_USER_TOKEN } from '../../../utils/graphql';
+import { ALERT_STATUS, ROLE_CAPABILITIES } from '../../../utils/enum';
 import AdminContentPackageFormComponent from '../../../components/admin/admin-content/admin-content-package-form';
+import { checkRoleIsAllowed } from '../../../utils/utils';
 
 export default compose(
+  graphql(GET_USER_TOKEN, { name: 'getUserToken' }),
+  branch(
+    ({getUserToken: { loggedInUser = {} }}) =>
+      _.isEmpty(loggedInUser) || !checkRoleIsAllowed(loggedInUser.role.accessPermission, ROLE_CAPABILITIES.read_packages.value),
+    renderNothing
+  ),
   withApollo,
   withRouter,
   branch(

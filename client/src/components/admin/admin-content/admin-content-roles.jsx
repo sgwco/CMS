@@ -6,7 +6,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import styled from 'styled-components';
 import { withProps, compose, withHandlers } from 'recompose';
 
-import { ALERT_STATUS, roleCapabilities } from '../../../utils/enum';
+import { ALERT_STATUS, ROLE_CAPABILITIES } from '../../../utils/enum';
 import Breadcrumb from '../../../shared/breadcrumb';
 import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/contentContainer';
 import { BoxWrapper, BoxBody } from '../../../shared/boxWrapper';
@@ -77,11 +77,11 @@ export default compose(
       return cell;
     },
     accessPermissionFormatter: () => (cell, row) => {
-      const roleLists = Object.keys(roleCapabilities);
+      const roleLists = Object.keys(ROLE_CAPABILITIES);
       const badges = [];
       for (let index = 0; index < roleLists.length; index += 1) {
-        if (cell & roleCapabilities[roleLists[index]].value) {
-          badges.push(<RoleBadgesStyled color="success" key={index}>{roleCapabilities[roleLists[index]].title}</RoleBadgesStyled>);
+        if (cell & ROLE_CAPABILITIES[roleLists[index]].value) {
+          badges.push(<RoleBadgesStyled color="success" key={index}>{ROLE_CAPABILITIES[roleLists[index]].title}</RoleBadgesStyled>);
         }
       }
 
@@ -90,7 +90,7 @@ export default compose(
         return opacityText;
       }
 
-      return badges;
+      return badges.length > 0 ? badges : '—';
     },
     functionFormatter: ({ match, onRemoveRole, getUserToken: { loggedInUser = {} } }) => (cell, row) => {
       let functionCell = null;

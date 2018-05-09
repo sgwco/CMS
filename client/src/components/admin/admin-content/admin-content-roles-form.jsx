@@ -7,7 +7,7 @@ import _ from 'lodash';
 
 import { BootstrapTextField } from '../../../shared/formFields';
 import { requiredValidation } from '../../../utils/validation';
-import { ALERT_STATUS, roleCapabilities } from '../../../utils/enum';
+import { ALERT_STATUS, ROLE_CAPABILITIES } from '../../../utils/enum';
 import Breadcrumb from '../../../shared/breadcrumb';
 import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/contentContainer';
 import { BoxWrapper, BoxBody, BoxFooter } from '../../../shared/boxWrapper';
@@ -91,7 +91,7 @@ export default compose(
         <Col key={index} md={4} sm={12}>
           <Label check>
             <Checkbox field={item} className="form-check-input" />
-            {roleCapabilities[item].title}
+            {ROLE_CAPABILITIES[item].title}
           </Label>
         </Col>
       );

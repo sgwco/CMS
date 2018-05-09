@@ -1,17 +1,24 @@
-import { compose, branch, withProps, withState, withHandlers } from 'recompose';
+import { compose, branch, withProps, withState, withHandlers, renderNothing } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { graphql, withApollo } from 'react-apollo';
+import _ from 'lodash';
 
-import { CREATE_ROLE, EDIT_ROLE, GET_ROLES } from '../../../utils/graphql';
-import { ALERT_STATUS } from '../../../utils/enum';
+import { CREATE_ROLE, EDIT_ROLE, GET_ROLES, GET_USER_TOKEN } from '../../../utils/graphql';
+import { ALERT_STATUS, ROLE_CAPABILITIES } from '../../../utils/enum';
 import AdminContentRolesFormComponent from '../../../components/admin/admin-content/admin-content-roles-form';
-import { roleCapabilities } from '../../../utils/enum';
+import { checkRoleIsAllowed } from '../../../utils/utils';
 
 function checkRoleAllowed(permission, role) {
   return permission & role;
 }
 
 export default compose(
+  graphql(GET_USER_TOKEN, { name: 'getUserToken' }),
+  branch(
+    ({getUserToken: { loggedInUser = {} }}) =>
+      _.isEmpty(loggedInUser) || !checkRoleIsAllowed(loggedInUser.role.accessPermission, ROLE_CAPABILITIES.write_roles.value),
+    renderNothing
+  ),
   withApollo,
   withRouter,
   branch(
@@ -23,7 +30,7 @@ export default compose(
     renderTopTitle: ({ isEditedUser }) => () => isEditedUser ? 'Edit Role' : 'Add New Role',
   }),
   withProps(({ renderTopTitle }) => ({
-    listRoles: Object.keys(roleCapabilities),
+    listRoles: Object.keys(ROLE_CAPABILITIES),
     breadcrumbItems: [
       { url: '/admin', icon: 'home', text: 'Home' },
       { url: '/admin/role', icon: 'users', text: 'Roles' },
@@ -51,7 +58,7 @@ export default compose(
     },
     saveRole: ({ isEditedUser, match, editRole, createRole, setAlertContent, setAlert }) => async ({ roleName, ...roles }) => {
       try {
-        const accessPermission = Object.keys(roles).filter(item => roles[item]).map(item => roleCapabilities[item].value).reduce((total, num) => total + num);
+        const accessPermission = Object.keys(roles).filter(item => roles[item]).map(item => ROLE_CAPABILITIES[item].value).reduce((total, num) => total + num, 0);
 
         const variables = {
           name: roleName,
@@ -127,7 +134,7 @@ export default compose(
           if (!selectedRole) throw new Error('Role does not exist');
 
           listRoles.forEach((item, index) => {
-            if (checkRoleAllowed(selectedRole.accessPermission, roleCapabilities[listRoles[index]].value)) {
+            if (checkRoleAllowed(selectedRole.accessPermission, ROLE_CAPABILITIES[listRoles[index]].value)) {
               formApi.setValue(listRoles[index], true);
             }
           });

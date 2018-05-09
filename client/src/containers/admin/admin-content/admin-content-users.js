@@ -1,14 +1,21 @@
-import { compose, withHandlers, withState, withStateHandlers, withProps } from 'recompose';
+import { compose, withHandlers, withState, withStateHandlers, withProps, branch, renderNothing } from 'recompose';
 import { graphql } from 'react-apollo';
+import _ from 'lodash';
 
 import AdminContentUsersComponent from '../../../components/admin/admin-content/admin-content-users';
-import { ALERT_STATUS } from '../../../utils/enum';
+import { ALERT_STATUS, ROLE_CAPABILITIES } from '../../../utils/enum';
 import { GET_FULL_USERS, REMOVE_USER, GET_USER_TOKEN } from '../../../utils/graphql';
+import { checkRoleIsAllowed } from '../../../utils/utils';
 
 export default compose(
+  graphql(GET_USER_TOKEN, { name: 'getUserToken' }),
+  branch(
+    ({getUserToken: { loggedInUser = {} }}) =>
+      _.isEmpty(loggedInUser) || !checkRoleIsAllowed(loggedInUser.role.accessPermission, ROLE_CAPABILITIES.read_user.value),
+    renderNothing
+  ),
   graphql(GET_FULL_USERS, { name: 'getUsers' }),
   graphql(REMOVE_USER, { name: 'removeUser' }),
-  graphql(GET_USER_TOKEN, { name: 'getUserToken' }),
   withProps(() => ({
     breadcrumbItems: [
       { url: '/admin', icon: 'home', text: 'Home' },

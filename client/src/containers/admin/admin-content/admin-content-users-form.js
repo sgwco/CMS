@@ -1,13 +1,21 @@
-import { compose, branch, withHandlers, withStateHandlers, withState, withProps } from 'recompose';
+import { compose, branch, withHandlers, withStateHandlers, withState, withProps, renderNothing } from 'recompose';
 import { graphql, withApollo } from 'react-apollo';
 import sha1 from 'sha1';
 import moment from 'moment';
+import _ from 'lodash';
 
 import AdminContentUsersFormComponent from '../../../components/admin/admin-content/admin-content-users-form';
-import { GET_ROLES, CREATE_USER, GET_FULL_USERS, EDIT_USER } from '../../../utils/graphql';
-import { ALERT_STATUS, USER_STATUS } from '../../../utils/enum';
+import { GET_ROLES, CREATE_USER, GET_FULL_USERS, EDIT_USER, GET_USER_TOKEN } from '../../../utils/graphql';
+import { ALERT_STATUS, USER_STATUS, ROLE_CAPABILITIES } from '../../../utils/enum';
+import { checkRoleIsAllowed } from '../../../utils/utils';
 
 export default compose(
+  graphql(GET_USER_TOKEN, { name: 'getUserToken' }),
+  branch(
+    ({getUserToken: { loggedInUser = {} }}) =>
+      _.isEmpty(loggedInUser) || !checkRoleIsAllowed(loggedInUser.role.accessPermission, ROLE_CAPABILITIES.write_user.value),
+    renderNothing
+  ),
   withApollo,
   branch(
     ({ isEditedUser }) => !isEditedUser,
