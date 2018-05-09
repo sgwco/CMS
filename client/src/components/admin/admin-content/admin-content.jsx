@@ -25,7 +25,6 @@ import { ROLE_CAPABILITIES } from '../../../utils/enum';
 const AdminContentComponent = ({ match, getUserToken: { loggedInUser = {} } }) => (
   !_.isEmpty(loggedInUser) && (
     <Switch>
-      {console.log(checkRoleIsAllowed(loggedInUser.role.accessPermission, ROLE_CAPABILITIES.read_packages.value))}
       <Route exact path={`${match.url}/dashboard`} component={AdminContentDashboardContainer} />
 
       {/* <Route exact path={`${match.url}/post`} component={AdminContentPostsContainer} />

@@ -19,6 +19,8 @@ var _database = require('../config/database');
 
 var _utils = require('../utils/utils');
 
+var _enum = require('../enum');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
@@ -160,7 +162,6 @@ var Mutation = exports.Mutation = {
     args: {
       userId: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLID) },
       price: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLFloat) },
-      currency: { type: (0, _graphql.GraphQLNonNull)(_models.PackageCurrency) },
       duration: { type: (0, _graphql.GraphQLNonNull)(_models.PackageDuration) },
       registerDate: { type: _graphql.GraphQLString }
     },
@@ -170,7 +171,7 @@ var Mutation = exports.Mutation = {
       var payload = _ref5.payload,
           dataloaders = _ref5.dataloaders;
       return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
-        var existPackages, now, registerDate, status, transferMoneyProgresses, duration, paymentDate, index;
+        var existPackages, now, registerDate, status, id, lastId, transferMoneyProgresses, duration, paymentDate, index;
         return regeneratorRuntime.wrap(function _callee4$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
@@ -199,43 +200,55 @@ var Mutation = exports.Mutation = {
                 throw new _graphql.GraphQLError('Price invalid');
 
               case 6:
-                if (args.currency) {
-                  _context4.next = 8;
-                  break;
-                }
-
-                throw new _graphql.GraphQLError('Currency cannot be null');
-
-              case 8:
                 if (args.duration) {
-                  _context4.next = 10;
+                  _context4.next = 8;
                   break;
                 }
 
                 throw new _graphql.GraphQLError('Duration cannot be null');
 
-              case 10:
-                _context4.next = 12;
+              case 8:
+                _context4.next = 10;
                 return (0, _database.promiseQuery)('SELECT id FROM ' + _database.PREFIX + 'package WHERE user_id=\'' + args.userId + '\' AND status=\'active\'');
 
-              case 12:
+              case 10:
                 existPackages = _context4.sent;
 
                 if (!(existPackages.length > 0)) {
-                  _context4.next = 15;
+                  _context4.next = 13;
                   break;
                 }
 
                 throw new _graphql.GraphQLError('Cannot create new package for this user due to the existance of ' + existPackages.length + ' active package(s)');
 
-              case 15:
+              case 13:
                 now = (0, _moment2.default)();
                 registerDate = args.registerDate ? (0, _moment2.default)(args.registerDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : now.format('YYYY-MM-DD');
                 status = _models.PackageStatus.getValue('PENDING').value;
-                _context4.next = 20;
-                return (0, _database.promiseQuery)('INSERT INTO ' + _database.PREFIX + 'package VALUES (\n        NULL,\n        \'' + args.userId + '\',\n        \'' + args.price + '\',\n        \'' + args.currency + '\',\n        \'' + args.duration + '\',\n        \'' + registerDate + '\',\n        \'' + status + '\'\n      )');
+                id = null;
+                _context4.next = 19;
+                return (0, _database.promiseQuery)('INSERT INTO ' + _database.PREFIX + 'package VALUES (\n        NULL,\n        \'' + args.userId + '\',\n        \'' + args.price + '\',\n        \'' + _enum.CURRENCY.VND + '\',\n        \'' + args.duration + '\',\n        \'' + registerDate + '\',\n        \'' + status + '\'\n      )');
 
-              case 20:
+              case 19:
+                _context4.next = 21;
+                return (0, _database.promiseQuery)('SELECT LAST_INSERT_ID()');
+
+              case 21:
+                lastId = _context4.sent;
+
+                if (!(lastId.length > 0)) {
+                  _context4.next = 26;
+                  break;
+                }
+
+                id = lastId[0]['LAST_INSERT_ID()'];
+                _context4.next = 27;
+                break;
+
+              case 26:
+                throw new _graphql.GraphQLError('Cannot insert new role.');
+
+              case 27:
                 transferMoneyProgresses = {
                   '6': { interestRate: 6, step: 2 },
                   '12': { interestRate: 8, step: 4 }
@@ -244,22 +257,22 @@ var Mutation = exports.Mutation = {
                 paymentDate = (0, _moment2.default)(registerDate, 'YYYY-MM-DD');
                 index = 0;
 
-              case 24:
+              case 31:
                 if (!(index < duration.step)) {
-                  _context4.next = 31;
+                  _context4.next = 38;
                   break;
                 }
 
                 paymentDate = paymentDate.add(3, 'months');
-                _context4.next = 28;
+                _context4.next = 35;
                 return (0, _database.promiseQuery)('INSERT INTO ' + _database.PREFIX + 'package_progress VALUES (\n          NULL,\n          \'' + id + '\',\n          \'' + args.price * duration.interestRate / 100 + '\',\n          \'' + duration.interestRate + '\',\n          \'' + paymentDate.format('YYYY-MM-DD') + '\',\n          0,\n          NULL\n        )');
 
-              case 28:
+              case 35:
                 index += 1;
-                _context4.next = 24;
+                _context4.next = 31;
                 break;
 
-              case 31:
+              case 38:
                 return _context4.abrupt('return', {
                   id: id,
                   status: status,
@@ -272,7 +285,7 @@ var Mutation = exports.Mutation = {
                   transferMoney: id
                 });
 
-              case 32:
+              case 39:
               case 'end':
                 return _context4.stop();
             }
@@ -287,7 +300,6 @@ var Mutation = exports.Mutation = {
       id: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLID) },
       userId: { type: _graphql.GraphQLID },
       price: { type: _graphql.GraphQLFloat },
-      currency: { type: _models.PackageCurrency },
       duration: { type: _models.PackageDuration },
       registerDate: { type: _graphql.GraphQLString },
       status: { type: _models.PackageStatus }

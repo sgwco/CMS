@@ -104,6 +104,7 @@ var Mutation = exports.Mutation = {
     },
     resolve: function () {
       var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(source, args) {
+        var lastId;
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
@@ -128,13 +129,27 @@ var Mutation = exports.Mutation = {
                 return (0, _database.promiseQuery)('INSERT INTO ' + _database.PREFIX + 'role VALUES (\n        NULL,\n        \'' + args.name + '\',\n        \'' + args.accessPermission + '\'\n      )');
 
               case 6:
+                _context3.next = 8;
+                return (0, _database.promiseQuery)('SELECT LAST_INSERT_ID()');
+
+              case 8:
+                lastId = _context3.sent;
+
+                if (!(lastId.length > 0)) {
+                  _context3.next = 13;
+                  break;
+                }
+
                 return _context3.abrupt('return', {
-                  id: id,
+                  id: lastId[0]['LAST_INSERT_ID()'],
                   name: args.name,
                   access_permission: args.accessPermission
                 });
 
-              case 7:
+              case 13:
+                throw new _graphql.GraphQLError('Cannot insert new role.');
+
+              case 14:
               case 'end':
                 return _context3.stop();
             }

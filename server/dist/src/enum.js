@@ -26,7 +26,7 @@ var PACKAGE_STATUS = exports.PACKAGE_STATUS = {
   EXPIRED: 'expired'
 };
 
-var roleCapabilities = exports.roleCapabilities = {
+var ROLE_CAPABILITIES = exports.ROLE_CAPABILITIES = {
   read_user: { title: 'Read users', value: Math.pow(2, 0) },
   write_user: { title: 'Write users', value: Math.pow(2, 1) },
   promote_users: { title: 'Promote users', value: Math.pow(2, 2) },

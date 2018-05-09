@@ -13,8 +13,8 @@ var initData = function () {
         switch (_context.prev = _context.next) {
           case 0:
             _context.next = 2;
-            return promiseQuery('INSERT INTO ' + PREFIX + 'role VALUES (\n    NULL,\n    \'Admin\',\n    ' + Object.keys(_enum.roleCapabilities).map(function (item) {
-              return _enum.roleCapabilities[item].value;
+            return promiseQuery('INSERT INTO ' + PREFIX + 'role VALUES (\n    NULL,\n    \'Admin\',\n    ' + Object.keys(_enum.ROLE_CAPABILITIES).map(function (item) {
+              return _enum.ROLE_CAPABILITIES[item].value;
             }).reduce(function (total, item) {
               return total + item;
             }, 0) + '\n  )');
@@ -135,6 +135,10 @@ var _moment2 = _interopRequireDefault(_moment);
 var _sha = require('sha1');
 
 var _sha2 = _interopRequireDefault(_sha);
+
+var _config = require('../../config.json');
+
+var _config2 = _interopRequireDefault(_config);
 
 var _enum = require('../enum');
 

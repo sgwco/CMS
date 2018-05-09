@@ -73,7 +73,6 @@ const AdminContentUsersComponent = ({
                 <CardViewListStyled color='#e74c3c' icon='user' label='User'>
                   {selectedUser.username + (selectedUser.fullname && ` (${selectedUser.fullname})`)}
                 </CardViewListStyled>
-                {console.log(selectedUser)}
                 {selectedUser.phone && (
                   <CardViewListStyled color='#00b894' icon='phone' label='Phone'>
                     {selectedUser.phone}

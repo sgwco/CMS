@@ -145,7 +145,7 @@ var Mutation = exports.Mutation = {
       var _this2 = this;
 
       return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-        var username, password, email, role, address, phone, fullname, registrationDate, userMeta, userMetaPromises, index;
+        var username, password, email, role, address, phone, fullname, registrationDate, id, lastId, userMeta, userMetaPromises, index;
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
@@ -193,30 +193,50 @@ var Mutation = exports.Mutation = {
 
               case 11:
                 registrationDate = (0, _moment2.default)().format('YYYY-MM-DD HH:MM');
-                _context3.prev = 12;
-                _context3.next = 15;
+                id = null;
+                _context3.prev = 13;
+                _context3.next = 16;
                 return (0, _database.promiseQuery)('INSERT INTO ' + _database.PREFIX + 'user VALUES (\n          NULL,\n          \'' + username + '\',\n          \'' + password + '\',\n          \'' + (fullname || '') + '\',\n          \'' + (email || '') + '\',\n          \'' + registrationDate + '\',\n          \'' + role + '\',\n          \'' + (address || '') + '\',\n          \'' + (phone || '') + '\',\n          \'' + _models.UserStatus.getValue('ACTIVE').value + '\'\n        )');
 
-              case 15:
-                _context3.next = 24;
+              case 16:
+                _context3.next = 25;
                 break;
 
-              case 17:
-                _context3.prev = 17;
-                _context3.t0 = _context3['catch'](12);
+              case 18:
+                _context3.prev = 18;
+                _context3.t0 = _context3['catch'](13);
                 _context3.t1 = _context3.t0.code;
-                _context3.next = _context3.t1 === 'ER_DUP_ENTRY' ? 22 : _context3.t1 === 'ER_NO_REFERENCED_ROW_2' ? 23 : 24;
+                _context3.next = _context3.t1 === 'ER_DUP_ENTRY' ? 23 : _context3.t1 === 'ER_NO_REFERENCED_ROW_2' ? 24 : 25;
                 break;
-
-              case 22:
-                throw new _graphql.GraphQLError('User existed');
 
               case 23:
-                throw new _graphql.GraphQLError('User data invalid');
+                throw new _graphql.GraphQLError('User existed');
 
               case 24:
+                throw new _graphql.GraphQLError('User data invalid');
+
+              case 25:
+                _context3.next = 27;
+                return (0, _database.promiseQuery)('SELECT LAST_INSERT_ID()');
+
+              case 27:
+                lastId = _context3.sent;
+
+                if (!(lastId.length > 0)) {
+                  _context3.next = 32;
+                  break;
+                }
+
+                id = lastId[0]['LAST_INSERT_ID()'];
+                _context3.next = 33;
+                break;
+
+              case 32:
+                throw new _graphql.GraphQLError('Cannot insert new role.');
+
+              case 33:
                 if (!args.userMeta) {
-                  _context3.next = 30;
+                  _context3.next = 39;
                   break;
                 }
 
@@ -226,12 +246,12 @@ var Mutation = exports.Mutation = {
                 for (index in userMeta) {
                   userMetaPromises.push((0, _database.promiseQuery)('INSERT INTO ' + _database.PREFIX + 'user_meta VALUES (\n            NULL,\n            \'' + id + '\',\n            \'' + userMeta[index].metaKey + '\',\n            \'' + userMeta[index].metaValue + '\'\n          )'));
                 }
-                _context3.next = 30;
+                _context3.next = 39;
                 return Promise.all(userMetaPromises);
 
-              case 30:
+              case 39:
                 return _context3.abrupt('return', {
-                  id: id,
+                  id: lastId[0]['LAST_INSERT_ID()'],
                   username: username,
                   password: password,
                   fullname: fullname,
@@ -243,12 +263,12 @@ var Mutation = exports.Mutation = {
                   user_status: _models.UserStatus.getValue('ACTIVE').value
                 });
 
-              case 31:
+              case 40:
               case 'end':
                 return _context3.stop();
             }
           }
-        }, _callee3, _this2, [[12, 17]]);
+        }, _callee3, _this2, [[13, 18]]);
       }))();
     }
   },

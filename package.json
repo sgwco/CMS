@@ -6,7 +6,7 @@
     "client": "cd client && npm start",
     "client-build": "cd client && npm run build",
     "server-build": "cd server && npm run build",
-    "start-build": "cd client && npm run build && cd ../server && npm start"
+    "start": "cd client && npm run build && cd ../server && npm start"
   },
   "repository": {
     "type": "git",

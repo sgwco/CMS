@@ -10,7 +10,7 @@ import AdminContainer from './containers/admin/admin';
 import AdminLoginContainer from './containers/admin/admin-login';
 
 const httpLink = createHttpLink({
-  uri: 'http://localhost:8000/api'
+  uri: process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:8000/api' // eslint-disable-line
 });
 
 const authLink = setContext((_, { headers }) => {

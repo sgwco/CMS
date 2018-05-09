@@ -1,13 +1,9 @@
 import mysql from 'mysql';
 import moment from 'moment';
 import sha1 from 'sha1';
+import { HOSTING, USER, PASSWORD, DATABASE } from '../../config.json';
 
 import { ROLE_CAPABILITIES } from '../enum';
-
-const HOSTING = '127.0.0.1';
-const USER = 'root';
-const PASSWORD = 'password';
-const DATABASE = 'sgw_cms';
 
 export const PREFIX = 'sgw_';
 
