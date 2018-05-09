@@ -3,12 +3,18 @@ import { Field } from 'react-form';
 import { FormGroup, Label, Input, FormFeedback } from 'reactstrap';
 import { compose, withHandlers } from 'recompose';
 import moment from 'moment';
+import writtenNumber from 'written-number';
 import DatePicker from 'react-datepicker';
 import styled from 'styled-components';
 import 'react-datepicker/dist/react-datepicker.css';
 
 const RequiredStar = styled.span`
   color: red;
+`;
+
+const MoneyAmountStyled = styled.div`
+  font-size: 0.8rem;
+  font-style: italic;
 `;
 
 export const BootstrapTextField = ({ validate, field, onChange, onBlur, label, required, ...rest }) => (
@@ -38,6 +44,43 @@ export const BootstrapTextField = ({ validate, field, onChange, onBlur, label, r
           invalid={error !== undefined}
         />
         <FormFeedback>{error}</FormFeedback>
+      </FormGroup>
+    )}
+  </Field>
+);
+
+export const BootstrapMoneyAmountField = ({ validate, field, onChange, onBlur, label, required, ...rest }) => (
+  <Field validate={validate} field={field}>
+    {({ value, error, setValue, setTouched }) => (
+      <FormGroup>
+        <Label for={field}>
+          {label} {required && (<RequiredStar>*</RequiredStar>)}
+        </Label>
+        <Input
+          id={field}
+          placeholder={label}
+          value={value || ''}
+          onChange={e => {
+            setValue(e.target.value);
+            if (onChange) {
+              onChange(e.target.value, e);
+            }
+          }}
+          onBlur={e => {
+            setTouched();
+            if (onBlur) {
+              onBlur(e);
+            }
+          }}
+          {...rest}
+          invalid={error !== undefined}
+        />
+        <FormFeedback>{error}</FormFeedback>
+        {value && (
+          <MoneyAmountStyled>
+            As word: {writtenNumber(value, { lang: 'vi' })} đồng
+          </MoneyAmountStyled>
+        )}
       </FormGroup>
     )}
   </Field>

@@ -49,7 +49,6 @@ export default compose(
                   fullname: '-'
                 },
                 price: variables.price,
-                currency: variables.currency,
                 duration: variables.duration,
                 registerDate: variables.registerDate
               }
@@ -84,7 +83,6 @@ export default compose(
                   fullname: '-'
                 },
                 price: variables.price,
-                currency: variables.currency,
                 duration: variables.duration,
                 registerDate: variables.registerDate
               }
@@ -117,7 +115,6 @@ export default compose(
 
           formApi.setValue('userId', packageItem.user.id);
           formApi.setValue('price', packageItem.price);
-          formApi.setValue('currency', packageItem.currency);
           formApi.setValue('duration', packageItem.duration);
           formApi.setValue('registerDate', moment(packageItem.registerDate).format('DD/MM/YYYY'));
         }

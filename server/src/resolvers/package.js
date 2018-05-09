@@ -3,6 +3,7 @@ import moment from 'moment';
 import { Package, PackageCurrency, PackageDuration, PackageStatus, PackageTransferMoneyProgress } from '../models';
 import { promiseQuery, PREFIX } from '../config/database';
 import { convertCamelCaseToSnakeCase } from '../utils/utils';
+import { CURRENCY } from '../enum';
 
 export const Query = {
   packages: {
@@ -56,7 +57,6 @@ export const Mutation = {
     args: {
       userId: { type: GraphQLNonNull(GraphQLID) },
       price: { type: GraphQLNonNull(GraphQLFloat) },
-      currency: { type: GraphQLNonNull(PackageCurrency) },
       duration: { type: GraphQLNonNull(PackageDuration) },
       registerDate: { type: GraphQLString }
     },
@@ -71,10 +71,6 @@ export const Mutation = {
 
       if (!args.price || args.price < 0) {
         throw new GraphQLError('Price invalid');
-      }
-
-      if (!args.currency) {
-        throw new GraphQLError('Currency cannot be null');
       }
 
       if (!args.duration) {
@@ -95,7 +91,7 @@ export const Mutation = {
         NULL,
         '${args.userId}',
         '${args.price}',
-        '${args.currency}',
+        '${CURRENCY.VND}',
         '${args.duration}',
         '${registerDate}',
         '${status}'
@@ -147,7 +143,6 @@ export const Mutation = {
       id: { type: GraphQLNonNull(GraphQLID) },
       userId: { type: GraphQLID },
       price: { type: GraphQLFloat },
-      currency: { type: PackageCurrency },
       duration: { type: PackageDuration },
       registerDate: { type: GraphQLString },
       status: { type: PackageStatus }

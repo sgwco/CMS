@@ -291,8 +291,8 @@ export const GET_ALL_PACKAGES = gql`
 `;
 
 export const CREATE_PACKAGE = gql`
-  mutation createPackage($userId: ID!, $price: Float!, $currency: PackageCurrency!, $duration: PackageDuration!, $registerDate: String) {
-    createPackage(userId: $userId, price: $price, currency: $currency, duration: $duration, registerDate: $registerDate) {
+  mutation createPackage($userId: ID!, $price: Float!, $duration: PackageDuration!, $registerDate: String) {
+    createPackage(userId: $userId, price: $price, duration: $duration, registerDate: $registerDate) {
       id
       user {
         id
@@ -300,7 +300,6 @@ export const CREATE_PACKAGE = gql`
         fullname
       }
       price
-      currency
       duration
       registerDate
       status
@@ -309,8 +308,8 @@ export const CREATE_PACKAGE = gql`
 `;
 
 export const EDIT_PACKAGE = gql`
-  mutation editPackage($id: ID!, $userId: ID, $price: Float, $currency: PackageCurrency, $duration: PackageDuration, $registerDate: String, $status: PackageStatus) {
-    editPackage(id: $id, userId: $userId, price: $price, currency: $currency, duration: $duration, registerDate: $registerDate, status: $status) {
+  mutation editPackage($id: ID!, $userId: ID, $price: Float, $duration: PackageDuration, $registerDate: String, $status: PackageStatus) {
+    editPackage(id: $id, userId: $userId, price: $price, duration: $duration, registerDate: $registerDate, status: $status) {
       id
       user {
         id
@@ -318,7 +317,6 @@ export const EDIT_PACKAGE = gql`
         fullname
       }
       price
-      currency
       duration
       registerDate
       status

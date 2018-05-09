@@ -19,7 +19,7 @@ import {
 } from '../../../shared/components';
 import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/contentContainer';
 import { BoxWrapper, BoxBody } from '../../../shared/boxWrapper';
-import { ALERT_STATUS, DURATION_TYPE, CURRENCY, PACKAGE_STATUS } from '../../../utils/enum';
+import { ALERT_STATUS, DURATION_TYPE, PACKAGE_STATUS } from '../../../utils/enum';
 import { uppercaseObjectValue, getKeyAsString, concatObjectEnum } from '../../../utils/utils';
 import ProgressDot from '../../../shared/progress-dot';
 
@@ -193,7 +193,6 @@ export default compose(
       { text: 'Username', dataField: 'user.username', filter: textFilter({ delay: 0 }), sort: true },
       { text: 'Fullname', dataField: 'user.fullname', filter: textFilter({ delay: 0 }), formatter: cell => cell || '—', sort: true },
       { text: 'Package Price', dataField: 'price', filter: textFilter({ delay: 0 }), sort: true },
-      { text: 'Currency', dataField: 'currency', filter: selectFilter({ options: CURRENCY }) },
       { text: 'Package Type', dataField: 'duration', filter: selectFilter({ options: concatObjectEnum(DURATION_TYPE, ' Months') }), formatter: cell => DURATION_TYPE[cell] + ' Months' },
       { text: 'Register Date', dataField: 'registerDate', filter: textFilter({ delay: 0 }), formatter: cell => moment(cell).format('DD/MM/YYYY'), sort: true },
       { text: 'Status', dataField: 'status', filter: selectFilter({ options: uppercaseObjectValue(PACKAGE_STATUS) }), formatter: packageStatusFormatter },
