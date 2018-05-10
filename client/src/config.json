@@ -1,0 +1,8 @@
+{
+  "tablePaginationSetting": {
+    "sizePerPage": 20,
+    "pageStartIndex": 1,
+    "hideSizePerPage": true,
+    "noDataText": "Table is Empty"
+  }
+}

@@ -2,13 +2,13 @@ import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import FontAwesome from '@fortawesome/react-fontawesome';
 import { Alert, Badge, Button } from 'reactstrap';
-import BootstrapTable from 'react-bootstrap-table-next';
 import styled from 'styled-components';
-import { withProps, compose, withHandlers } from 'recompose';
+import { compose, withHandlers } from 'recompose';
+import { TableHeaderColumn } from 'react-bootstrap-table';
 
 import { ALERT_STATUS, ROLE_CAPABILITIES } from '../../../utils/enum';
 import Breadcrumb from '../../../shared/breadcrumb';
-import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/contentContainer';
+import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/components';
 import { BoxWrapper, BoxBody } from '../../../shared/boxWrapper';
 import {
   LoadingIndicator,
@@ -16,8 +16,10 @@ import {
   MarginLeftButtonStyled,
   FunctionWrapperStyled,
   OpacityTextStyled,
-  FunctionItem
+  FunctionItem,
+  BootstrapTableStyled
 } from '../../../shared/components';
+import { tablePaginationSetting } from '../../../config.json';
 
 const AdminContentRolesComponent = ({
   match,
@@ -25,9 +27,9 @@ const AdminContentRolesComponent = ({
   removeAlert,
   alertContent,
   breadcrumbItems,
-  tableHeaders,
   getRoles: { roles = [] },
-  
+  accessPermissionFormatter,
+  functionFormatter
 }) => (
   <ContentContainer>
     <ContentHeader>
@@ -47,14 +49,34 @@ const AdminContentRolesComponent = ({
       </Alert>
       <BoxWrapper color="primary" title="List Roles">
         <BoxBody>
-          <BootstrapTable
-            keyField='id'
+          <BootstrapTableStyled
             data={roles}
-            columns={tableHeaders}
-            noDataIndication="Table is Empty"
+            options={tablePaginationSetting}
+            pagination
             striped
             hover
-          />
+          >
+            <TableHeaderColumn
+              dataField='name'
+              isKey
+              dataSort
+              width='250'
+              filter={{ type: 'TextFilter', delay: 1 }}
+            >
+              Role Name
+            </TableHeaderColumn>
+            <TableHeaderColumn
+              dataField='accessPermission'
+              dataFormat={accessPermissionFormatter}
+              tdStyle={{ whiteSpace: 'normal' }}
+            >
+              Access Permission
+            </TableHeaderColumn>
+            <TableHeaderColumn
+              dataFormat={functionFormatter}
+              width='150'
+            />
+          </BootstrapTableStyled>
         </BoxBody>
       </BoxWrapper>
     </ContentBody>
@@ -90,7 +112,8 @@ export default compose(
         return opacityText;
       }
 
-      return badges.length > 0 ? badges : '—';
+      const badgeWrapper = <div>{badges}</div>;
+      return badges.length > 0 ? badgeWrapper : '—';
     },
     functionFormatter: ({ match, onRemoveRole, getUserToken: { loggedInUser = {} } }) => (cell, row) => {
       let functionCell = null;
@@ -129,12 +152,5 @@ export default compose(
       
       return functionCell;
     }
-  }),
-  withProps(({ accessPermissionFormatter, functionFormatter, nameFormatter }) => ({
-    tableHeaders: [
-      { text: 'Name', dataField: 'name', headerClasses: 'fit', formatter: nameFormatter },
-      { text: 'Allowed Permission', dataField: 'accessPermission', formatter: accessPermissionFormatter },
-      { text: 'Function', dataField: '', headerClasses: 'function-column', formatter: functionFormatter }
-    ]
-  }))
+  })
 )(AdminContentRolesComponent);

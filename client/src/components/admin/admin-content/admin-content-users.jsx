@@ -6,12 +6,13 @@ import FontAwesome from '@fortawesome/react-fontawesome';
 import { Breadcrumb, BreadcrumbItem, Alert, Button, Modal, ModalBody, ModalHeader, Badge } from 'reactstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, { textFilter, selectFilter } from 'react-bootstrap-table2-filter';
+import paginationFactory from 'react-bootstrap-table2-paginator';
 import { compose, withHandlers, withProps } from 'recompose';
 
 import { ALERT_STATUS, USER_STATUS } from '../../../utils/enum';
 import { uppercaseObjectValue } from '../../../utils/utils';
 import { BoxWrapper, BoxBody } from '../../../shared/boxWrapper';
-import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/contentContainer';
+import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/components';
 import {
   ContentHeaderTitleStyled,
   MarginLeftButtonStyled,
@@ -20,6 +21,7 @@ import {
   FunctionItem,
   CardViewListStyled
 } from '../../../shared/components';
+import { tablePaginationSetting } from '../../../config.json';
 
 const AdminContentUsersComponent = ({
   match,
@@ -60,6 +62,7 @@ const AdminContentUsersComponent = ({
           <BootstrapTable
             keyField='username'
             data={users}
+            pagination={paginationFactory(tablePaginationSetting)}
             columns={tableHeaders}
             filter={filterFactory()}
             noDataIndication="Table is Empty"

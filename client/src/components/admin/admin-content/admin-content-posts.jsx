@@ -4,7 +4,7 @@ import { compose, withHandlers, withProps } from 'recompose';
 import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
 
-import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/contentContainer';
+import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/components';
 import { FunctionCell, ContentHeaderTitleStyled, MarginLeftButtonStyled, FunctionWrapperStyled, LoadingIndicator } from '../../../shared/components';
 import { BoxWrapper, BoxBody } from '../../../shared/boxWrapper';
 import { Breadcrumb, Alert } from 'reactstrap';

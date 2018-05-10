@@ -3,14 +3,6 @@ import styled from 'styled-components';
 
 import { LoadingIndicator } from './components';
 
-export const BoxBody = ({ children }) => (
-  <div className="box-body">{children}</div>
-);
-
-export const BoxFooter = ({ children }) => (
-  <div className="box-footer">{children}</div>
-);
-
 const LoadingIndicatorStyled = styled.div`
   position: absolute;
   top: 50% !important;
@@ -18,6 +10,14 @@ const LoadingIndicatorStyled = styled.div`
   margin-left: -25px;
   margin-top: -25px;
 `;
+
+export const BoxBody = ({ children }) => (
+  <div className="box-body">{children}</div>
+);
+
+export const BoxFooter = ({ children }) => (
+  <div className="box-footer">{children}</div>
+);
 
 export const BoxWrapper = ({ color, title, children, isLoading }) => (
   <div className={`box box-${color}`}>

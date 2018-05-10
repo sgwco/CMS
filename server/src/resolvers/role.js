@@ -39,7 +39,7 @@ export const Mutation = {
         throw new GraphQLError('Name cannot be null');
       }
 
-      if (args.accessPermission <= 0) {
+      if (args.accessPermission < 0) {
         throw new GraphQLError('Role Capabilities invalid');
       }
       

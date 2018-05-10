@@ -13,12 +13,11 @@ import AdminContentDashboardContainer from '../../../containers/admin//admin-con
 
 import AdminContentPackageContainer from '../../../containers/admin/admin-content/admin-content-package';
 import AdminContentPackageFormContainer from '../../../containers/admin/admin-content/admin-content-package-form';
-
 import AdminContentUsersContainer from '../../../containers/admin/admin-content/admin-content-users';
 import AdminContentUsersFormContainer from '../../../containers/admin/admin-content/admin-content-users-form';
-
 import AdminContentRolesContainer from '../../../containers/admin/admin-content/admin-content-roles';
 import AdminContentRolesFormContainer from '../../../containers/admin/admin-content/admin-content-roles-form';
+import AdminContentSettingContainer from '../../../containers/admin/admin-content/admin-content-setting';
 import { checkRoleIsAllowed } from '../../../utils/utils';
 import { ROLE_CAPABILITIES } from '../../../utils/enum';
 
@@ -58,6 +57,10 @@ const AdminContentComponent = ({ match, getUserToken: { loggedInUser = {} } }) =
         <Route exact path={`${match.url}/role/add-new`} component={AdminContentRolesFormContainer} key={1} />,
         <Route exact path={`${match.url}/role/edit/:id`} render={props => <AdminContentRolesFormContainer {...props} isEditedUser={true} />} key={2} />
       ])}
+
+      {checkRoleIsAllowed(loggedInUser.role.accessPermission, ROLE_CAPABILITIES.setting.value) && (
+        <Route exact path={`${match.url}/setting`} component={AdminContentSettingContainer} />
+      )}
     </Switch>
   )
 );

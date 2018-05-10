@@ -3,8 +3,7 @@ import React from 'react';
 import { ContentHeaderTitleStyled } from '../../../shared/components';
 import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/components';
 import Breadcrumb from '../../../shared/breadcrumb';
-
-import DashboardMember from '../../../containers/admin/admin-content/admin-content-dashboard/dashboard-member';
+import { BoxWrapper, BoxBody } from '../../../shared/boxWrapper';
 
 const AdminContentDashboardComponent = ({
   breadcrumbItems,
@@ -12,12 +11,14 @@ const AdminContentDashboardComponent = ({
   <ContentContainer>
     <ContentHeader>
       <ContentHeaderTitleStyled>
-        <span>Dashboard</span>
+        <span>Setting</span>
       </ContentHeaderTitleStyled>
       <Breadcrumb items={breadcrumbItems} />
     </ContentHeader>
     <ContentBody>
-      <DashboardMember />
+      <BoxWrapper color="primary" title="Setting">
+        <BoxBody />
+      </BoxWrapper>
     </ContentBody>
   </ContentContainer>
 );

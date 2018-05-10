@@ -17,7 +17,7 @@ import {
   FunctionItem,
   CardViewListStyled
 } from '../../../shared/components';
-import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/contentContainer';
+import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/components';
 import { BoxWrapper, BoxBody } from '../../../shared/boxWrapper';
 import { ALERT_STATUS, DURATION_TYPE, PACKAGE_STATUS } from '../../../utils/enum';
 import { uppercaseObjectValue, getKeyAsString, concatObjectEnum } from '../../../utils/utils';

@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import FontAwesome from '@fortawesome/react-fontawesome';
 import { Button } from 'reactstrap';
 import styled, { keyframes } from 'styled-components';
+import { BootstrapTable } from 'react-bootstrap-table';
+
 import { chooseBlackOrWhiteDependOnHex } from '../utils/utils';
 
 export const FunctionItem = styled.span`
@@ -152,4 +154,31 @@ export const CardViewListStyled = ({ color, icon, label, buttonIcon, buttonFunc,
       </CardViewButtonStyled>
     )}
   </CardViewWrapperStyled>
+);
+
+export const BootstrapTableStyled = styled(BootstrapTable)`
+  #pageDropDown .caret {
+    display: none;
+  }
+  .react-bs-table, .react-bs-container-body {
+    height: auto !important;
+  }
+`;
+
+export const ContentContainer = ({ children }) => (
+  <div className="content-wrapper">{children}</div>
+);
+
+export const ContentHeader = ({ children }) => (
+  <section className="content-header">{children}</section>
+);
+
+const ContentBodyStyled = styled.section`
+  overflow-y: scroll;
+  height: calc(100% - 110px);
+  margin-top: 15px;
+`;
+
+export const ContentBody = ({ children }) => (
+  <ContentBodyStyled className="content">{children}</ContentBodyStyled>
 );

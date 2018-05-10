@@ -9,7 +9,7 @@ import { BootstrapTextField } from '../../../shared/formFields';
 import { requiredValidation } from '../../../utils/validation';
 import { ALERT_STATUS, ROLE_CAPABILITIES } from '../../../utils/enum';
 import Breadcrumb from '../../../shared/breadcrumb';
-import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/contentContainer';
+import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/components';
 import { BoxWrapper, BoxBody, BoxFooter } from '../../../shared/boxWrapper';
 
 const AdminContentRolesFormComponent = ({

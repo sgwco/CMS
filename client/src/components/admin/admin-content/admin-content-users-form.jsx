@@ -7,7 +7,7 @@ import { compose, withHandlers } from 'recompose';
 import { requiredValidation, passwordMatchValidation, emailValidation } from '../../../utils/validation';
 import { ALERT_STATUS } from '../../../utils/enum';
 import Breadcrumb from '../../../shared/breadcrumb';
-import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/contentContainer';
+import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/components';
 import { BoxWrapper, BoxBody, BoxFooter } from '../../../shared/boxWrapper';
 import { BootstrapTextField, BootstrapSelectField } from '../../../shared/formFields';
 
