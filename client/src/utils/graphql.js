@@ -291,7 +291,7 @@ export const GET_ALL_PACKAGES = gql`
 `;
 
 export const CREATE_PACKAGE = gql`
-  mutation createPackage($userId: ID!, $price: Float!, $duration: PackageDuration!, $registerDate: String) {
+  mutation createPackage($userId: ID!, $price: Int!, $duration: PackageDuration!, $registerDate: String) {
     createPackage(userId: $userId, price: $price, duration: $duration, registerDate: $registerDate) {
       id
       user {
@@ -317,7 +317,7 @@ export const CREATE_PACKAGE = gql`
 `;
 
 export const EDIT_PACKAGE = gql`
-  mutation editPackage($id: ID!, $userId: ID, $price: Float, $duration: PackageDuration, $registerDate: String, $status: PackageStatus) {
+  mutation editPackage($id: ID!, $userId: ID, $price: Int, $duration: PackageDuration, $registerDate: String, $status: PackageStatus) {
     editPackage(id: $id, userId: $userId, price: $price, duration: $duration, registerDate: $registerDate, status: $status) {
       id
       user {
@@ -349,7 +349,7 @@ export const REMOVE_PACKAGE = gql`
 `;
 
 export const EDIT_PACKAGE_PROGRESS = gql`
-  mutation editPackageProgress($id: ID!, $amount: Float, $interestRate: Int, $date: String, $status: Boolean, $withdrawDate: String) {
+  mutation editPackageProgress($id: ID!, $amount: Int, $interestRate: Int, $date: String, $status: Boolean, $withdrawDate: String) {
     editPackageProgress(id: $id, amount: $amount, interestRate: $interestRate, date: $date, status: $status, withdrawDate: $withdrawDate) {
       id
       user {

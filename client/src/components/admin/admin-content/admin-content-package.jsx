@@ -3,10 +3,9 @@ import FontAwesome from '@fortawesome/react-fontawesome';
 import { Link, withRouter } from 'react-router-dom';
 import { compose, withHandlers, withProps } from 'recompose';
 import { Alert, Badge, Button, Modal, ModalHeader, ModalBody } from 'reactstrap';
-import BootstrapTable from 'react-bootstrap-table-next';
-import filterFactory, { textFilter, selectFilter } from 'react-bootstrap-table2-filter';
 import moment from 'moment';
 import _ from 'lodash';
+import { TableHeaderColumn } from 'react-bootstrap-table';
 
 import Breadcrumb from '../../../shared/breadcrumb';
 import {
@@ -15,13 +14,15 @@ import {
   MarginLeftButtonStyled,
   FunctionWrapperStyled,
   FunctionItem,
-  CardViewListStyled
+  CardViewListStyled,
+  BootstrapTableStyled
 } from '../../../shared/components';
 import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/components';
 import { BoxWrapper, BoxBody } from '../../../shared/boxWrapper';
 import { ALERT_STATUS, DURATION_TYPE, PACKAGE_STATUS } from '../../../utils/enum';
 import { uppercaseObjectValue, getKeyAsString, concatObjectEnum } from '../../../utils/utils';
 import ProgressDot from '../../../shared/progress-dot';
+import { tablePaginationSetting } from '../../../config.json';
 
 const AdminPackageModal = ({
   selectedPackage,
@@ -38,7 +39,7 @@ const AdminPackageModal = ({
         {selectedPackage.user.username + (selectedPackage.user.fullname && ` (${selectedPackage.user.fullname})`)}
       </CardViewListStyled>
       <CardViewListStyled color='#00b894' icon='money-bill-alt' label='Package Price'>
-        {`${selectedPackage.price.toLocaleString('vi')} ${selectedPackage.currency}`}
+        {`${selectedPackage.price.toLocaleString('vi')}.000 ${selectedPackage.currency}`}
       </CardViewListStyled>
       <CardViewListStyled color='#fd79a8' icon='clock' label='Registered Date'>
         {moment(selectedPackage.registerDate).format('DD/MM/YYYY')}
@@ -81,13 +82,16 @@ const AdminContentPackageComponent = ({
   alertContent,
   alertVisible,
   removeAlert,
-  tableHeaders,
+  nothingFormatted,
   getPackages: { packages = [] },
+  packagesNormalizer,
   selectedPackageIndex,
   toggleDetailModal,
   onUpgradePackage,
   onWithdraw,
-  packageStatusCardButton
+  packageStatusCardButton,
+  functionFormatter,
+  packageStatusFormatter
 }) => (
   <ContentContainer>
     <ContentHeader>
@@ -107,7 +111,7 @@ const AdminContentPackageComponent = ({
       </Alert>
       <BoxWrapper color="primary" title="List Packages">
         <BoxBody>
-          <BootstrapTable
+          {/* <BootstrapTable
             keyField='id'
             data={packages}
             columns={tableHeaders}
@@ -115,7 +119,65 @@ const AdminContentPackageComponent = ({
             noDataIndication="Table is Empty"
             striped
             hover
-          />
+          /> */}
+          <BootstrapTableStyled
+            data={packagesNormalizer()}
+            options={tablePaginationSetting}
+            pagination
+            striped
+            hover
+          >
+            <TableHeaderColumn
+              dataField='username'
+              isKey
+              dataSort
+              filter={{ type: 'TextFilter', delay: 1 }}
+            >
+              Username
+            </TableHeaderColumn>
+            <TableHeaderColumn
+              dataField='fullname'
+              dataSort
+              filter={{ type: 'TextFilter', delay: 1 }}
+              dataFormat={nothingFormatted}
+            >
+              Fullname
+            </TableHeaderColumn>
+            <TableHeaderColumn
+              dataField='price'
+              dataSort
+              filter={{ type: 'TextFilter', delay: 1 }}
+              dataFormat={(cell, row) => `${cell.toLocaleString('vi')}.000 ${row.currency}`}
+            >
+              Package Price
+            </TableHeaderColumn>
+            <TableHeaderColumn
+              dataField='duration'
+              dataSort
+              dataFormat={cell => DURATION_TYPE[cell] + ' Months'}
+              filter={{ type: 'SelectFilter', options: concatObjectEnum(DURATION_TYPE, ' Months') }}
+            >
+              Package Type
+            </TableHeaderColumn>
+            <TableHeaderColumn
+              dataField='registerDate'
+              dataFormat={cell => moment(cell).format('DD/MM/YYYY')}
+              filter={{ type: 'TextFilter', delay: 1 }}
+            >
+              Register Date
+            </TableHeaderColumn>
+            <TableHeaderColumn
+              dataField='status'
+              filter={{ type: 'SelectFilter', options: uppercaseObjectValue(PACKAGE_STATUS) }}
+              dataFormat={packageStatusFormatter}
+            >
+              Status
+            </TableHeaderColumn>
+            <TableHeaderColumn
+              dataFormat={functionFormatter}
+              width='200'
+            />
+          </BootstrapTableStyled>
           {selectedPackageIndex > -1 && (
             <AdminPackageModal
               selectedPackage={packages[selectedPackageIndex]}
@@ -153,13 +215,6 @@ export default compose(
       else {
         functionCell = (
           <FunctionWrapperStyled>
-            {/* <FunctionItem>
-              <Link to={`${match.url}/edit/${row.id}`}>
-                <Button color="warning">
-                  <FontAwesome icon='edit' className="text-white" />
-                </Button>
-              </Link>
-            </FunctionItem> */}
             <FunctionItem>
               <Button color="info" onClick={() => toggleDetailModal(packages.findIndex(item => item.id === row.id))}>
                 <FontAwesome icon='eye' />
@@ -186,40 +241,10 @@ export default compose(
       };
       const badge = <h4><Badge color={COLOR_TYPE[cell]}>{cellFormatted}</Badge></h4>;
       return badge;
-    }
+    },
+    nothingFormatted: () => cell => cell || '—'
   }),
-  withProps(({ functionFormatter, packageStatusFormatter, onDeactivePackage, onActivePackage }) => ({
-    tableHeaders: [
-      { text: 'Username', dataField: 'user.username', filter: textFilter({ delay: 0 }), sort: true },
-      { text: 'Fullname', dataField: 'user.fullname', filter: textFilter({ delay: 0 }), formatter: cell => cell || '—', sort: true },
-      {
-        text: 'Package Price',
-        dataField: 'price',
-        filter: textFilter({ delay: 0 }),
-        sort: true,
-        formatter: (cell, row) => `${cell.toLocaleString('vi')} ${row.currency}`
-      },
-      {
-        text: 'Package Type',
-        dataField: 'duration',
-        filter: selectFilter({ options: concatObjectEnum(DURATION_TYPE, ' Months') }),
-        formatter: cell => DURATION_TYPE[cell] + ' Months'
-      },
-      {
-        text: 'Register Date',
-        dataField: 'registerDate',
-        filter: textFilter({ delay: 0 }),
-        formatter: cell => moment(cell).format('DD/MM/YYYY'),
-        sort: true
-      },
-      {
-        text: 'Status',
-        dataField: 'status',
-        filter: selectFilter({ options: uppercaseObjectValue(PACKAGE_STATUS) }),
-        formatter: packageStatusFormatter
-      },
-      { text: 'Function', dataField: '', formatter: functionFormatter }
-    ],
+  withProps(({ onDeactivePackage, onActivePackage }) => ({
     packageStatusCardButton: {
       ACTIVE: {
         icon: 'ban',

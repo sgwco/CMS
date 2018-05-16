@@ -22,8 +22,8 @@ const ProgressStepWrapper = styled.div`
 
 const ProgressStep = ({ progressItem, onWithdraw, currency }) => (
   <ProgressStepWrapper>
-    <div>Interest Rate: {progressItem.interestRate}%</div>
-    <div>Payment: {progressItem.amount} {currency}</div>
+    <div><strong>Interest Rate:</strong> {progressItem.interestRate}%</div>
+    <div><strong>Payment:</strong> {progressItem.amount.toLocaleString('vi')}.000 {currency}</div>
     {moment() >= moment(progressItem.date) && !progressItem.status && onWithdraw && (
       <div>
         <Button color='primary' size='sm' onClick={() => onWithdraw(progressItem)}>Withdraw</Button>

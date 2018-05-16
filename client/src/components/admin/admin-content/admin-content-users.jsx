@@ -4,10 +4,8 @@ import moment from 'moment';
 import _ from 'lodash';
 import FontAwesome from '@fortawesome/react-fontawesome';
 import { Breadcrumb, BreadcrumbItem, Alert, Button, Modal, ModalBody, ModalHeader, Badge } from 'reactstrap';
-import BootstrapTable from 'react-bootstrap-table-next';
-import filterFactory, { textFilter, selectFilter } from 'react-bootstrap-table2-filter';
-import paginationFactory from 'react-bootstrap-table2-paginator';
-import { compose, withHandlers, withProps } from 'recompose';
+import { TableHeaderColumn } from 'react-bootstrap-table';
+import { compose, withHandlers } from 'recompose';
 
 import { ALERT_STATUS, USER_STATUS } from '../../../utils/enum';
 import { uppercaseObjectValue } from '../../../utils/utils';
@@ -19,7 +17,8 @@ import {
   FunctionWrapperStyled,
   LoadingIndicator,
   FunctionItem,
-  CardViewListStyled
+  CardViewListStyled,
+  BootstrapTableStyled
 } from '../../../shared/components';
 import { tablePaginationSetting } from '../../../config.json';
 
@@ -29,11 +28,14 @@ const AdminContentUsersComponent = ({
   alertVisible,
   removeAlert,
   alertContent,
-  tableHeaders,
-  getUsers: { users = [] },
+  usersNormalizer,
   detailModalVisible,
   toggleDetailModal,
-  selectedUser
+  selectedUser,
+  functionFormatter,
+  nothingFormatted,
+  userStatusFormatter,
+  rolesFilter
 }) => (
   <ContentContainer>
     <ContentHeader>
@@ -59,16 +61,62 @@ const AdminContentUsersComponent = ({
       </Alert>
       <BoxWrapper color="primary" title="List Users">
         <BoxBody>
-          <BootstrapTable
-            keyField='username'
-            data={users}
-            pagination={paginationFactory(tablePaginationSetting)}
-            columns={tableHeaders}
-            filter={filterFactory()}
-            noDataIndication="Table is Empty"
+          <BootstrapTableStyled
+            data={usersNormalizer()}
+            options={tablePaginationSetting}
+            pagination
             striped
             hover
-          />
+          >
+            <TableHeaderColumn
+              dataField='username'
+              isKey
+              dataSort
+              filter={{ type: 'TextFilter', delay: 1 }}
+            >
+              Username
+            </TableHeaderColumn>
+            <TableHeaderColumn
+              dataField='fullname'
+              dataSort
+              filter={{ type: 'TextFilter', delay: 1 }}
+              dataFormat={nothingFormatted}
+            >
+              Fullname
+            </TableHeaderColumn>
+            <TableHeaderColumn
+              dataField='email'
+              dataSort
+              filter={{ type: 'TextFilter', delay: 1 }}
+              dataFormat={nothingFormatted}
+            >
+              Email
+            </TableHeaderColumn>
+            <TableHeaderColumn
+              dataField='registrationDate'
+              dataSort
+              dataFormat={cell => moment(cell).format('DD/MM/YYYY')}
+            >
+              Register Date
+            </TableHeaderColumn>
+            <TableHeaderColumn
+              dataField='role'
+              filter={{ type: 'SelectFilter', options: rolesFilter() }}
+            >
+              Role
+            </TableHeaderColumn>
+            <TableHeaderColumn
+              dataField='userStatus'
+              filter={{ type: 'SelectFilter', options: uppercaseObjectValue(USER_STATUS) }}
+              dataFormat={userStatusFormatter}
+            >
+              User Status
+            </TableHeaderColumn>
+            <TableHeaderColumn
+              dataFormat={functionFormatter}
+              width='200'
+            />
+          </BootstrapTableStyled>
           {detailModalVisible && (
             <Modal isOpen={detailModalVisible} toggle={() => toggleDetailModal()} size="lg">
               <ModalHeader toggle={() => toggleDetailModal()}>Package detail</ModalHeader>
@@ -173,17 +221,8 @@ export default compose(
       };
       const badge = <h4><Badge color={COLOR_TYPE[cell]}>{cellFormatted}</Badge></h4>;
       return badge;
-    }
-  }),
-  withProps(({ functionFormatter, userStatusFormatter }) => ({
-    tableHeaders: [
-      { text: 'User Name', dataField: 'username', filter: textFilter({ delay: 0 }) },
-      { text: 'Full Name', dataField: 'fullname', filter: textFilter({ delay: 0 }), formatter: cell => cell || '—' },
-      { text: 'Email', dataField: 'email', filter: textFilter({ delay: 0 }), formatter: cell => cell || '—' },
-      { text: 'Registration Date', dataField: 'registrationDate', formatter: (cell) => moment(cell).format('DD/MM/YYYY') },
-      { text: 'Role', dataField: 'role.name' },
-      { text: 'User Status', dataField: 'userStatus', filter: selectFilter({ options: uppercaseObjectValue(USER_STATUS) }), formatter: userStatusFormatter, classes: 'user-status-cell' },
-      { text: 'Function', dataField: '', headerClasses: 'function-column', formatter: functionFormatter }
-    ]
-  }))
+    },
+    nothingFormatted: () => cell => cell || '—',
+    rolesFilter: ({ getRoles: { roles = [] } }) => () => roles.length > 0 ? Object.assign(...roles.map(item => ({ [item.name]: item.name }))) : {}
+  })
 )(AdminContentUsersComponent);

@@ -4,7 +4,7 @@ import _ from 'lodash';
 
 import AdminContentUsersComponent from '../../../components/admin/admin-content/admin-content-users';
 import { ALERT_STATUS, ROLE_CAPABILITIES } from '../../../utils/enum';
-import { GET_FULL_USERS, REMOVE_USER, GET_USER_TOKEN } from '../../../utils/graphql';
+import { GET_FULL_USERS, REMOVE_USER, GET_USER_TOKEN, GET_ROLES } from '../../../utils/graphql';
 import { checkRoleIsAllowed } from '../../../utils/utils';
 
 export default compose(
@@ -15,6 +15,7 @@ export default compose(
     renderNothing
   ),
   graphql(GET_FULL_USERS, { name: 'getUsers' }),
+  graphql(GET_ROLES(['id', 'name', 'accessPermission']), { name: 'getRoles' }),
   graphql(REMOVE_USER, { name: 'removeUser' }),
   withProps(() => ({
     breadcrumbItems: [
@@ -61,6 +62,13 @@ export default compose(
           setAlert(ALERT_STATUS.ERROR);
         }
       }
+    },
+    usersNormalizer: ({ getUsers: { users = [] } }) => () => {
+      const userCloned = _.cloneDeep(users);
+      for (let index = 0; index < userCloned.length; index++) {
+        userCloned[index].role = userCloned[index].role.name;
+      }
+      return userCloned;
     }
   })
 )(AdminContentUsersComponent);

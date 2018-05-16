@@ -76,9 +76,12 @@ export const BootstrapMoneyAmountField = ({ validate, field, onChange, onBlur, l
           invalid={error !== undefined}
         />
         <FormFeedback>{error}</FormFeedback>
+        <MoneyAmountStyled>
+          x 1000
+        </MoneyAmountStyled>
         {value && (
           <MoneyAmountStyled>
-            As word: {writtenNumber(value, { lang: 'vi' })} đồng
+            As word: {writtenNumber(value * 1000, { lang: 'vi' })} đồng
           </MoneyAmountStyled>
         )}
       </FormGroup>

@@ -186,6 +186,14 @@ export default compose(
           alert('Error: ' + e.graphQLErrors[0].message);
         }
       }
+    },
+    packagesNormalizer: ({ getPackages: { packages = [] } }) => () => {
+      const packageCloned = _.cloneDeep(packages);
+      for (let index = 0; index < packageCloned.length; index++) {
+        packageCloned[index].username = packageCloned[index].user.username;
+        packageCloned[index].fullname = packageCloned[index].user.fullname;
+      }
+      return packageCloned;
     }
   })
 )(AdminContentPackageComponent);

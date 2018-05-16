@@ -127,7 +127,7 @@ export async function initDatabase(conn) {
       await promiseQuery(`CREATE TABLE IF NOT EXISTS ${PREFIX}package (
         id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
         user_id INT UNSIGNED NOT NULL,
-        price FLOAT(20, 2) UNSIGNED NOT NULL,
+        price BIGINT UNSIGNED NOT NULL,
         currency VARCHAR(10) NOT NULL,
         duration INT(10) UNSIGNED NOT NULL,
         register_date DATE NOT NULL,

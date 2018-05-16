@@ -1,4 +1,4 @@
-import { GraphQLList, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLInt, GraphQLError, GraphQLFloat, GraphQLBoolean } from 'graphql';
+import { GraphQLList, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLInt, GraphQLError, GraphQLBoolean } from 'graphql';
 import moment from 'moment';
 import { Package, PackageCurrency, PackageDuration, PackageStatus, PackageTransferMoneyProgress } from '../models';
 import { promiseQuery, PREFIX } from '../config/database';
@@ -56,7 +56,7 @@ export const Mutation = {
     type: Package,
     args: {
       userId: { type: GraphQLNonNull(GraphQLID) },
-      price: { type: GraphQLNonNull(GraphQLFloat) },
+      price: { type: GraphQLNonNull(GraphQLInt) },
       duration: { type: GraphQLNonNull(PackageDuration) },
       registerDate: { type: GraphQLString }
     },
@@ -75,11 +75,6 @@ export const Mutation = {
 
       if (!args.duration) {
         throw new GraphQLError('Duration cannot be null');
-      }
-
-      const existPackages = await promiseQuery(`SELECT id FROM ${PREFIX}package WHERE user_id='${args.userId}' AND status='active'`);
-      if (existPackages.length > 0) {
-        throw new GraphQLError(`Cannot create new package for this user due to the existance of ${existPackages.length} active package(s)`);
       }
       
       const now = moment();
@@ -130,7 +125,7 @@ export const Mutation = {
         user_id: args.userId,
         name: args.name,
         price: args.price,
-        currency: args.currency,
+        currency: CURRENCY.VND,
         duration: args.duration,
         register_date: args.registerDate || now.format('DD/MM/YYYY'),
         transferMoney: id
@@ -142,7 +137,7 @@ export const Mutation = {
     args: {
       id: { type: GraphQLNonNull(GraphQLID) },
       userId: { type: GraphQLID },
-      price: { type: GraphQLFloat },
+      price: { type: GraphQLInt },
       duration: { type: PackageDuration },
       registerDate: { type: GraphQLString },
       status: { type: PackageStatus }
@@ -219,7 +214,7 @@ export const Mutation = {
     type: Package,
     args: {
       id: { type: GraphQLNonNull(GraphQLID) },
-      amount: { type: GraphQLFloat },
+      amount: { type: GraphQLInt },
       interestRate: { type: GraphQLInt },
       date: { type: GraphQLString },
       status: { type: GraphQLBoolean },
