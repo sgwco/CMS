@@ -39,7 +39,7 @@ const AdminPackageModal = ({
         {selectedPackage.user.username + (selectedPackage.user.fullname && ` (${selectedPackage.user.fullname})`)}
       </CardViewListStyled>
       <CardViewListStyled color='#00b894' icon='money-bill-alt' label='Package Price'>
-        {`${selectedPackage.price.toLocaleString('vi')}.000 ${selectedPackage.currency}`}
+        {`${(selectedPackage.price * 1000).toLocaleString('vi')} ${selectedPackage.currency}`}
       </CardViewListStyled>
       <CardViewListStyled color='#fd79a8' icon='clock' label='Registered Date'>
         {moment(selectedPackage.registerDate).format('DD/MM/YYYY')}

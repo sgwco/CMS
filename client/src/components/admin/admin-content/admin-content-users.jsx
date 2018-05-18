@@ -146,7 +146,7 @@ const AdminContentUsersComponent = ({
                 )}
                 {selectedUser.role && (
                   <CardViewListStyled color='#ff7979' icon='address-card' label='Role'>
-                    {selectedUser.role.name}
+                    {selectedUser.role}
                   </CardViewListStyled>
                 )}
                 {selectedUser.userMeta && [

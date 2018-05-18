@@ -1,4 +1,4 @@
-import { compose, withProps, withHandlers, branch, renderNothing } from 'recompose';
+import { compose, withProps, withHandlers, branch, renderNothing, withState } from 'recompose';
 import { graphql } from 'react-apollo';
 
 import DashboardMember from '../../../../components/admin/admin-content/admin-content-dashboard/dashboard-member';
@@ -13,14 +13,16 @@ export default compose(
       Object.keys(loggedInUser).length === 0 || checkRoleIsAllowed(loggedInUser.role.accessPermission, ROLE_CAPABILITIES.write_packages.value),
     renderNothing
   ),
-  graphql(ACTIVE_PACKAGE, { name: 'activePackage' }),
+  graphql(ACTIVE_PACKAGE, { name: 'listPackages' }),
   graphql(EDIT_PACKAGE, { name: 'editPackage' }),
-  withProps(() => ({
+  withProps(({ listPackages: { activePackage = [] } }) => ({
     breadcrumbItems: [
       { url: '/admin', icon: 'home', text: 'Home' },
       { text: 'Dashboard' }
-    ]
+    ],
+    listActivePackages: activePackage.filter(item => item.status !== 'EXPIRED')
   })),
+  withState('selectedPackageIndex', 'selectPackageAction', -1),
   withHandlers({
     onUpgradePackage: ({ editPackage }) => async id => {
       const result = confirm('Do you want to withdraw this package?');
@@ -41,5 +43,8 @@ export default compose(
         }
       }
     },
+    selectPackageAction: ({ selectPackageAction, listActivePackages }) => e => {
+      selectPackageAction(listActivePackages.findIndex(item => item.id === e.target.value));
+    }
   })
 )(DashboardMember);

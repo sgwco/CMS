@@ -1,15 +1,18 @@
 import React from 'react';
-import { Row, Col, Button } from 'reactstrap';
+import { Row, Col, Button, Input } from 'reactstrap';
 
 import { ListCardboard } from './cardboard';
 import { BoxWrapper, BoxBody, BoxFooter } from '../../../../shared/boxWrapper';
 import ProgressDot from '../../../../shared/progress-dot';
 import { getKeyAsString } from '../../../../utils/utils';
-import { PACKAGE_STATUS } from '../../../../utils/enum';
+import { PACKAGE_STATUS, DURATION_TYPE } from '../../../../utils/enum';
 
 const DashboardMember = ({
-  activePackage: { activePackage = {} },
-  onUpgradePackage
+  listActivePackages,
+  listPackages: { activePackage = [] },
+  onUpgradePackage,
+  selectPackageAction,
+  selectedPackageIndex
 }) => (
   Object.keys(activePackage).length > 0 && (
     <Row>
@@ -19,19 +22,29 @@ const DashboardMember = ({
       <Col lg={6}>
         <BoxWrapper color="primary" title="Progress">
           <BoxBody>
-            <ProgressDot selectedPackage={activePackage} />
+            <Input type="select" onChange={selectPackageAction}>
+              <option value=''>-- Please Select --</option>
+              {listActivePackages.map(
+                item => <option key={item.id} value={item.id}>
+                  {item.price.toLocaleString('vi')}.000 VND - {DURATION_TYPE[item.duration]} Months
+                </option>
+              )}
+            </Input>
+            <ProgressDot selectedPackage={selectedPackageIndex > -1 ? listActivePackages[selectedPackageIndex] : {}} />
           </BoxBody>
-          <BoxFooter>
-            <Button
-              color="danger"
-              type="button"
-              className="float-right"
-              onClick={() => onUpgradePackage(activePackage.id)}
-              disabled={activePackage.status !== getKeyAsString(PACKAGE_STATUS.ACTIVE, PACKAGE_STATUS)}
-            >
-              Withdraw Package
-            </Button>
-          </BoxFooter>
+          {selectedPackageIndex > -1 && (
+            <BoxFooter>
+              <Button
+                color="danger"
+                type="button"
+                className="float-right"
+                onClick={() => onUpgradePackage((selectedPackageIndex > -1 ? listActivePackages[selectedPackageIndex] : {}).id)}
+                disabled={(selectedPackageIndex > -1 ? listActivePackages[selectedPackageIndex] : {}).status !== getKeyAsString(PACKAGE_STATUS.ACTIVE, PACKAGE_STATUS)}
+              >
+                Withdraw Package
+              </Button>
+            </BoxFooter>
+          )}
         </BoxWrapper>
       </Col>
     </Row>

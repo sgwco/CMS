@@ -35,16 +35,16 @@ export const Query = {
     }
   },
   activePackage: {
-    type: Package,
+    type: GraphQLList(Package),
     async resolve(source, _, { payload }) {
       if (!payload) {
         throw new GraphQLError('Unauthorized');
       }
 
-      const activePackage = await promiseQuery(`SELECT * FROM ${PREFIX}package WHERE user_id='${payload.id}' AND status='active'`);
+      const activePackage = await promiseQuery(`SELECT * FROM ${PREFIX}package WHERE user_id='${payload.id}'`);
 
       if (activePackage.length > 0) {
-        return activePackage[0];
+        return activePackage;
       }
       else throw new GraphQLError('Package does not exist');
     }
