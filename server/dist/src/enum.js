@@ -43,5 +43,6 @@ var ROLE_CAPABILITIES = exports.ROLE_CAPABILITIES = {
   read_packages: { title: 'Read packages', value: Math.pow(2, 13) },
   write_packages: { title: 'Write packages', value: Math.pow(2, 14) },
   import: { title: 'Import', value: Math.pow(2, 15) },
-  export: { title: 'Export', value: Math.pow(2, 16) }
+  export: { title: 'Export', value: Math.pow(2, 16) },
+  setting: { title: 'Setting', value: Math.pow(2, 17) }
 };

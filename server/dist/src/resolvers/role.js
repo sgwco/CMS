@@ -117,7 +117,7 @@ var Mutation = exports.Mutation = {
                 throw new _graphql.GraphQLError('Name cannot be null');
 
               case 2:
-                if (!(args.accessPermission <= 0)) {
+                if (!(args.accessPermission < 0)) {
                   _context3.next = 4;
                   break;
                 }

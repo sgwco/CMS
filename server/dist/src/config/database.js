@@ -88,7 +88,7 @@ var initDatabase = exports.initDatabase = function () {
 
                         // Package table
                         _context2.next = 8;
-                        return promiseQuery('CREATE TABLE IF NOT EXISTS ' + PREFIX + 'package (\n        id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,\n        user_id INT UNSIGNED NOT NULL,\n        price FLOAT(20, 2) UNSIGNED NOT NULL,\n        currency VARCHAR(10) NOT NULL,\n        duration INT(10) UNSIGNED NOT NULL,\n        register_date DATE NOT NULL,\n        status VARCHAR(50) NOT NULL,\n        CONSTRAINT FK_PACKAGE FOREIGN KEY (user_id) REFERENCES ' + PREFIX + 'user(id) ON DELETE CASCADE ON UPDATE CASCADE\n      )');
+                        return promiseQuery('CREATE TABLE IF NOT EXISTS ' + PREFIX + 'package (\n        id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,\n        user_id INT UNSIGNED NOT NULL,\n        price BIGINT UNSIGNED NOT NULL,\n        currency VARCHAR(10) NOT NULL,\n        duration INT(10) UNSIGNED NOT NULL,\n        register_date DATE NOT NULL,\n        status VARCHAR(50) NOT NULL,\n        CONSTRAINT FK_PACKAGE FOREIGN KEY (user_id) REFERENCES ' + PREFIX + 'user(id) ON DELETE CASCADE ON UPDATE CASCADE\n      )');
 
                       case 8:
 

@@ -110,7 +110,7 @@ var Query = exports.Query = {
     }
   },
   activePackage: {
-    type: _models.Package,
+    type: (0, _graphql.GraphQLList)(_models.Package),
     resolve: function resolve(source, _, _ref4) {
       var _this3 = this;
 
@@ -130,7 +130,7 @@ var Query = exports.Query = {
 
               case 2:
                 _context3.next = 4;
-                return (0, _database.promiseQuery)('SELECT * FROM ' + _database.PREFIX + 'package WHERE user_id=\'' + payload.id + '\' AND status=\'active\'');
+                return (0, _database.promiseQuery)('SELECT * FROM ' + _database.PREFIX + 'package WHERE user_id=\'' + payload.id + '\'');
 
               case 4:
                 activePackage = _context3.sent;
@@ -140,7 +140,7 @@ var Query = exports.Query = {
                   break;
                 }
 
-                return _context3.abrupt('return', activePackage[0]);
+                return _context3.abrupt('return', activePackage);
 
               case 9:
                 throw new _graphql.GraphQLError('Package does not exist');
@@ -161,7 +161,7 @@ var Mutation = exports.Mutation = {
     type: _models.Package,
     args: {
       userId: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLID) },
-      price: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLFloat) },
+      price: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLInt) },
       duration: { type: (0, _graphql.GraphQLNonNull)(_models.PackageDuration) },
       registerDate: { type: _graphql.GraphQLString }
     },
@@ -171,7 +171,7 @@ var Mutation = exports.Mutation = {
       var payload = _ref5.payload,
           dataloaders = _ref5.dataloaders;
       return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
-        var existPackages, now, registerDate, status, id, lastId, transferMoneyProgresses, duration, paymentDate, index;
+        var now, registerDate, status, id, lastId, transferMoneyProgresses, duration, paymentDate, index;
         return regeneratorRuntime.wrap(function _callee4$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
@@ -208,47 +208,33 @@ var Mutation = exports.Mutation = {
                 throw new _graphql.GraphQLError('Duration cannot be null');
 
               case 8:
-                _context4.next = 10;
-                return (0, _database.promiseQuery)('SELECT id FROM ' + _database.PREFIX + 'package WHERE user_id=\'' + args.userId + '\' AND status=\'active\'');
-
-              case 10:
-                existPackages = _context4.sent;
-
-                if (!(existPackages.length > 0)) {
-                  _context4.next = 13;
-                  break;
-                }
-
-                throw new _graphql.GraphQLError('Cannot create new package for this user due to the existance of ' + existPackages.length + ' active package(s)');
-
-              case 13:
                 now = (0, _moment2.default)();
                 registerDate = args.registerDate ? (0, _moment2.default)(args.registerDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : now.format('YYYY-MM-DD');
                 status = _models.PackageStatus.getValue('PENDING').value;
                 id = null;
-                _context4.next = 19;
+                _context4.next = 14;
                 return (0, _database.promiseQuery)('INSERT INTO ' + _database.PREFIX + 'package VALUES (\n        NULL,\n        \'' + args.userId + '\',\n        \'' + args.price + '\',\n        \'' + _enum.CURRENCY.VND + '\',\n        \'' + args.duration + '\',\n        \'' + registerDate + '\',\n        \'' + status + '\'\n      )');
 
-              case 19:
-                _context4.next = 21;
+              case 14:
+                _context4.next = 16;
                 return (0, _database.promiseQuery)('SELECT LAST_INSERT_ID()');
 
-              case 21:
+              case 16:
                 lastId = _context4.sent;
 
                 if (!(lastId.length > 0)) {
-                  _context4.next = 26;
+                  _context4.next = 21;
                   break;
                 }
 
                 id = lastId[0]['LAST_INSERT_ID()'];
-                _context4.next = 27;
+                _context4.next = 22;
                 break;
 
-              case 26:
+              case 21:
                 throw new _graphql.GraphQLError('Cannot insert new role.');
 
-              case 27:
+              case 22:
                 transferMoneyProgresses = {
                   '6': { interestRate: 6, step: 2 },
                   '12': { interestRate: 8, step: 4 }
@@ -257,35 +243,35 @@ var Mutation = exports.Mutation = {
                 paymentDate = (0, _moment2.default)(registerDate, 'YYYY-MM-DD');
                 index = 0;
 
-              case 31:
+              case 26:
                 if (!(index < duration.step)) {
-                  _context4.next = 38;
+                  _context4.next = 33;
                   break;
                 }
 
                 paymentDate = paymentDate.add(3, 'months');
-                _context4.next = 35;
+                _context4.next = 30;
                 return (0, _database.promiseQuery)('INSERT INTO ' + _database.PREFIX + 'package_progress VALUES (\n          NULL,\n          \'' + id + '\',\n          \'' + args.price * duration.interestRate / 100 + '\',\n          \'' + duration.interestRate + '\',\n          \'' + paymentDate.format('YYYY-MM-DD') + '\',\n          0,\n          NULL\n        )');
 
-              case 35:
+              case 30:
                 index += 1;
-                _context4.next = 31;
+                _context4.next = 26;
                 break;
 
-              case 38:
+              case 33:
                 return _context4.abrupt('return', {
                   id: id,
                   status: status,
                   user_id: args.userId,
                   name: args.name,
                   price: args.price,
-                  currency: args.currency,
+                  currency: _enum.CURRENCY.VND,
                   duration: args.duration,
                   register_date: args.registerDate || now.format('DD/MM/YYYY'),
                   transferMoney: id
                 });
 
-              case 39:
+              case 34:
               case 'end':
                 return _context4.stop();
             }
@@ -299,7 +285,7 @@ var Mutation = exports.Mutation = {
     args: {
       id: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLID) },
       userId: { type: _graphql.GraphQLID },
-      price: { type: _graphql.GraphQLFloat },
+      price: { type: _graphql.GraphQLInt },
       duration: { type: _models.PackageDuration },
       registerDate: { type: _graphql.GraphQLString },
       status: { type: _models.PackageStatus }
@@ -445,7 +431,7 @@ var Mutation = exports.Mutation = {
     type: _models.Package,
     args: {
       id: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLID) },
-      amount: { type: _graphql.GraphQLFloat },
+      amount: { type: _graphql.GraphQLInt },
       interestRate: { type: _graphql.GraphQLInt },
       date: { type: _graphql.GraphQLString },
       status: { type: _graphql.GraphQLBoolean },

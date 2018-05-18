@@ -12,7 +12,7 @@ const DivIcon = styled.div`
 
 export const ListCardboard = ({ activePackage }) => (
   <Row>
-    <Col md={6}>
+    <Col md={3}>
       <DivBox className="small-box bg-yellow">
         <div className="inner">
           <h3>{activePackage.length}</h3>
@@ -23,7 +23,7 @@ export const ListCardboard = ({ activePackage }) => (
         </DivIcon>
       </DivBox>
     </Col>
-    <Col md={6}>
+    <Col md={3}>
       <DivBox className="small-box bg-green">
         <div className="inner">
           <h3>{(activePackage.reduce((total, item) => total + item.price, 0) * 1000).toLocaleString('vi')} VND</h3>
@@ -34,7 +34,7 @@ export const ListCardboard = ({ activePackage }) => (
         </DivIcon>
       </DivBox>
     </Col>
-    <Col md={6}>
+    <Col md={3}>
       <DivBox className="small-box bg-aqua">
         <div className="inner">
           <h3>{activePackage.filter(item => item.status === 'ACTIVE').length}</h3>
@@ -45,7 +45,7 @@ export const ListCardboard = ({ activePackage }) => (
         </DivIcon>
       </DivBox>
     </Col>
-    <Col md={6}>
+    <Col md={3}>
       <DivBox className="small-box bg-red">
         <div className="inner">
           <h3>{(activePackage.filter(item => item.status === 'ACTIVE').reduce((total, item) => total + item.price, 0) * 1000).toLocaleString('vi')} VND</h3>

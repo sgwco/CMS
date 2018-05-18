@@ -20,7 +20,29 @@ export default compose(
       { url: '/admin', icon: 'home', text: 'Home' },
       { text: 'Dashboard' }
     ],
-    listActivePackages: activePackage.filter(item => item.status !== 'EXPIRED')
+    listActivePackages: activePackage.filter(item => item.status !== 'EXPIRED' && item.status !== 'PENDING'),
+    pieChartData: {
+      labels: [
+        'Pending',
+        'Active',
+        'Wait for Expiration',
+        'Expired'
+      ],
+      datasets: [{
+        data: [
+          activePackage.filter(item => item.status === 'PENDING').length,
+          activePackage.filter(item => item.status === 'ACTIVE').length,
+          activePackage.filter(item => item.status === 'PENDING_EXPIRED').length,
+          activePackage.filter(item => item.status === 'EXPIRED').length,
+        ],
+        backgroundColor: [
+          '#00b894',
+          '#0984e3',
+          '#d63031',
+          '#fdcb6e'
+        ],
+      }]
+    }
   })),
   withState('selectedPackageIndex', 'selectPackageAction', -1),
   withHandlers({
