@@ -4,19 +4,20 @@ import FontAwesome from '@fortawesome/react-fontawesome';
 import moment from 'moment';
 import { DropdownToggle, DropdownItem, Nav, Navbar, NavItem, UncontrolledDropdown, DropdownMenu } from 'reactstrap';
 
+import avatar from '../../assets/img/user.png';
+
 const AdminTopbarProfileComponent = ({
   getUserToken: { loggedInUser },
   logout
 }) => (
   <UncontrolledDropdownStyled className="user user-menu" nav inNavbar>
     <DropdownToggle nav caret>
-      {/* <img src="https://graph.facebook.com/100006945288953/picture?type=square" className="user-image" alt="User Image" /> */}
-      <FontAwesome icon="user" className="user-image" />
+      <img src={avatar} className="user-image" alt="User Image" />
       <span className="hidden-xs">{loggedInUser && (loggedInUser.fullname || loggedInUser.username)}</span>
     </DropdownToggle>
     <DropdownMenuStyled className="dropdown">
       <DropdownItem className="user-header">
-        <img src="https://graph.facebook.com/100006945288953/picture?type=square" className="rounded-circle" alt="User Image" />
+        <img src={avatar} className="rounded-circle" alt="User Image" />
         <p>
           {loggedInUser && (loggedInUser.fullname || loggedInUser.username)}<br/>
           <small>Member since {loggedInUser && moment(loggedInUser.registrationDate).format('MMM. YYYY')}</small>

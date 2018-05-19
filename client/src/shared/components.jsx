@@ -182,3 +182,22 @@ const ContentBodyStyled = styled.section`
 export const ContentBody = ({ children }) => (
   <ContentBodyStyled className="content">{children}</ContentBodyStyled>
 );
+
+const DivBox = styled.div`
+  min-height: 150px;
+`;
+const DivIcon = styled.div`
+  top: 10px !important;
+`;
+
+export const CardboardItem = ({ title, content, icon, color }) => (
+  <DivBox className={`small-box bg-${color}`}>
+    <div className="inner">
+      <h3>{content}</h3>
+      <p>{title}</p>
+    </div>
+    <DivIcon className="icon">
+      <FontAwesome icon={icon} />
+    </DivIcon>
+  </DivBox>
+);

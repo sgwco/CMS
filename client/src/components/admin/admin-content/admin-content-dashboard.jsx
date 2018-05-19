@@ -4,6 +4,7 @@ import { ContentHeaderTitleStyled } from '../../../shared/components';
 import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/components';
 import Breadcrumb from '../../../shared/breadcrumb';
 
+import DashboardAdmin from '../../../containers/admin/admin-content/admin-content-dashboard/dashboard-admin';
 import DashboardMember from '../../../containers/admin/admin-content/admin-content-dashboard/dashboard-member';
 
 const AdminContentDashboardComponent = ({
@@ -17,6 +18,7 @@ const AdminContentDashboardComponent = ({
       <Breadcrumb items={breadcrumbItems} />
     </ContentHeader>
     <ContentBody>
+      <DashboardAdmin />
       <DashboardMember />
     </ContentBody>
   </ContentContainer>
