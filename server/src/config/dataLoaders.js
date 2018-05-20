@@ -31,11 +31,17 @@ const getPackageProgressesByIds = packageProgressIds => {
   return promiseQuery(`SELECT * FROM ${PREFIX}package_progress WHERE id IN (${params})`);
 }
 
+const getSettingsByKeys = settingKeys => {
+  const params = settingKeys.map(key => `'${key}'`).join(', ');
+  return promiseQuery(`SELECT * FROM ${PREFIX}setting WHERE setting_key IN (${params})`);
+}
+
 export default {
   rolesByIds: new DataLoader(getRolesByIds),
   usersByIds: new DataLoader(getUsersByIds),
   postsByIds: new DataLoader(getPostsByIds),
   categoriesByIds: new DataLoader(getCategoriesByIds),
   packagesByIds: new DataLoader(getPackagesByIds),
-  packageProgressesByIds: new DataLoader(getPackageProgressesByIds)
+  packageProgressesByIds: new DataLoader(getPackageProgressesByIds),
+  settingsByKeys: new DataLoader(getSettingsByKeys)
 }

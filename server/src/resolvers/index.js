@@ -5,6 +5,7 @@ import MediaResolver from './media';
 import { Query as PostQuery, Mutation as PostMutation } from './post';
 import { Query as CategoryQuery, Mutation as CategoryMutation } from './category';
 import { Query as PackageQuery, Mutation as PackageMutation } from './package';
+import { Query as SettingQuery, Mutation as SettingMutation } from './setting';
 
 export const Query = new GraphQLObjectType({
   name: 'SGW_Queries',
@@ -14,7 +15,8 @@ export const Query = new GraphQLObjectType({
     ...MediaResolver,
     ...CategoryQuery,
     ...PostQuery,
-    ...PackageQuery
+    ...PackageQuery,
+    ...SettingQuery
   }
 });
 
@@ -25,6 +27,7 @@ export const Mutation = new GraphQLObjectType({
     ...RoleMutation,
     ...PostMutation,
     ...CategoryMutation,
-    ...PackageMutation
+    ...PackageMutation,
+    ...SettingMutation
   }
 });
