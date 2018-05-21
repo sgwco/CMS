@@ -430,8 +430,8 @@ export const GET_SETTINGS = gql`
 `;
 
 export const EDIT_SETTING = gql`
-  mutation editSetting($settingKey: String!, $settingValue: String!) {
-    editSetting(settingKey: $settingKey, settingValue: $settingValue) {
+  mutation editSetting($listSettings: String!) {
+    editSetting(listSettings: $listSettings) {
       settingKey
       settingValue
     }

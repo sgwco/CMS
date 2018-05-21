@@ -1,6 +1,6 @@
 import React from 'react';
 import { compose, withHandlers } from 'recompose';
-import { Row, Col, Form as BootstrapForm, Button } from 'reactstrap';
+import { Row, Col, Form as BootstrapForm, Button, Alert } from 'reactstrap';
 import { Form } from 'react-form';
 
 import { ContentHeaderTitleStyled } from '../../../shared/components';
@@ -9,6 +9,7 @@ import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/co
 import Breadcrumb from '../../../shared/breadcrumb';
 import { BoxWrapper, BoxBody, BoxFooter } from '../../../shared/boxWrapper';
 import { requiredValidation } from '../../../utils/validation';
+import { ALERT_STATUS } from '../../../utils/enum';
 
 const AdminContentDashboardComponent = ({
   breadcrumbItems,
@@ -16,6 +17,9 @@ const AdminContentDashboardComponent = ({
   languageMapper,
   submitForm,
   initValue,
+  alertVisible,
+  removeAlert,
+  alertContent
 }) => (
   <ContentContainer>
     <ContentHeader>
@@ -25,6 +29,9 @@ const AdminContentDashboardComponent = ({
       <Breadcrumb items={breadcrumbItems} />
     </ContentHeader>
     <ContentBody>
+      <Alert color={alertVisible} isOpen={alertVisible !== ALERT_STATUS.HIDDEN} toggle={removeAlert}>
+        {alertContent}
+      </Alert>
       <Form onSubmit={submitForm} getApi={initValue}>
         {formApi => (
           <BootstrapForm onSubmit={formApi.submitForm}>

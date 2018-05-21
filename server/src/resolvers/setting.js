@@ -73,32 +73,35 @@ export const Mutation = {
       else throw new GraphQLError('Cannot insert new setting.');
     }
   },
-  editRole: {
-    type: Setting,
+  editSetting: {
+    type: GraphQLList(Setting),
     args: {
-      settingKey: { type: GraphQLNonNull(GraphQLString) },
-      settingValue: { type: GraphQLNonNull(GraphQLString) },
+      listSettings: { type: GraphQLNonNull(GraphQLString) }
     },
-    resolve: async (source, { settingKey, settingValue }, { payload, dataloaders }) => {
+    resolve: async (source, { listSettings }, { payload, dataloaders }) => {
       if (!payload) {
         throw new GraphQLError('Unauthorized');
       }
 
-      if (!settingKey) {
-        throw new GraphQLError('Setting key cannot be null');
+      try {
+        const settings = JSON.parse(listSettings);
+        const settingPromises = [];
+        for (const setting of settings) {
+          settingPromises.push(
+            promiseQuery(`UPDATE ${PREFIX}setting SET setting_value='${setting.settingValue}' WHERE setting_key='${setting.settingKey}'`)
+          );
+          dataloaders.settingsByKeys.clear(setting.settingKey);
+        }
+        await Promise.all(settingPromises);
+        
+        return settings.map(item => dataloaders.settingsByKeys.load(item.settingKey));
       }
-      
-      if (!settingValue) {
-        throw new GraphQLError('Setting value cannot be null');
+      catch (error) {
+        throw new GraphQLError('Data invalid.');
       }
-
-      await promiseQuery(`UPDATE ${PREFIX}setting SET setting_value='${settingValue}' WHERE setting_key='${settingKey}'`);
-      dataloaders.settingsByKeys.clear(settingKey);
-
-      return dataloaders.settingsByKeys.load(settingKey);
     }
   },
-  removeRole: {
+  removeSetting: {
     type: GraphQLID,
     args: {
       settingKey: { type: GraphQLNonNull(GraphQLString) }
