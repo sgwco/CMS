@@ -4,16 +4,18 @@ import { Row, Col, Form as BootstrapForm, Button } from 'reactstrap';
 import { Form } from 'react-form';
 
 import { ContentHeaderTitleStyled } from '../../../shared/components';
-import { BootstrapSelectField } from '../../../shared/formFields';
+import { BootstrapSelectField, BootstrapTextField } from '../../../shared/formFields';
 import { ContentContainer, ContentHeader, ContentBody } from '../../../shared/components';
 import Breadcrumb from '../../../shared/breadcrumb';
 import { BoxWrapper, BoxBody, BoxFooter } from '../../../shared/boxWrapper';
+import { requiredValidation } from '../../../utils/validation';
 
 const AdminContentDashboardComponent = ({
   breadcrumbItems,
   languages,
   languageMapper,
-  submitForm
+  submitForm,
+  initValue,
 }) => (
   <ContentContainer>
     <ContentHeader>
@@ -23,7 +25,7 @@ const AdminContentDashboardComponent = ({
       <Breadcrumb items={breadcrumbItems} />
     </ContentHeader>
     <ContentBody>
-      <Form onSubmit={submitForm}>
+      <Form onSubmit={submitForm} getApi={initValue}>
         {formApi => (
           <BootstrapForm onSubmit={formApi.submitForm}>
             <BoxWrapper color="primary">
@@ -34,6 +36,12 @@ const AdminContentDashboardComponent = ({
                       field="language"
                       label="Language"
                       data={[ ...languages.map(languageMapper) ]}
+                    />
+                    <BootstrapTextField
+                      field="company_name"
+                      label="Company Name"
+                      type="text"
+                      validate={requiredValidation}
                     />
                   </Col>
                 </Row>

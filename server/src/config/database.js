@@ -44,7 +44,7 @@ async function initData() {
     )`);
   }
 
-  promiseQuery(`INSERT IGNORE INTO ${PREFIX}setting (setting_key, setting_value) VALUES ('language', 'vi')`);
+  promiseQuery(`INSERT IGNORE INTO ${PREFIX}setting (setting_key, setting_value) VALUES ('language', 'vi'), ('company_name', 'Sai Gon Web')`);
 }
 
 export async function initDatabase(conn) {

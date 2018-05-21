@@ -13,7 +13,7 @@ export const Query = {
         throw new GraphQLError('Unauthorized');
       }
 
-      return await promiseQuery(`SELECT * FROM ${PREFIX}setting`);;
+      return await promiseQuery(`SELECT * FROM ${PREFIX}setting`);
     }
   },
   setting: {
@@ -66,8 +66,8 @@ export const Mutation = {
       if (lastId.length > 0) {
         return {
           id: lastId[0]['LAST_INSERT_ID()'],
-          settingKey,
-          settingValue
+          setting_key: settingKey,
+          setting_value: settingValue
         };
       }
       else throw new GraphQLError('Cannot insert new setting.');

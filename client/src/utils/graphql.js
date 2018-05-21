@@ -419,3 +419,21 @@ export const GET_USER_TOKEN = gql`
     }
   }
 `;
+
+export const GET_SETTINGS = gql`
+  {
+    settings {
+      settingKey
+      settingValue
+    }
+  }
+`;
+
+export const EDIT_SETTING = gql`
+  mutation editSetting($settingKey: String!, $settingValue: String!) {
+    editSetting(settingKey: $settingKey, settingValue: $settingValue) {
+      settingKey
+      settingValue
+    }
+  }
+`;
