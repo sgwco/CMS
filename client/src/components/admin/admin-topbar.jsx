@@ -31,11 +31,11 @@ const AdminTopbarProfileComponent = ({
 );
 
 const AdminTopbarComponent = ({
-  companyName,
   logo,
   getUserToken,
   logout,
-  toggleSidebar
+  toggleSidebar,
+  getSettings: { settings = [] },
 }) => (
   <header className="main-header">
     <a href="#" className="logo">
@@ -43,7 +43,7 @@ const AdminTopbarComponent = ({
         <LogoImageStyled src={logo} alt="logo" className="logo-img-mini" />
       </span>
       <span className="logo-lg">
-        <LogoImageStyled src={logo} alt="logo" className="logo-img-lg" /> {companyName}
+        <LogoImageStyled src={logo} alt="logo" className="logo-img-lg" /> {(settings.find(item => item.settingKey === 'company_name') || {}).settingValue}
       </span>
     </a>
     <NavbarStyled className="navbar navbar-static-top">

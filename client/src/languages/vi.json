@@ -1,0 +1,14 @@
+{
+  "main_navigation": "Danh mục chính",
+  "dashboard": "Bảng điều khiển",
+  "packages": "Gói",
+  "users": "Người dùng",
+  "roles": "Quyền",
+  "settings": "Cài đặt",
+  "home": "Trang chủ",
+  "total_price_in": "Tổng tiền năm",
+  "pending": "Đang đợi",
+  "active": "Kích hoạt",
+  "wait_for_expiration": "Đợi huỷ",
+  "expired": "Quá hạn"
+}

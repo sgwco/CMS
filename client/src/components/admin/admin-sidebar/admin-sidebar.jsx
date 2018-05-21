@@ -4,13 +4,15 @@ import { compose, withHandlers } from 'recompose';
 // import FontAwesome from '@fortawesome/react-fontawesome';
 
 import AdminSidebarMenuComponent from './admin-sidebar-menu';
+import lang from '../../../languages';
 // import styled from 'styled-components';
 
 const AdminSidebarComponent = ({
   getUserToken: { loggedInUser },
   profile: { avatar },
   listMenus,
-  checkRoleAllowed
+  checkRoleAllowed,
+  language
 }) => (
   <aside className="main-sidebar">
     <section className="sidebar">
@@ -34,7 +36,7 @@ const AdminSidebarComponent = ({
         </InputGroup>
       </form> */}
       <ul className="sidebar-menu" data-widget="tree">
-        <li className="header">MAIN NAVIGATION</li>
+        <li className="header">{lang('main_navigation', language).toUpperCase()}</li>
         {listMenus.map((item, index) => [
           loggedInUser && checkRoleAllowed(loggedInUser.role.accessPermission, item.readPermission) !== 0 && (
             <AdminSidebarMenuComponent

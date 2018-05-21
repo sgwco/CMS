@@ -6,7 +6,7 @@ import logo from '../../assets/img/logo.png';
 
 const AdminComponent = ({ collapseSidebar, toggleSidebar }) => (
   <div className={`wrapper sidebar-mini ${collapseSidebar && 'sidebar-collapse'}`}>
-    <AdminTopBarContainer logo={logo} companyName="Sai Gon Web" toggleSidebar={toggleSidebar} />
+    <AdminTopBarContainer logo={logo} toggleSidebar={toggleSidebar} />
     <AdminSidebarContainer />
     <AdminContentContainer />
   </div>

@@ -41,7 +41,7 @@ export default compose(
       try {
         await editSettings({ variables: { listSettings: JSON.stringify(dataParsed) } });
 
-        setAlertContent('Edit role successfully');
+        setAlertContent('Edit settings successfully. Please refresh this page to apply settings.');
         setAlert(ALERT_STATUS.SUCCESS);
       }
       catch (e) {

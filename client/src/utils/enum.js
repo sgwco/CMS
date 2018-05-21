@@ -46,3 +46,8 @@ export const ROLE_CAPABILITIES = {
   export: { title: 'Export', value: Math.pow(2, 16) },
   setting: { title: 'Setting', value: Math.pow(2, 17) }
 };
+
+export const SETTING_KEYS = {
+  LANGUAGE: 'language',
+  COMPANY_NAME: 'company_name'
+};

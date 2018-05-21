@@ -1,0 +1,14 @@
+{
+  "main_navigation": "Main navigation",
+  "dashboard": "Dashboard",
+  "packages": "Packages",
+  "users": "Users",
+  "roles": "Roles",
+  "settings": "Settings",
+  "home": "Home",
+  "total_price_in": "Total Price in",
+  "pending": "Pending",
+  "active": "Active",
+  "wait_for_expiration": "Wait for Expiration",
+  "expired": "Expired"
+}
