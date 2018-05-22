@@ -6,14 +6,16 @@ import Breadcrumb from '../../../shared/breadcrumb';
 
 import DashboardAdmin from '../../../containers/admin/admin-content/admin-content-dashboard/dashboard-admin';
 import DashboardMember from '../../../containers/admin/admin-content/admin-content-dashboard/dashboard-member';
+import lang from '../../../languages';
 
 const AdminContentDashboardComponent = ({
   breadcrumbItems,
+  language
 }) => (
   <ContentContainer>
     <ContentHeader>
       <ContentHeaderTitleStyled>
-        <span>Dashboard</span>
+        <span>{lang('dashboard', language)}</span>
       </ContentHeaderTitleStyled>
       <Breadcrumb items={breadcrumbItems} />
     </ContentHeader>

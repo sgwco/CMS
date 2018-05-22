@@ -4,12 +4,18 @@ import moment from 'moment';
 import _ from 'lodash';
 
 import AdminContentPackageComponent from '../../../components/admin/admin-content/admin-content-package';
-import { ALERT_STATUS, PACKAGE_STATUS, DURATION_TYPE, ROLE_CAPABILITIES } from '../../../utils/enum';
-import { GET_ALL_PACKAGES, REMOVE_PACKAGE, EDIT_PACKAGE, EDIT_PACKAGE_PROGRESS, GET_USER_TOKEN } from '../../../utils/graphql';
+import { ALERT_STATUS, PACKAGE_STATUS, DURATION_TYPE, ROLE_CAPABILITIES, SETTING_KEYS } from '../../../utils/enum';
+import { GET_ALL_PACKAGES, REMOVE_PACKAGE, EDIT_PACKAGE, EDIT_PACKAGE_PROGRESS, GET_USER_TOKEN, GET_SETTINGS } from '../../../utils/graphql';
 import { getKeyAsString, checkRoleIsAllowed } from '../../../utils/utils';
+import lang from '../../../languages';
 
 export default compose(
   graphql(GET_USER_TOKEN, { name: 'getUserToken' }),
+  graphql(GET_SETTINGS, { name: 'getSettings' }),
+  branch(
+    ({ getSettings: { settings }}) => !settings,
+    renderNothing
+  ),
   branch(
     ({getUserToken: { loggedInUser = {} }}) =>
       _.isEmpty(loggedInUser) || !checkRoleIsAllowed(loggedInUser.role.accessPermission, ROLE_CAPABILITIES.read_packages.value),
@@ -19,10 +25,13 @@ export default compose(
   graphql(EDIT_PACKAGE, { name: 'editPackage' }),
   graphql(REMOVE_PACKAGE, { name: 'removePackage' }),
   graphql(EDIT_PACKAGE_PROGRESS, { name: 'editPackageProgress' }),
-  withProps(() => ({
+  withProps(({ getSettings: { settings = [] }}) => ({
+    language: (settings.find(item => item.settingKey === SETTING_KEYS.LANGUAGE) || {}).settingValue
+  })),
+  withProps(({ language }) => ({
     breadcrumbItems: [
-      { url: '/admin', icon: 'home', text: 'Home' },
-      { text: 'Packages' }
+      { url: '/admin', icon: 'home', text: lang('home', language) },
+      { text: lang('packages', language) }
     ]
   })),
   withState('alertVisible', 'setAlert', ALERT_STATUS.HIDDEN),

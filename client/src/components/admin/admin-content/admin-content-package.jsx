@@ -8,6 +8,7 @@ import _ from 'lodash';
 import { TableHeaderColumn } from 'react-bootstrap-table';
 
 import Breadcrumb from '../../../shared/breadcrumb';
+import lang from '../../../languages';
 import {
   LoadingIndicator,
   ContentHeaderTitleStyled,
@@ -30,24 +31,25 @@ const AdminPackageModal = ({
   toggleDetailModal,
   onUpgradePackage,
   packageStatusCardButton,
-  onWithdraw
+  onWithdraw,
+  language
 }) => (
   <Modal isOpen={detailModalVisible} toggle={() => toggleDetailModal()} size="lg">
-    <ModalHeader toggle={() => toggleDetailModal()}>Package detail</ModalHeader>
+    <ModalHeader toggle={() => toggleDetailModal()}>{lang('package_detail', language)}</ModalHeader>
     <ModalBody>
-      <CardViewListStyled color='#e74c3c' icon='user' label='User'>
+      <CardViewListStyled color='#e74c3c' icon='user' label={lang('user', language)}>
         {selectedPackage.user.username + (selectedPackage.user.fullname && ` (${selectedPackage.user.fullname})`)}
       </CardViewListStyled>
-      <CardViewListStyled color='#00b894' icon='money-bill-alt' label='Package Price'>
+      <CardViewListStyled color='#00b894' icon='money-bill-alt' label={lang('package_price', language)}>
         {`${(selectedPackage.price * 1000).toLocaleString('vi')} ${selectedPackage.currency}`}
       </CardViewListStyled>
-      <CardViewListStyled color='#fd79a8' icon='clock' label='Registered Date'>
+      <CardViewListStyled color='#fd79a8' icon='clock' label={lang('register_date', language)}>
         {moment(selectedPackage.registerDate).format('DD/MM/YYYY')}
       </CardViewListStyled>
       <CardViewListStyled
         color='#a29bfe'
         icon='briefcase'
-        label='Package Type'
+        label={lang('package_type', language)}
         buttonIcon={
           (selectedPackage.duration === getKeyAsString(DURATION_TYPE.MONTH_6, DURATION_TYPE) &&
           selectedPackage.status === getKeyAsString(PACKAGE_STATUS.ACTIVE, PACKAGE_STATUS) &&
@@ -56,20 +58,20 @@ const AdminPackageModal = ({
         }
         buttonFunc={() => onUpgradePackage(selectedPackage.id)}
       >
-        {`${DURATION_TYPE[selectedPackage.duration]} Months`}
+        {`${DURATION_TYPE[selectedPackage.duration]} ${lang('months', language)}`}
       </CardViewListStyled>
       <CardViewListStyled
         color='#00cec9'
         icon='angle-double-right'
-        label='Status'
+        label={lang('status', language)}
         buttonIcon={(packageStatusCardButton[selectedPackage.status] || {}).icon}
         buttonFunc={() => (packageStatusCardButton[selectedPackage.status] || {}).func(selectedPackage.id)}
       >
-        {_.startCase(_.toLower(selectedPackage.status))}
+        {_.startCase(lang(_.toLower(selectedPackage.status), language))}
       </CardViewListStyled>
       {selectedPackage.status !== getKeyAsString(PACKAGE_STATUS.PENDING, PACKAGE_STATUS) && (
-        <CardViewListStyled color='#00b894' icon='spinner' label='Progress'>
-          <ProgressDot selectedPackage={selectedPackage} onWithdraw={onWithdraw} />
+        <CardViewListStyled color='#00b894' icon='spinner' label={lang('progress', language)}>
+          <ProgressDot selectedPackage={selectedPackage} onWithdraw={onWithdraw} language={language} />
         </CardViewListStyled>
       )}
     </ModalBody>
@@ -91,15 +93,16 @@ const AdminContentPackageComponent = ({
   onWithdraw,
   packageStatusCardButton,
   functionFormatter,
-  packageStatusFormatter
+  packageStatusFormatter,
+  language
 }) => (
   <ContentContainer>
     <ContentHeader>
       <ContentHeaderTitleStyled>
-        <span>Package</span>
+        <span>{lang('packages', language)}</span>
         <Link to={`${match.url}/add-new`}>
           <MarginLeftButtonStyled color="primary" size="sm">
-            <FontAwesome icon="plus" /> Add new package
+            <FontAwesome icon="plus" /> {`${lang('add_new', language)} ${lang('package', language).toLowerCase()}`}
           </MarginLeftButtonStyled>
         </Link>
       </ContentHeaderTitleStyled>
@@ -111,15 +114,6 @@ const AdminContentPackageComponent = ({
       </Alert>
       <BoxWrapper color="primary" title="List Packages">
         <BoxBody>
-          {/* <BootstrapTable
-            keyField='id'
-            data={packages}
-            columns={tableHeaders}
-            filter={filterFactory()}
-            noDataIndication="Table is Empty"
-            striped
-            hover
-          /> */}
           <BootstrapTableStyled
             data={packagesNormalizer()}
             options={tablePaginationSetting}
@@ -133,7 +127,7 @@ const AdminContentPackageComponent = ({
               dataSort
               filter={{ type: 'TextFilter', delay: 1 }}
             >
-              Username
+              {lang('username', language)}
             </TableHeaderColumn>
             <TableHeaderColumn
               dataField='fullname'
@@ -141,7 +135,7 @@ const AdminContentPackageComponent = ({
               filter={{ type: 'TextFilter', delay: 1 }}
               dataFormat={nothingFormatted}
             >
-              Fullname
+              {lang('fullname', language)}
             </TableHeaderColumn>
             <TableHeaderColumn
               dataField='price'
@@ -149,29 +143,29 @@ const AdminContentPackageComponent = ({
               filter={{ type: 'TextFilter', delay: 1 }}
               dataFormat={(cell, row) => `${cell.toLocaleString('vi')}.000 ${row.currency}`}
             >
-              Package Price
+              {lang('package_price', language)}
             </TableHeaderColumn>
             <TableHeaderColumn
               dataField='duration'
               dataSort
-              dataFormat={cell => DURATION_TYPE[cell] + ' Months'}
-              filter={{ type: 'SelectFilter', options: concatObjectEnum(DURATION_TYPE, ' Months') }}
+              dataFormat={cell => DURATION_TYPE[cell] + ` ${lang('months', language)}`}
+              filter={{ type: 'SelectFilter', options: concatObjectEnum(DURATION_TYPE, ` ${lang('months', language)}`) }}
             >
-              Package Type
+              {lang('package_type', language)}
             </TableHeaderColumn>
             <TableHeaderColumn
               dataField='registerDate'
               dataFormat={cell => moment(cell).format('DD/MM/YYYY')}
               filter={{ type: 'TextFilter', delay: 1 }}
             >
-              Register Date
+              {lang('register_date', language)}
             </TableHeaderColumn>
             <TableHeaderColumn
               dataField='status'
               filter={{ type: 'SelectFilter', options: uppercaseObjectValue(PACKAGE_STATUS) }}
               dataFormat={packageStatusFormatter}
             >
-              Status
+              {lang('status', language)}
             </TableHeaderColumn>
             <TableHeaderColumn
               dataFormat={functionFormatter}
@@ -180,6 +174,7 @@ const AdminContentPackageComponent = ({
           </BootstrapTableStyled>
           {selectedPackageIndex > -1 && (
             <AdminPackageModal
+              language={language}
               selectedPackage={packages[selectedPackageIndex]}
               detailModalVisible={selectedPackageIndex > -1}
               toggleDetailModal={toggleDetailModal}
@@ -231,8 +226,8 @@ export default compose(
       
       return functionCell;
     },
-    packageStatusFormatter: () => cell => {
-      const cellFormatted = _.startCase(_.toLower(cell));
+    packageStatusFormatter: ({ language }) => cell => {
+      const cellFormatted = _.startCase(lang(_.toLower(cell), language));
       const COLOR_TYPE = {
         ACTIVE: 'success',
         PENDING: 'warning',
