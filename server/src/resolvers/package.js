@@ -12,7 +12,6 @@ export const Query = {
       if (!payload) {
         throw new GraphQLError('Unauthorized');
       }
-
       return await promiseQuery(`SELECT * FROM ${PREFIX}package`);
     }
   },

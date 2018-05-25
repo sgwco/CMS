@@ -1,11 +1,10 @@
 import { graphql } from 'react-apollo';
-import { withProps, compose, renderNothing, branch } from 'recompose';
+import { withProps, compose } from 'recompose';
 
 import AdminSidebarComponent from '../../../components/admin/admin-sidebar/admin-sidebar';
-import { GET_USER_TOKEN, GET_SETTINGS } from '../../../utils/graphql';
-import { ROLE_CAPABILITIES, SETTING_KEYS } from '../../../utils/enum';
+import { GET_USER_TOKEN } from '../../../utils/graphql';
+import { ROLE_CAPABILITIES } from '../../../utils/enum';
 import avatar from '../../../assets/img/user.png';
-import lang from '../../../languages';
 
 // const data = [
 //   {
@@ -28,26 +27,18 @@ import lang from '../../../languages';
 
 export default compose(
   graphql(GET_USER_TOKEN, { name: 'getUserToken' }),
-  graphql(GET_SETTINGS, { name: 'getSettings' }),
-  branch(
-    ({ getSettings: { settings }}) => !settings,
-    renderNothing
-  ),
-  withProps(({ getSettings: { settings = [] }}) => ({
-    language: (settings.find(item => item.settingKey === SETTING_KEYS.LANGUAGE) || {}).settingValue
-  })),
-  withProps(({ language }) => ({
+  withProps(() => ({
     profile: {
       avatar
     },
     listMenus: [
-      { title: lang('dashboard', language), href: 'dashboard', icon: 'tachometer-alt' },
+      { title: 'categories.dashboard', href: 'dashboard', icon: 'tachometer-alt' },
       { separator: true },
-      { title: lang('users', language), href: 'user', icon: 'user', readPermission: ROLE_CAPABILITIES.read_user.value },
-      { title: lang('packages', language), href: 'package', icon: 'briefcase', readPermission: ROLE_CAPABILITIES.write_packages.value },
-      { title: lang('roles', language), href: 'role', icon: 'users', readPermission: ROLE_CAPABILITIES.read_roles.value },
+      { title: 'categories.users', href: 'user', icon: 'user', readPermission: ROLE_CAPABILITIES.read_user.value },
+      { title: 'categories.packages', href: 'package', icon: 'briefcase', readPermission: ROLE_CAPABILITIES.write_packages.value },
+      { title: 'categories.roles', href: 'role', icon: 'users', readPermission: ROLE_CAPABILITIES.read_roles.value },
       { separator: true },
-      { title: lang('settings', language), href: 'setting', icon: 'cog', readPermission: ROLE_CAPABILITIES.setting.value }
+      { title: 'categories.settings', href: 'setting', icon: 'cog', readPermission: ROLE_CAPABILITIES.setting.value }
     ],
     
   }))

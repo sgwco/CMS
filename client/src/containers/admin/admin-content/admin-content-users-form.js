@@ -34,7 +34,7 @@ export default compose(
   ),
   withHandlers({
     removeAlert: ({ setAlert }) => () => setAlert(ALERT_STATUS.HIDDEN),
-    renderTopTitle: ({ isEditedUser }) => () => isEditedUser ? 'Edit User' : 'Add New User',
+    renderTopTitle: ({ isEditedUser }) => () => isEditedUser ? 'edit_user.edit' : 'edit_user.add_new',
     submitForm: ({ createUser, setAlertContent, setAlert, isEditedUser, editUser, match }) => async (data) => {
       try {
         if (data.password) {
@@ -154,8 +154,8 @@ export default compose(
   }),
   withProps(({ renderTopTitle }) => ({
     breadcrumbItems: [
-      { url: '/admin', icon: 'home', text: 'Home' },
-      { url: '/admin/user', icon: 'user', text: 'Users' },
+      { url: '/admin', icon: 'home', text: 'categories.home' },
+      { url: '/admin/user', icon: 'user', text: 'categories.users' },
       { text: renderTopTitle() }
     ]
   }))

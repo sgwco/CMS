@@ -2,6 +2,7 @@ import React from 'react';
 import FontAwesome from '@fortawesome/react-fontawesome';
 import { Row, Col, Collapse, Button, Form as BootstrapForm, Alert, FormGroup, Label } from 'reactstrap';
 import { Form } from 'react-form';
+import { injectIntl, FormattedMessage } from 'react-intl';
 import { compose, withHandlers } from 'recompose';
 
 import { requiredValidation, passwordMatchValidation, emailValidation } from '../../../utils/validation';
@@ -26,27 +27,30 @@ const AdminContentUsersFormComponent = ({
   roleMapper,
   formIsLoading,
   editUserChangePassword,
-  setEditUserChangePassword
+  setEditUserChangePassword,
+  intl
 }) => (
   <ContentContainer>
     <Form onSubmit={submitForm} getApi={initValue}>
       {formApi => (
         <BootstrapForm onSubmit={formApi.submitForm}>
           <ContentHeader>
-            <h1>{renderTopTitle()}</h1>
+            <h1>
+              <FormattedMessage id={renderTopTitle()} />
+            </h1>
             <Breadcrumb items={breadcrumbItems} />
           </ContentHeader>
           <ContentBody>
             <Alert color={alertVisible} isOpen={alertVisible !== ALERT_STATUS.HIDDEN} toggle={removeAlert}>
               {alertContent}
             </Alert>
-            <BoxWrapper color="primary" title="Basic Information" isLoading={formIsLoading}>
+            <BoxWrapper color="primary" title={intl.messages['edit_user.basic_information']} isLoading={formIsLoading}>
               <BoxBody>
                 <Row>
                   <Col lg={6} md={12}>
                     <BootstrapTextField
                       field="username"
-                      label="Username"
+                      label={intl.messages['fields.username']}
                       type="text"
                       required={true}
                       validate={requiredValidation}
@@ -54,23 +58,23 @@ const AdminContentUsersFormComponent = ({
                     />
                     {isEditedUser && !editUserChangePassword ? (
                       <FormGroup row>
-                        <Label sm={3}>Password</Label>
+                        <Label sm={3}><FormattedMessage id='fields.password' /></Label>
                         <Col sm={9}>
-                          <Button color="link" onClick={() => setEditUserChangePassword(true)}>Change Password?</Button>
+                          <Button color="link" onClick={() => setEditUserChangePassword(true)}><FormattedMessage id='fields.change_password' />?</Button>
                         </Col>
                       </FormGroup>
                     ) : (
                       <div>
                         <BootstrapTextField
                           field="password"
-                          label="Password"
+                          label={intl.messages['fields.password']}
                           type="password"
                           required={true}
                           validate={requiredValidation}
                         />
                         <BootstrapTextField
                           field="retype_password"
-                          label="Retype Password"
+                          label={intl.messages['fields.retype_password']}
                           type="password"
                           required={true}
                           validate={value => passwordMatchValidation(value, formApi.values.password)}
@@ -79,9 +83,9 @@ const AdminContentUsersFormComponent = ({
                     )}
                     <BootstrapSelectField
                       field="role"
-                      label="Role"
+                      label={intl.messages['fields.role']}
                       data={[
-                        { value: '', text: '-- Please Select --'},
+                        { value: '', text: `-- ${intl.messages['please_select']} --`},
                         ...roles.map(roleMapper)
                       ]}
                       required={true}
@@ -89,14 +93,14 @@ const AdminContentUsersFormComponent = ({
                     />
                     <BootstrapTextField
                       field="identityCard"
-                      label="Identity Card"
+                      label={intl.messages['fields.identity_card']}
                       type="text"
                       required={true}
                       validate={requiredValidation}
                     />
                     <BootstrapTextField
                       field="phone"
-                      label="Phone"
+                      label={intl.messages['fields.phone']}
                       type="text"
                       required={true}
                       validate={requiredValidation}
@@ -105,7 +109,9 @@ const AdminContentUsersFormComponent = ({
                   <Col lg={6} md={12}>
                     <div className="box box-success box-solid">
                       <div className="box-header with-border">
-                        <h3 className="box-title"> Additional Information </h3>
+                        <h3 className="box-title">
+                          <FormattedMessage id='edit_user.additional_information' />
+                        </h3>
                         <div className="box-tools float-right">
                           <button
                             type="button"
@@ -119,33 +125,33 @@ const AdminContentUsersFormComponent = ({
                         <Collapse isOpen={additionalInformationVisible}>
                           <BootstrapTextField
                             field="fullname"
-                            label="Full Name"
+                            label={intl.messages['fields.fullname']}
                             type="text"
                           />
                           <BootstrapTextField
                             field="address"
-                            label="Address"
+                            label={intl.messages['fields.address']}
                             type="text"
                           />
                           <BootstrapTextField
                             field="email"
-                            label="Email"
+                            label={intl.messages['fields.email']}
                             type="text"
                             validate={emailValidation}
                           />
                           <BootstrapTextField
                             field="banking"
-                            label="Banking"
+                            label={intl.messages['fields.banking']}
                             type="text"
                           />
                           <BootstrapTextField
                             field="bankingNumber"
-                            label="Banking Number"
+                            label={intl.messages['fields.banking_number']}
                             type="text"
                           />
                           <BootstrapTextField
                             field="bankingOwner"
-                            label="Banking Owner"
+                            label={intl.messages['fields.banking_owner']}
                             type="text"
                           />
                         </Collapse>
@@ -155,7 +161,9 @@ const AdminContentUsersFormComponent = ({
                 </Row>
               </BoxBody>
               <BoxFooter>
-                <Button color="primary" type="submit" className="float-right">Save</Button>
+                <Button color="primary" type="submit" className="float-right">
+                  <FormattedMessage id='save' />
+                </Button>
               </BoxFooter>
             </BoxWrapper>
           </ContentBody>
@@ -166,6 +174,7 @@ const AdminContentUsersFormComponent = ({
 );
 
 export default compose(
+  injectIntl,
   withHandlers({
     roleMapper: () => item => ({
       text: item.name,

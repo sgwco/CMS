@@ -1,10 +1,10 @@
 import React from 'react';
 import { Row, Col } from 'reactstrap';
-import { Pie, HorizontalBar } from 'react-chartjs-2';
+import { Pie, Bar } from 'react-chartjs-2';
+import { FormattedMessage } from 'react-intl';
 
 import { BoxWrapper, BoxBody } from '../../../../shared/boxWrapper';
 import { CardboardItem } from '../../../../shared/components';
-import lang from '../../../../languages';
 
 const DashboardAdmin = ({
   listPackages: { packages = [] },
@@ -12,7 +12,7 @@ const DashboardAdmin = ({
   pieChartData,
   barData,
   currentYear,
-  language
+  intl
 }) => (
   Object.keys(packages).length > 0 && (
     <div>
@@ -20,7 +20,7 @@ const DashboardAdmin = ({
         <Col md={3}>
           <CardboardItem
             color='yellow'
-            title={lang('packages', language)}
+            title={<FormattedMessage id="categories.packages" />}
             content={packages.length}
             icon='briefcase'
           />
@@ -28,7 +28,7 @@ const DashboardAdmin = ({
         <Col md={3}>
           <CardboardItem
             color='aqua'
-            title={lang('users', language)}
+            title={<FormattedMessage id="categories.users" />}
             content={users.length}
             icon='user'
           />
@@ -36,7 +36,7 @@ const DashboardAdmin = ({
         <Col md={3}>
           <CardboardItem
             color='green'
-            title={lang('total_price', language)}
+            title={<FormattedMessage id="dashboard_page.total_price" />}
             content={`${(packages.reduce((total, item) => total + item.price, 0) * 1000).toLocaleString('vi')} VND`}
             icon='money-bill-alt'
           />
@@ -44,7 +44,7 @@ const DashboardAdmin = ({
         <Col md={3}>
           <CardboardItem
             color='red'
-            title={lang('total_price_active_packages', language)}
+            title={<FormattedMessage id="dashboard_page.total_active_price" />}
             content={`${(packages.filter(item => item.status === 'ACTIVE').reduce((total, item) => total + item.price, 0) * 1000).toLocaleString('vi')} VND`}
             icon='money-bill-alt'
           />
@@ -52,25 +52,36 @@ const DashboardAdmin = ({
       </Row>
       <Row>
         <Col lg={6}>
-          <BoxWrapper color="success" title={lang('packages', language)}>
+          <BoxWrapper color="success" title={<FormattedMessage id="categories.packages" />}>
             <BoxBody>
               <Pie data={pieChartData} />
             </BoxBody>
           </BoxWrapper>
         </Col>
         <Col lg={6}>
-          <BoxWrapper color="primary" title={`${lang('total_price_in', language)} ${currentYear}`}>
+          <BoxWrapper color="primary" title={<FormattedMessage id="dashboard_page.total_price_in_year" values={{ year: currentYear }} />}>
             <BoxBody>
-              <HorizontalBar data={barData} options={{
+              <Bar data={barData} options={{
                 scales: {
                   xAxes: [{
                     ticks: {
                       callback(tickValue) {
-                        return tickValue.toLocaleString('vi');
+                        return intl.messages[`month.${tickValue}`];
                       }
                     }
                   }],
-                  yAxes: [{ stacked: true }]
+                  yAxes: [{
+                    ticks: {
+                      callback(tickValue) {
+                        return intl.formatNumber(tickValue);
+                      }
+                    }
+                  }]
+                },
+                tooltips: {
+                  callbacks: {
+                    label: (item, data) => intl.formatNumber(data['datasets'][item.datasetIndex]['data'][item.index]) + ' VND'
+                  }
                 }
               }} />
             </BoxBody>

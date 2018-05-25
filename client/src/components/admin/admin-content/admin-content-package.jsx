@@ -36,9 +36,17 @@ const AdminPackageModal = ({
   <Modal isOpen={detailModalVisible} toggle={() => toggleDetailModal()} size="lg">
     <ModalHeader toggle={() => toggleDetailModal()}>{lang('package_detail', language)}</ModalHeader>
     <ModalBody>
-      <CardViewListStyled color='#e74c3c' icon='user' label={lang('user', language)}>
+      <CardViewListStyled color='#6ab04c' icon='id-badge' label={lang('package_id', language)}>
+        {selectedPackage.packageId}
+      </CardViewListStyled>
+      <CardViewListStyled color='#e74c3c' icon='user' label={lang('username', language)}>
         {selectedPackage.user.username + (selectedPackage.user.fullname && ` (${selectedPackage.user.fullname})`)}
       </CardViewListStyled>
+      {selectedPackage.introducer && (
+        <CardViewListStyled color='#22a6b3' icon='user' label={lang('introducer', language)}>
+          {selectedPackage.introducer.username + (selectedPackage.introducer.fullname && ` (${selectedPackage.introducer.fullname})`)}
+        </CardViewListStyled>
+      )}
       <CardViewListStyled color='#00b894' icon='money-bill-alt' label={lang('package_price', language)}>
         {`${(selectedPackage.price * 1000).toLocaleString('vi')} ${selectedPackage.currency}`}
       </CardViewListStyled>
@@ -66,7 +74,7 @@ const AdminPackageModal = ({
         buttonIcon={(packageStatusCardButton[selectedPackage.status] || {}).icon}
         buttonFunc={() => (packageStatusCardButton[selectedPackage.status] || {}).func(selectedPackage.packageId)}
       >
-        {_.startCase(lang(_.toLower(selectedPackage.status), language))}
+        {lang(_.toLower(selectedPackage.status), language)}
       </CardViewListStyled>
       {selectedPackage.status !== getKeyAsString(PACKAGE_STATUS.PENDING, PACKAGE_STATUS) && (
         <CardViewListStyled color='#00b894' icon='spinner' label={lang('progress', language)}>
@@ -210,7 +218,8 @@ export default compose(
       return functionCell;
     },
     packageStatusFormatter: ({ language }) => cell => {
-      const cellFormatted = _.startCase(lang(_.toLower(cell), language));
+      const cellFormatted = lang(_.toLower(cell), language);
+
       const COLOR_TYPE = {
         ACTIVE: 'success',
         PENDING: 'warning',

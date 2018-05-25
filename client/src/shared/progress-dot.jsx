@@ -38,7 +38,10 @@ const ProgressStep = ({ progressItem, onWithdraw, currency, language }) => (
 
 const ProgressDot = ({ selectedPackage, onWithdraw, language }) => (
   <ProgressDotWrapped>
-    <Steps labelPlacement="vertical" current={(selectedPackage.transferMoney || []).filter(item => item.status).length}>
+    <Steps labelPlacement="vertical" current={(selectedPackage.transferMoney || []).filter(item => item.status).length + 1}>
+      <StepStyled
+        title={moment(selectedPackage.registerDate).format('DD/MM/YYYY')}
+      />
       {(selectedPackage.transferMoney || []).map(item => (
         <StepStyled
           key={item.id} id={`id_${item.id}`}

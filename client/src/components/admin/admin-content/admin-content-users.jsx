@@ -2,11 +2,13 @@ import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment';
 import _ from 'lodash';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import FontAwesome from '@fortawesome/react-fontawesome';
-import { Breadcrumb, BreadcrumbItem, Alert, Button, Modal, ModalBody, ModalHeader, Badge } from 'reactstrap';
+import { Alert, Button, Modal, ModalBody, ModalHeader, Badge } from 'reactstrap';
 import { TableHeaderColumn } from 'react-bootstrap-table';
 import { compose, withHandlers } from 'recompose';
 
+import Breadcrumb from '../../../shared/breadcrumb';
 import { ALERT_STATUS, USER_STATUS } from '../../../utils/enum';
 import { uppercaseObjectValue } from '../../../utils/utils';
 import { BoxWrapper, BoxBody } from '../../../shared/boxWrapper';
@@ -35,31 +37,27 @@ const AdminContentUsersComponent = ({
   functionFormatter,
   nothingFormatted,
   userStatusFormatter,
-  rolesFilter
+  rolesFilter,
+  intl
 }) => (
   <ContentContainer>
     <ContentHeader>
       <ContentHeaderTitleStyled>
-        <span>Users</span>
+        <FormattedMessage id='categories.users' />
         <Link to={`${match.url}/add-new`}>
           <MarginLeftButtonStyled color="primary" size="sm">
-            <FontAwesome icon="plus" /> Add new user
+            <FontAwesome icon="plus" />{'  '}
+            <FormattedMessage id='add_new' />
           </MarginLeftButtonStyled>
         </Link>
       </ContentHeaderTitleStyled>
       <Breadcrumb items={breadcrumbItems} />
-      <Breadcrumb>
-        <BreadcrumbItem>
-          <Link to='/admin'><FontAwesome icon="home" /> Home</Link>
-        </BreadcrumbItem>
-        <BreadcrumbItem active>Users</BreadcrumbItem>
-      </Breadcrumb>
     </ContentHeader>
     <ContentBody>
       <Alert color={alertVisible} isOpen={alertVisible !== ALERT_STATUS.HIDDEN} toggle={removeAlert}>
         {alertContent}
       </Alert>
-      <BoxWrapper color="primary" title="List Users">
+      <BoxWrapper color="primary" title={<FormattedMessage id='list' />}>
         <BoxBody>
           <BootstrapTableStyled
             data={usersNormalizer()}
@@ -74,7 +72,7 @@ const AdminContentUsersComponent = ({
               dataSort
               filter={{ type: 'TextFilter', delay: 1 }}
             >
-              Username
+              {intl.messages['fields.username']}
             </TableHeaderColumn>
             <TableHeaderColumn
               dataField='fullname'
@@ -82,7 +80,7 @@ const AdminContentUsersComponent = ({
               filter={{ type: 'TextFilter', delay: 1 }}
               dataFormat={nothingFormatted}
             >
-              Fullname
+              {intl.messages['fields.fullname']}
             </TableHeaderColumn>
             <TableHeaderColumn
               dataField='email'
@@ -90,27 +88,27 @@ const AdminContentUsersComponent = ({
               filter={{ type: 'TextFilter', delay: 1 }}
               dataFormat={nothingFormatted}
             >
-              Email
+              {intl.messages['fields.email']}
             </TableHeaderColumn>
             <TableHeaderColumn
               dataField='registrationDate'
               dataSort
               dataFormat={cell => moment(cell).format('DD/MM/YYYY')}
             >
-              Register Date
+              {intl.messages['fields.register_date']}
             </TableHeaderColumn>
             <TableHeaderColumn
               dataField='role'
               filter={{ type: 'SelectFilter', options: rolesFilter() }}
             >
-              Role
+              {intl.messages['fields.role']}
             </TableHeaderColumn>
             <TableHeaderColumn
               dataField='userStatus'
               filter={{ type: 'SelectFilter', options: uppercaseObjectValue(USER_STATUS) }}
               dataFormat={userStatusFormatter}
             >
-              User Status
+              {intl.messages['fields.status']}
             </TableHeaderColumn>
             <TableHeaderColumn
               dataFormat={functionFormatter}
@@ -119,44 +117,55 @@ const AdminContentUsersComponent = ({
           </BootstrapTableStyled>
           {detailModalVisible && (
             <Modal isOpen={detailModalVisible} toggle={() => toggleDetailModal()} size="lg">
-              <ModalHeader toggle={() => toggleDetailModal()}>Package detail</ModalHeader>
+              <ModalHeader toggle={() => toggleDetailModal()}>
+                <FormattedMessage id='package_detail' />
+              </ModalHeader>
               <ModalBody>
-                <CardViewListStyled color='#e74c3c' icon='user' label='User'>
+                <CardViewListStyled color='#e74c3c' icon='user' label={intl.messages['fields.username']}>
                   {selectedUser.username + (selectedUser.fullname && ` (${selectedUser.fullname})`)}
                 </CardViewListStyled>
                 {selectedUser.phone && (
-                  <CardViewListStyled color='#00b894' icon='phone' label='Phone'>
+                  <CardViewListStyled color='#00b894' icon='phone' label={intl.messages['fields.phone']}>
                     {selectedUser.phone}
                   </CardViewListStyled>
                 )}
                 {selectedUser.email && (
-                  <CardViewListStyled color='#fd79a8' icon='envelope' label='Email'>
+                  <CardViewListStyled color='#fd79a8' icon='envelope' label={intl.messages['fields.email']}>
                     <a href={`mailto:${selectedUser.email}`}>{selectedUser.email}</a>
                   </CardViewListStyled>
                 )}
                 {selectedUser.registrationDate && (
-                  <CardViewListStyled color='#6c5ce7' icon='calendar' label='Registered Date'>
+                  <CardViewListStyled color='#6c5ce7' icon='calendar' label={intl.messages['fields.register_date']}>
                     {moment(selectedUser.registrationDate).format('DD/MM/YYYY')}
                   </CardViewListStyled>
                 )}
                 {selectedUser.address && (
-                  <CardViewListStyled color='#e056fd' icon='location-arrow' label='Address'>
+                  <CardViewListStyled color='#e056fd' icon='location-arrow' label={intl.messages['fields.address']}>
                     {selectedUser.address}
                   </CardViewListStyled>
                 )}
                 {selectedUser.role && (
-                  <CardViewListStyled color='#ff7979' icon='address-card' label='Role'>
+                  <CardViewListStyled color='#ff7979' icon='address-card' label={intl.messages['fields.role']}>
                     {selectedUser.role}
                   </CardViewListStyled>
                 )}
                 {selectedUser.userMeta && [
-                  <CardViewListStyled color='#6ab04c' icon='id-card' label='Identity Card' key={1}>
+                  <CardViewListStyled color='#6ab04c' icon='id-card' label={intl.messages['fields.identity_card']} key={1}>
                     {selectedUser.userMeta.find(item => item.metaKey === 'identityCard').metaValue}
                   </CardViewListStyled>,
-                  <CardViewListStyled color='#7ed6df' icon='university' label='Banking' key={2}>
-                    <div>Banking: <strong>{selectedUser.userMeta.find(item => item.metaKey === 'banking').metaValue || 'Unknown'}</strong></div>
-                    <div>Number: <strong>{selectedUser.userMeta.find(item => item.metaKey === 'bankingNumber').metaValue || 'Unknown'}</strong></div>
-                    <div>Owner: <strong>{selectedUser.userMeta.find(item => item.metaKey === 'bankingOwner').metaValue || 'Unknown'}</strong></div>
+                  <CardViewListStyled color='#7ed6df' icon='university' label={intl.messages['fields.banking']} key={2}>
+                    <div>
+                      <FormattedMessage id='fields.banking' />{': '}
+                      <strong>{selectedUser.userMeta.find(item => item.metaKey === 'banking').metaValue || 'Unknown'}</strong>
+                    </div>
+                    <div>
+                      <FormattedMessage id='fields.banking_number' />{': '}
+                      <strong>{selectedUser.userMeta.find(item => item.metaKey === 'bankingNumber').metaValue || 'Unknown'}</strong>
+                    </div>
+                    <div>
+                      <FormattedMessage id='fields.banking_owner' />{': '}
+                      <strong>{selectedUser.userMeta.find(item => item.metaKey === 'bankingOwner').metaValue || 'Unknown'}</strong>
+                    </div>
                   </CardViewListStyled>
                 ]}
               </ModalBody>
@@ -170,6 +179,7 @@ const AdminContentUsersComponent = ({
 
 export default compose(
   withRouter,
+  injectIntl,
   withHandlers({
     functionFormatter: ({ onRemoveUser, match, getUserToken: { loggedInUser = {} }, toggleDetailModal }) => (cell, row) => {
       let functionCell = null;
@@ -214,7 +224,7 @@ export default compose(
       return functionCell;
     },
     userStatusFormatter: () => cell => {
-      const cellFormatted = _.startCase(_.toLower(cell));
+      const cellFormatted = <FormattedMessage id={`package_status.${_.toLower(cell)}`} />;
       const COLOR_TYPE = {
         ACTIVE: 'success',
         DEACTIVE: 'secondary'

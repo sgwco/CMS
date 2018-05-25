@@ -83,16 +83,6 @@ export async function initDatabase(conn) {
     //   thumbnail VARCHAR(50) NOT NULL
     // )`);
 
-    // // Media table
-    // promiseQuery(`CREATE TABLE IF NOT EXISTS ${PREFIX}media (
-    //   id VARCHAR(50) NOT NULL PRIMARY KEY,
-    //   name VARCHAR(1000) NOT NULL,
-    //   url VARCHAR(2000) NOT NULL,
-    //   type VARCHAR(50) NOT NULL,
-    //   upload_date DATETIME NOT NULL,
-    //   upload_by VARCHAR(50) NOT NULL
-    // )`);
-
     // // Media Meta table
     // promiseQuery(`CREATE TABLE IF NOT EXISTS ${PREFIX}media_meta (
     //   id VARCHAR(50) NOT NULL PRIMARY KEY,
@@ -121,6 +111,15 @@ export async function initDatabase(conn) {
       meta_key VARCHAR(50) NOT NULL,
       meta_value VARCHAR(200) NOT NULL,
       CONSTRAINT FK_USER FOREIGN KEY (user_id) REFERENCES ${PREFIX}user(id) ON DELETE CASCADE ON UPDATE CASCADE
+    )`);
+
+    // Media table
+    promiseQuery(`CREATE TABLE IF NOT EXISTS ${PREFIX}media (
+      id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+      url VARCHAR(200) NOT NULL,
+      upload_date DATETIME NOT NULL,
+      upload_by INT UNSIGNED NOT NULL,
+      CONSTRAINT FK_MEDIA_USER FOREIGN KEY (upload_by) REFERENCES ${PREFIX}user(id) ON DELETE CASCADE ON UPDATE CASCADE
     )`);
 
     // Package table

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router';
 import { Badge } from 'reactstrap';
 import FontAwesome from '@fortawesome/react-fontawesome';
@@ -31,7 +32,9 @@ const AdminSidebarMenuComponent = ({ menuItem, match, isActiveMenu, isActiveSubm
   <MenuLiStyled className="treeview" isActive={isActiveMenu(menuItem.href)}>
     <Link to={`${match.url}/${menuItem.href}`}>
       <MenuIconStyled icon={menuItem.icon} />
-      <MenuTitleStyled>{menuItem.title}</MenuTitleStyled>
+      <MenuTitleStyled>
+        <FormattedMessage id={menuItem.title} />
+      </MenuTitleStyled>
       {menuItem.badgePrimary && (
         <span className="pull-right-container">
           <Badge color='primary' className='float-right'>4</Badge>

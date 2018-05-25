@@ -1,18 +1,17 @@
 import React from 'react';
 import { compose, withHandlers } from 'recompose';
+import { FormattedMessage } from 'react-intl';
 // import { Button, InputGroup, InputGroupAddon, Input } from 'reactstrap';
 // import FontAwesome from '@fortawesome/react-fontawesome';
 
 import AdminSidebarMenuComponent from './admin-sidebar-menu';
-import lang from '../../../languages';
 // import styled from 'styled-components';
 
 const AdminSidebarComponent = ({
   getUserToken: { loggedInUser },
   profile: { avatar },
   listMenus,
-  checkRoleAllowed,
-  language
+  checkRoleAllowed
 }) => (
   <aside className="main-sidebar">
     <section className="sidebar">
@@ -36,7 +35,9 @@ const AdminSidebarComponent = ({
         </InputGroup>
       </form> */}
       <ul className="sidebar-menu" data-widget="tree">
-        <li className="header">{lang('main_navigation', language).toUpperCase()}</li>
+        <li className="header">
+          <FormattedMessage id='categories.main_navigation' />
+        </li>
         {listMenus.map((item, index) => [
           loggedInUser && checkRoleAllowed(loggedInUser.role.accessPermission, item.readPermission) !== 0 && (
             <AdminSidebarMenuComponent

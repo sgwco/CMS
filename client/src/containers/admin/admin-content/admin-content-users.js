@@ -19,8 +19,8 @@ export default compose(
   graphql(REMOVE_USER, { name: 'removeUser' }),
   withProps(() => ({
     breadcrumbItems: [
-      { url: '/admin', icon: 'home', text: 'Home' },
-      { text: 'Users' }
+      { url: '/admin', icon: 'home', text: 'categories.home' },
+      { text: 'categories.users' }
     ]
   })),
   withState('alertVisible', 'setAlert', ALERT_STATUS.HIDDEN),
