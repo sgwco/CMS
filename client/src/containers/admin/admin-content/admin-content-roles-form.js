@@ -32,7 +32,7 @@ export default compose(
   withProps(({ renderTopTitle }) => ({
     listRoles: Object.keys(ROLE_CAPABILITIES),
     breadcrumbItems: [
-      { url: '/admin', icon: 'home', text: 'Home' },
+      { url: '/admin/dashboard', icon: 'home', text: 'Home' },
       { url: '/admin/role', icon: 'users', text: 'Roles' },
       { text: renderTopTitle() }
     ]

@@ -5,7 +5,7 @@ import AdminContentDashboardComponent from '../../../components/admin/admin-cont
 export default compose(
   withProps(() => ({
     breadcrumbItems: [
-      { url: '/admin', icon: 'home', text: 'categories.home' },
+      { url: '/admin/dashboard', icon: 'home', text: 'categories.home' },
       { text: 'categories.dashboard' }
     ]
   }))

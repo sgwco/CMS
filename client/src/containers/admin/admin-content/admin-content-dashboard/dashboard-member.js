@@ -25,7 +25,7 @@ export default compose(
   })),
   withProps(({ listPackages: { activePackage = [] } }) => ({
     breadcrumbItems: [
-      { url: '/admin', icon: 'home', text: 'Home' },
+      { url: '/admin/dashboard', icon: 'home', text: 'Home' },
       { text: 'Dashboard' }
     ],
     listActivePackages: activePackage.filter(item => item.status !== 'EXPIRED' && item.status !== 'PENDING')

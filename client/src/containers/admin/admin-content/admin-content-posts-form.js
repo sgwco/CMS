@@ -133,7 +133,7 @@ export default compose(
   }),
   withProps(({ renderTopTitle }) => ({
     breadcrumbItems: [
-      { url: '/admin', icon: 'home', text: 'Home' },
+      { url: '/admin/dashboard', icon: 'home', text: 'Home' },
       { url: '/admin/post', icon: 'file', text: 'Posts' },
       { text: renderTopTitle() }
     ]

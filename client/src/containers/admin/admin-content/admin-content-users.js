@@ -19,7 +19,7 @@ export default compose(
   graphql(REMOVE_USER, { name: 'removeUser' }),
   withProps(() => ({
     breadcrumbItems: [
-      { url: '/admin', icon: 'home', text: 'categories.home' },
+      { url: '/admin/dashboard', icon: 'home', text: 'categories.home' },
       { text: 'categories.users' }
     ]
   })),

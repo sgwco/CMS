@@ -18,7 +18,7 @@ export default compose(
   graphql(REMOVE_ROLE, { name: 'removeRole' }),
   withProps(() => ({
     breadcrumbItems: [
-      { url: '/admin', icon: 'home', text: 'Home' },
+      { url: '/admin/dashboard', icon: 'home', text: 'Home' },
       { text: 'Roles' }
     ]
   })),

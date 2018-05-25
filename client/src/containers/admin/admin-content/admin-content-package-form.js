@@ -39,7 +39,7 @@ export default compose(
   }),
   withProps(({ renderTopTitle, language }) => ({
     breadcrumbItems: [
-      { url: '/admin', icon: 'home', text: lang('home', language) },
+      { url: '/admin/dashboard', icon: 'home', text: lang('home', language) },
       { url: '/admin/package', icon: 'briefcase', text: lang('packages', language) },
       { text: renderTopTitle() }
     ]

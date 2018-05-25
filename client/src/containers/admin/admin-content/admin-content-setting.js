@@ -14,7 +14,7 @@ export default compose(
   ),
   withProps(() => ({
     breadcrumbItems: [
-      { url: '/admin', icon: 'home', text: 'Home' },
+      { url: '/admin/dashboard', icon: 'home', text: 'Home' },
       { text: 'Setting' }
     ],
     languages: [

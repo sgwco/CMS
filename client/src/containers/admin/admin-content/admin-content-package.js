@@ -30,7 +30,7 @@ export default compose(
   })),
   withProps(({ language }) => ({
     breadcrumbItems: [
-      { url: '/admin', icon: 'home', text: lang('home', language) },
+      { url: '/admin/dashboard', icon: 'home', text: lang('home', language) },
       { text: lang('packages', language) }
     ]
   })),

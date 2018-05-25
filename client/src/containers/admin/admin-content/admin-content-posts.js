@@ -10,7 +10,7 @@ export default compose(
   graphql(REMOVE_POST, { name: 'removePost' }),
   withProps(() => ({
     breadcrumbItems: [
-      { url: '/admin', icon: 'home', text: 'Home' },
+      { url: '/admin/dashboard', icon: 'home', text: 'Home' },
       { text: 'Posts' }
     ]
   })),
