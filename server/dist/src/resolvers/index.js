@@ -23,14 +23,16 @@ var _category = require('./category');
 
 var _package = require('./package');
 
+var _setting = require('./setting');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Query = exports.Query = new _graphql.GraphQLObjectType({
   name: 'SGW_Queries',
-  fields: _extends({}, _user.Query, _role.Query, _media2.default, _category.Query, _post.Query, _package.Query)
+  fields: _extends({}, _user.Query, _role.Query, _media2.default, _category.Query, _post.Query, _package.Query, _setting.Query)
 });
 
 var Mutation = exports.Mutation = new _graphql.GraphQLObjectType({
   name: 'SGW_Mutations',
-  fields: _extends({}, _user.Mutation, _role.Mutation, _post.Mutation, _category.Mutation, _package.Mutation)
+  fields: _extends({}, _user.Mutation, _role.Mutation, _post.Mutation, _category.Mutation, _package.Mutation, _setting.Mutation)
 });

@@ -75,3 +75,15 @@ Object.keys(_package).forEach(function (key) {
     }
   });
 });
+
+var _setting = require('./setting');
+
+Object.keys(_setting).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _setting[key];
+    }
+  });
+});

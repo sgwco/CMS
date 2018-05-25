@@ -13,7 +13,7 @@ var initData = function () {
         switch (_context.prev = _context.next) {
           case 0:
             _context.next = 2;
-            return promiseQuery('INSERT INTO ' + PREFIX + 'role VALUES (\n    NULL,\n    \'Admin\',\n    ' + Object.keys(_enum.ROLE_CAPABILITIES).map(function (item) {
+            return promiseQuery('INSERT IGNORE INTO ' + PREFIX + 'role (name, access_permission) VALUES (\n    \'Admin\',\n    ' + Object.keys(_enum.ROLE_CAPABILITIES).map(function (item) {
               return _enum.ROLE_CAPABILITIES[item].value;
             }).reduce(function (total, item) {
               return total + item;
@@ -28,10 +28,12 @@ var initData = function () {
 
             if (adminRole.length > 0) {
               // Root user
-              promiseQuery('INSERT INTO ' + PREFIX + 'user (username, password, registration_date, role, user_status) VALUES (\n      \'admin\',\n      \'' + (0, _sha2.default)('123456') + '\',\n      \'' + (0, _moment2.default)().format('YYYY-MM-DD') + '\',\n      \'' + adminRole[0].id + '\',\n      \'active\'\n    )');
+              promiseQuery('INSERT IGNORE INTO ' + PREFIX + 'user (username, password, registration_date, role, user_status)\n    VALUES (\n      \'admin\',\n      \'' + (0, _sha2.default)('123456') + '\',\n      \'' + (0, _moment2.default)().format('YYYY-MM-DD') + '\',\n      \'' + adminRole[0].id + '\',\n      \'active\'\n    )');
             }
 
-          case 6:
+            promiseQuery('INSERT IGNORE INTO ' + PREFIX + 'setting (setting_key, setting_value) VALUES (\'language\', \'vi\'), (\'company_name\', \'Sai Gon Web\')');
+
+          case 7:
           case 'end':
             return _context.stop();
         }
@@ -48,20 +50,14 @@ var initDatabase = exports.initDatabase = function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(conn) {
     var _this = this;
 
-    var existedDatabase;
     return regeneratorRuntime.wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.next = 2;
-            return promiseQuery('SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA=\'' + DATABASE + '\'');
-
-          case 2:
-            existedDatabase = _context3.sent;
-            _context3.next = 5;
             return promiseQuery('CREATE DATABASE IF NOT EXISTS ' + DATABASE);
 
-          case 5:
+          case 2:
             conn.changeUser({
               database: DATABASE
             }, function () {
@@ -70,33 +66,33 @@ var initDatabase = exports.initDatabase = function () {
                   while (1) {
                     switch (_context2.prev = _context2.next) {
                       case 0:
-                        if (!(existedDatabase.length === 0)) {
-                          _context2.next = 10;
-                          break;
-                        }
+                        _context2.next = 2;
+                        return promiseQuery('CREATE TABLE IF NOT EXISTS ' + PREFIX + 'role (\n      id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,\n      name VARCHAR(200) NOT NULL UNIQUE,\n      access_permission BIGINT UNSIGNED NOT NULL\n    )');
 
-                        _context2.next = 3;
-                        return promiseQuery('CREATE TABLE IF NOT EXISTS ' + PREFIX + 'role (\n        id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,\n        name VARCHAR(200) NOT NULL UNIQUE,\n        access_permission BIGINT UNSIGNED NOT NULL\n      )');
+                      case 2:
+                        _context2.next = 4;
+                        return promiseQuery('CREATE TABLE IF NOT EXISTS ' + PREFIX + 'user (\n      id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,\n      username VARCHAR(50) NOT NULL UNIQUE,\n      password VARCHAR(50) NOT NULL,\n      fullname VARCHAR(100),\n      email VARCHAR(200) UNIQUE,\n      registration_date DATETIME NOT NULL,\n      role INT UNSIGNED NOT NULL,\n      address VARCHAR(200),\n      phone VARCHAR(50),\n      user_status VARCHAR(20) NOT NULL DEFAULT \'active\',\n      CONSTRAINT FK_ROLE FOREIGN KEY (role) REFERENCES ' + PREFIX + 'role(id) ON DELETE CASCADE ON UPDATE CASCADE\n    )');
 
-                      case 3:
-                        _context2.next = 5;
-                        return promiseQuery('CREATE TABLE IF NOT EXISTS ' + PREFIX + 'user (\n        id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,\n        username VARCHAR(50) NOT NULL UNIQUE,\n        password VARCHAR(50) NOT NULL,\n        fullname VARCHAR(100),\n        email VARCHAR(200) UNIQUE,\n        registration_date DATETIME NOT NULL,\n        role INT UNSIGNED NOT NULL,\n        address VARCHAR(200),\n        phone VARCHAR(50),\n        user_status VARCHAR(20) NOT NULL DEFAULT \'active\',\n        CONSTRAINT FK_ROLE FOREIGN KEY (role) REFERENCES ' + PREFIX + 'role(id) ON DELETE CASCADE ON UPDATE CASCADE\n      )');
+                      case 4:
 
-                      case 5:
-
-                        promiseQuery('CREATE TABLE IF NOT EXISTS ' + PREFIX + 'user_meta (\n        id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,\n        user_id INT UNSIGNED NOT NULL,\n        meta_key VARCHAR(50) NOT NULL,\n        meta_value VARCHAR(200) NOT NULL,\n        CONSTRAINT FK_USER FOREIGN KEY (user_id) REFERENCES ' + PREFIX + 'user(id) ON DELETE CASCADE ON UPDATE CASCADE\n      )');
+                        promiseQuery('CREATE TABLE IF NOT EXISTS ' + PREFIX + 'user_meta (\n      id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,\n      user_id INT UNSIGNED NOT NULL,\n      meta_key VARCHAR(50) NOT NULL,\n      meta_value VARCHAR(200) NOT NULL,\n      CONSTRAINT FK_USER FOREIGN KEY (user_id) REFERENCES ' + PREFIX + 'user(id) ON DELETE CASCADE ON UPDATE CASCADE\n    )');
 
                         // Package table
-                        _context2.next = 8;
-                        return promiseQuery('CREATE TABLE IF NOT EXISTS ' + PREFIX + 'package (\n        id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,\n        user_id INT UNSIGNED NOT NULL,\n        price BIGINT UNSIGNED NOT NULL,\n        currency VARCHAR(10) NOT NULL,\n        duration INT(10) UNSIGNED NOT NULL,\n        register_date DATE NOT NULL,\n        status VARCHAR(50) NOT NULL,\n        CONSTRAINT FK_PACKAGE FOREIGN KEY (user_id) REFERENCES ' + PREFIX + 'user(id) ON DELETE CASCADE ON UPDATE CASCADE\n      )');
+                        _context2.next = 7;
+                        return promiseQuery('CREATE TABLE IF NOT EXISTS ' + PREFIX + 'package (\n      id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,\n      user_id INT UNSIGNED NOT NULL,\n      price BIGINT UNSIGNED NOT NULL,\n      currency VARCHAR(10) NOT NULL,\n      duration INT(10) UNSIGNED NOT NULL,\n      register_date DATE NOT NULL,\n      status VARCHAR(50) NOT NULL,\n      CONSTRAINT FK_PACKAGE FOREIGN KEY (user_id) REFERENCES ' + PREFIX + 'user(id) ON DELETE CASCADE ON UPDATE CASCADE\n    )');
 
-                      case 8:
+                      case 7:
 
-                        promiseQuery('CREATE TABLE IF NOT EXISTS ' + PREFIX + 'package_progress (\n        id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,\n        package_id INT UNSIGNED NOT NULL,\n        amount FLOAT(10, 2) UNSIGNED NOT NULL,\n        interest_rate INT UNSIGNED NOT NULL,\n        date DATE NOT NULL,\n        status BOOLEAN NOT NULL,\n        withdraw_date DATE,\n        CONSTRAINT FK_PACKAGE_PROGRESS FOREIGN KEY (package_id) REFERENCES ' + PREFIX + 'package(id) ON DELETE CASCADE ON UPDATE CASCADE\n      )');
+                        promiseQuery('CREATE TABLE IF NOT EXISTS ' + PREFIX + 'package_progress (\n      id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,\n      package_id INT UNSIGNED NOT NULL,\n      amount FLOAT(10, 2) UNSIGNED NOT NULL,\n      interest_rate INT UNSIGNED NOT NULL,\n      date DATE NOT NULL,\n      status BOOLEAN NOT NULL,\n      withdraw_date DATE,\n      CONSTRAINT FK_PACKAGE_PROGRESS FOREIGN KEY (package_id) REFERENCES ' + PREFIX + 'package(id) ON DELETE CASCADE ON UPDATE CASCADE\n    )');
+
+                        _context2.next = 10;
+                        return promiseQuery('CREATE TABLE IF NOT EXISTS ' + PREFIX + 'setting (\n      id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,\n      setting_key VARCHAR(100) NOT NULL UNIQUE,\n      setting_value VARCHAR(200) NOT NULL\n    )');
+
+                      case 10:
 
                         initData();
 
-                      case 10:
+                      case 11:
                       case 'end':
                         return _context2.stop();
                     }
@@ -109,7 +105,7 @@ var initDatabase = exports.initDatabase = function () {
               };
             }());
 
-          case 6:
+          case 3:
           case 'end':
             return _context3.stop();
         }

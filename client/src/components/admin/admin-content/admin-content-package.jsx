@@ -10,7 +10,6 @@ import { TableHeaderColumn } from 'react-bootstrap-table';
 import Breadcrumb from '../../../shared/breadcrumb';
 import lang from '../../../languages';
 import {
-  LoadingIndicator,
   ContentHeaderTitleStyled,
   MarginLeftButtonStyled,
   FunctionWrapperStyled,
@@ -56,7 +55,7 @@ const AdminPackageModal = ({
           moment().diff(moment(selectedPackage.registerDate), 'months') >= 4 &&
           moment().diff(moment(selectedPackage.registerDate), 'months') <= 5) ? 'arrow-circle-up' : null
         }
-        buttonFunc={() => onUpgradePackage(selectedPackage.id)}
+        buttonFunc={() => onUpgradePackage(selectedPackage.packageId)}
       >
         {`${DURATION_TYPE[selectedPackage.duration]} ${lang('months', language)}`}
       </CardViewListStyled>
@@ -65,7 +64,7 @@ const AdminPackageModal = ({
         icon='angle-double-right'
         label={lang('status', language)}
         buttonIcon={(packageStatusCardButton[selectedPackage.status] || {}).icon}
-        buttonFunc={() => (packageStatusCardButton[selectedPackage.status] || {}).func(selectedPackage.id)}
+        buttonFunc={() => (packageStatusCardButton[selectedPackage.status] || {}).func(selectedPackage.packageId)}
       >
         {_.startCase(lang(_.toLower(selectedPackage.status), language))}
       </CardViewListStyled>
@@ -193,36 +192,20 @@ export default compose(
   withRouter,
   withHandlers({
     functionFormatter: ({ onRemovePackage, toggleDetailModal, getPackages: { packages = [] } }) => (cell, row) => {
-      let functionCell = null;
-      functionCell = (
+      const functionCell = (
         <FunctionWrapperStyled>
-          <LoadingIndicator />
+          <FunctionItem>
+            <Button color="info" onClick={() => toggleDetailModal(packages.findIndex(item => item.packageId === row.packageId))}>
+              <FontAwesome icon='eye' />
+            </Button>
+          </FunctionItem>
+          <FunctionItem>
+            <Button color="danger" onClick={() => onRemovePackage(row.packageId)}>
+              <FontAwesome icon='trash' className="text-white" />
+            </Button>
+          </FunctionItem>
         </FunctionWrapperStyled>
       );
-
-      if (typeof row.id === 'number' && row.id < 0) {
-        functionCell = (
-          <FunctionWrapperStyled>
-            <LoadingIndicator />
-          </FunctionWrapperStyled>
-        );
-      }
-      else {
-        functionCell = (
-          <FunctionWrapperStyled>
-            <FunctionItem>
-              <Button color="info" onClick={() => toggleDetailModal(packages.findIndex(item => item.id === row.id))}>
-                <FontAwesome icon='eye' />
-              </Button>
-            </FunctionItem>
-            <FunctionItem>
-              <Button color="danger" onClick={() => onRemovePackage(row.id)}>
-                <FontAwesome icon='trash' className="text-white" />
-              </Button>
-            </FunctionItem>
-          </FunctionWrapperStyled>
-        );
-      }
       
       return functionCell;
     },
@@ -243,15 +226,15 @@ export default compose(
     packageStatusCardButton: {
       ACTIVE: {
         icon: 'ban',
-        func: id => onDeactivePackage(id)
+        func: packageId => onDeactivePackage(packageId)
       },
       PENDING: {
         icon: 'check',
-        func: id => onActivePackage(id)
+        func: packageId => onActivePackage(packageId)
       },
       PENDING_EXPIRED: {
         icon: 'ban',
-        func: id => onDeactivePackage(id)
+        func: packageId => onDeactivePackage(packageId)
       }
     }
   }))

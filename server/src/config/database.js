@@ -125,25 +125,27 @@ export async function initDatabase(conn) {
 
     // Package table
     await promiseQuery(`CREATE TABLE IF NOT EXISTS ${PREFIX}package (
-      id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+      package_id VARCHAR(50) NOT NULL PRIMARY KEY,
       user_id INT UNSIGNED NOT NULL,
       price BIGINT UNSIGNED NOT NULL,
       currency VARCHAR(10) NOT NULL,
       duration INT(10) UNSIGNED NOT NULL,
+      introducer INT UNSIGNED NULL,
       register_date DATE NOT NULL,
       status VARCHAR(50) NOT NULL,
-      CONSTRAINT FK_PACKAGE FOREIGN KEY (user_id) REFERENCES ${PREFIX}user(id) ON DELETE CASCADE ON UPDATE CASCADE
+      CONSTRAINT FK_PACKAGE FOREIGN KEY (user_id) REFERENCES ${PREFIX}user(id) ON DELETE CASCADE ON UPDATE CASCADE,
+      CONSTRAINT FK_INTRODUCER FOREIGN KEY (introducer) REFERENCES ${PREFIX}user(id) ON DELETE CASCADE ON UPDATE CASCADE
     )`);
 
     promiseQuery(`CREATE TABLE IF NOT EXISTS ${PREFIX}package_progress (
       id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-      package_id INT UNSIGNED NOT NULL,
+      package_id VARCHAR(50) NOT NULL,
       amount FLOAT(10, 2) UNSIGNED NOT NULL,
       interest_rate INT UNSIGNED NOT NULL,
       date DATE NOT NULL,
       status BOOLEAN NOT NULL,
       withdraw_date DATE,
-      CONSTRAINT FK_PACKAGE_PROGRESS FOREIGN KEY (package_id) REFERENCES ${PREFIX}package(id) ON DELETE CASCADE ON UPDATE CASCADE
+      CONSTRAINT FK_PACKAGE_PROGRESS FOREIGN KEY (package_id) REFERENCES ${PREFIX}package(package_id) ON DELETE CASCADE ON UPDATE CASCADE
     )`);
 
     await promiseQuery(`CREATE TABLE IF NOT EXISTS ${PREFIX}setting (

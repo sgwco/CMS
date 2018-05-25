@@ -29,6 +29,7 @@
   "november": "November",
   "december": "December",
   "add_new": "Add new",
+  "edit": "Edit",
   "list": "List",
   "username": "Username",
   "fullname": "Fullname",
@@ -42,5 +43,11 @@
   "interest_rate": "Interest Rate",
   "payment": "Payment",
   "withdraw": "Withdraw",
-  "paid_at": "Paid at"
+  "paid_at": "Paid at",
+  "price": "Price",
+  "duration": "Duration",
+  "please_select": "Please Select",
+  "save": "Save",
+  "package_id": "Package ID",
+  "introducer": "Introducer"
 }

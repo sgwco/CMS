@@ -23,7 +23,7 @@ const getCategoriesByIds = categoryIds => {
 
 const getPackagesByIds = packageIds => {
   const params = packageIds.map(id => `'${id}'`).join(', ');
-  return promiseQuery(`SELECT * FROM ${PREFIX}package WHERE id IN (${params})`);
+  return promiseQuery(`SELECT * FROM ${PREFIX}package WHERE package_id IN (${params})`);
 }
 
 const getPackageProgressesByIds = packageProgressIds => {

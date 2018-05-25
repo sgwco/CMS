@@ -43,8 +43,8 @@ export default compose(
     listMenus: [
       { title: lang('dashboard', language), href: 'dashboard', icon: 'tachometer-alt' },
       { separator: true },
-      { title: lang('packages', language), href: 'package', icon: 'briefcase', readPermission: ROLE_CAPABILITIES.write_packages.value },
       { title: lang('users', language), href: 'user', icon: 'user', readPermission: ROLE_CAPABILITIES.read_user.value },
+      { title: lang('packages', language), href: 'package', icon: 'briefcase', readPermission: ROLE_CAPABILITIES.write_packages.value },
       { title: lang('roles', language), href: 'role', icon: 'users', readPermission: ROLE_CAPABILITIES.read_roles.value },
       { separator: true },
       { title: lang('settings', language), href: 'setting', icon: 'cog', readPermission: ROLE_CAPABILITIES.setting.value }

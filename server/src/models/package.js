@@ -23,7 +23,10 @@ export const PackageStatus = new GraphQLEnumType({
 export const Package = new GraphQLObjectType({
   name: 'Package',
   fields: () => ({
-    id: { type: GraphQLNonNull(GraphQLID) },
+    packageId: {
+      type: GraphQLNonNull(GraphQLString),
+      resolve({ package_id }) { return package_id; }
+    },
     user: {
       type: GraphQLNonNull(User),
       resolve({ user_id }, _, context) {
@@ -33,6 +36,13 @@ export const Package = new GraphQLObjectType({
     price: { type: GraphQLNonNull(GraphQLFloat) },
     currency: { type: GraphQLNonNull(PackageCurrency) },
     duration: { type: GraphQLNonNull(PackageDuration) },
+    introducer: {
+      type: User,
+      resolve({ introducer }, _, context) {
+        if (!introducer) return null;
+        return context.dataloaders.usersByIds.load(introducer);
+      }
+    },
     registerDate: {
       type: GraphQLNonNull(GraphQLString),
       resolve({ register_date }) {
@@ -42,8 +52,8 @@ export const Package = new GraphQLObjectType({
     status: { type: GraphQLNonNull(PackageStatus) },
     transferMoney: {
       type: GraphQLNonNull(GraphQLList(PackageTransferMoneyProgress)),
-      async resolve({ id }, _, context) {
-        return promiseQuery(`SELECT * FROM ${PREFIX}package_progress WHERE package_id='${id}'`);;
+      async resolve({ package_id }, _, context) {
+        return promiseQuery(`SELECT * FROM ${PREFIX}package_progress WHERE package_id='${package_id}'`);;
       }
     }
   })

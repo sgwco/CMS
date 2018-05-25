@@ -1,5 +1,34 @@
 import gql from 'graphql-tag';
 
+const packageFragment = gql`
+  fragment PackageFragment on Package {
+    packageId
+    user {
+      id
+      username
+      fullname
+    }
+    introducer {
+      id
+      username
+      fullname
+    }
+    price
+    currency
+    duration
+    registerDate
+    status
+    transferMoney {
+      id
+      amount
+      interestRate
+      date
+      status
+      withdrawDate
+    }
+  }
+`;
+
 export function GET_ROLES(fields) {
   return gql`
     {
@@ -267,137 +296,52 @@ export const REMOVE_CATEGORY = gql`
 export const GET_ALL_PACKAGES = gql`
   {
     packages {
-      id
-      user {
-        id
-        username
-        fullname
-      }
-      price
-      currency
-      duration
-      registerDate
-      status
-      transferMoney {
-        id
-        amount
-        interestRate
-        date
-        status,
-        withdrawDate
-      }
+      ...PackageFragment
     }
   }
+  ${packageFragment}
 `;
 
 export const CREATE_PACKAGE = gql`
-  mutation createPackage($userId: ID!, $price: Int!, $duration: PackageDuration!, $registerDate: String) {
-    createPackage(userId: $userId, price: $price, duration: $duration, registerDate: $registerDate) {
-      id
-      user {
-        id
-        username
-        fullname
-      }
-      price
-      currency
-      duration
-      registerDate
-      status
-      transferMoney {
-        id
-        amount
-        interestRate
-        date
-        status
-        withdrawDate
-      }
+  mutation createPackage($packageId: String!, $userId: ID!, $price: Int!, $duration: PackageDuration!, $introducer: ID, $registerDate: String) {
+    createPackage(packageId: $packageId, userId: $userId, price: $price, duration: $duration, introducer: $introducer, registerDate: $registerDate) {
+      ...PackageFragment
     }
   }
+  ${packageFragment}
 `;
 
 export const EDIT_PACKAGE = gql`
-  mutation editPackage($id: ID!, $userId: ID, $price: Int, $duration: PackageDuration, $registerDate: String, $status: PackageStatus) {
-    editPackage(id: $id, userId: $userId, price: $price, duration: $duration, registerDate: $registerDate, status: $status) {
-      id
-      user {
-        id
-        username
-        fullname
-      }
-      price
-      currency
-      duration
-      registerDate
-      status
-      transferMoney {
-        id
-        amount
-        interestRate
-        date
-        status
-        withdrawDate
-      }
+  mutation editPackage($packageId: String!, $userId: ID, $price: Int, $duration: PackageDuration, $registerDate: String, $introducer: ID, $status: PackageStatus) {
+    editPackage(packageId: $packageId, userId: $userId, price: $price, duration: $duration, registerDate: $registerDate, introducer: $introducer, status: $status) {
+      ...PackageFragment
     }
   }
+  ${packageFragment}
 `;
 
 export const REMOVE_PACKAGE = gql`
-  mutation removePackage($id: ID!) {
-    removePackage(id: $id)
+  mutation removePackage($packageId: ID!) {
+    removePackage(packageId: $packageId)
   }
 `;
 
 export const EDIT_PACKAGE_PROGRESS = gql`
   mutation editPackageProgress($id: ID!, $amount: Int, $interestRate: Int, $date: String, $status: Boolean, $withdrawDate: String) {
     editPackageProgress(id: $id, amount: $amount, interestRate: $interestRate, date: $date, status: $status, withdrawDate: $withdrawDate) {
-      id
-      user {
-        id
-        username
-        fullname
-      }
-      price
-      currency
-      duration
-      registerDate
-      status
-      transferMoney {
-        id
-        amount
-        interestRate
-        date
-        status
-        withdrawDate
-      }
+      ...PackageFragment
     }
   }
+  ${packageFragment}
 `;
 
 export const ACTIVE_PACKAGE = gql`
   {
     activePackage {
-      id
-      user {
-        id
-        username
-        fullname
-      }
-      price
-      currency
-      duration
-      registerDate
-      status
-      transferMoney {
-        id
-        amount
-        interestRate
-        date
-        status
-        withdrawDate
-      }
+      ...PackageFragment
     }
   }
+  ${packageFragment}
 `;
 
 export const LOGIN = gql`

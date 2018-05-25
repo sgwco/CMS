@@ -29,6 +29,7 @@
   "november": "Tháng 11",
   "december": "Tháng 12",
   "add_new": "Thêm mới",
+  "edit": "Sửa",
   "list": "Danh sách",
   "username": "Tài khoản",
   "fullname": "Họ tên",
@@ -42,5 +43,11 @@
   "interest_rate": "Lãi suất",
   "payment": "Thanh toán",
   "withdraw": "Rút tiền",
-  "paid_at": "Trả vào"
+  "paid_at": "Trả vào",
+  "price": "Giá trị",
+  "duration": "Khoảng thời gian",
+  "please_select": "Chọn",
+  "save": "Lưu",
+  "package_id": "Số hiệu gói",
+  "introducer": "Người giới thiệu"
 }

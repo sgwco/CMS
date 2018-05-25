@@ -1,13 +1,18 @@
-import { compose, withProps, withHandlers, branch, renderNothing, withState } from 'recompose';
+import { compose, withProps, withHandlers, branch, renderNothing } from 'recompose';
 import { graphql } from 'react-apollo';
 
 import DashboardMember from '../../../../components/admin/admin-content/admin-content-dashboard/dashboard-member';
-import { ACTIVE_PACKAGE, EDIT_PACKAGE, GET_USER_TOKEN } from '../../../../utils/graphql';
+import { ACTIVE_PACKAGE, EDIT_PACKAGE, GET_USER_TOKEN, GET_SETTINGS } from '../../../../utils/graphql';
 import { getKeyAsString, checkRoleIsAllowed } from '../../../../utils/utils';
-import { PACKAGE_STATUS, ROLE_CAPABILITIES } from '../../../../utils/enum';
+import { PACKAGE_STATUS, ROLE_CAPABILITIES, SETTING_KEYS } from '../../../../utils/enum';
 
 export default compose(
   graphql(GET_USER_TOKEN, { name: 'getUserToken' }),
+  graphql(GET_SETTINGS, { name: 'getSettings' }),
+  branch(
+    ({ getSettings: { settings }}) => !settings,
+    renderNothing
+  ),
   branch(
     ({getUserToken: { loggedInUser = {} }}) =>
       Object.keys(loggedInUser).length === 0 || checkRoleIsAllowed(loggedInUser.role.accessPermission, ROLE_CAPABILITIES.write_packages.value),
@@ -15,47 +20,30 @@ export default compose(
   ),
   graphql(ACTIVE_PACKAGE, { name: 'listPackages' }),
   graphql(EDIT_PACKAGE, { name: 'editPackage' }),
+  withProps(({ getSettings: { settings = [] }}) => ({
+    language: (settings.find(item => item.settingKey === SETTING_KEYS.LANGUAGE) || {}).settingValue
+  })),
   withProps(({ listPackages: { activePackage = [] } }) => ({
     breadcrumbItems: [
       { url: '/admin', icon: 'home', text: 'Home' },
       { text: 'Dashboard' }
     ],
-    listActivePackages: activePackage.filter(item => item.status !== 'EXPIRED' && item.status !== 'PENDING'),
-    pieChartData: {
-      labels: [
-        'Pending',
-        'Active',
-        'Wait for Expiration',
-        'Expired'
-      ],
-      datasets: [{
-        data: [
-          activePackage.filter(item => item.status === 'PENDING').length,
-          activePackage.filter(item => item.status === 'ACTIVE').length,
-          activePackage.filter(item => item.status === 'PENDING_EXPIRED').length,
-          activePackage.filter(item => item.status === 'EXPIRED').length,
-        ],
-        backgroundColor: [
-          '#00b894',
-          '#0984e3',
-          '#d63031',
-          '#fdcb6e'
-        ],
-      }]
-    }
+    listActivePackages: activePackage.filter(item => item.status !== 'EXPIRED' && item.status !== 'PENDING')
   })),
-  withState('selectedPackageIndex', 'selectPackageAction', -1),
   withHandlers({
-    onUpgradePackage: ({ editPackage }) => async id => {
+    onWithdrawPackage: ({ editPackage }) => async packageId => {
       const result = confirm('Do you want to withdraw this package?');
       if (result) {
         try {
           await editPackage({
             variables: {
-              id,
+              packageId,
               status: getKeyAsString(PACKAGE_STATUS.PENDING_EXPIRED, PACKAGE_STATUS)
             },
-            update(cache, { data: { activePackage } }) {
+            update(cache, { data: { editPackage } }) {
+              const { activePackage } = cache.readQuery({ query: ACTIVE_PACKAGE });
+              const index = activePackage.findIndex(item => item.packageId === packageId);
+              activePackage[index] = editPackage;
               cache.writeQuery({ query: ACTIVE_PACKAGE, data: { activePackage } });
             }
           });
@@ -64,9 +52,6 @@ export default compose(
           // Code
         }
       }
-    },
-    selectPackageAction: ({ selectPackageAction, listActivePackages }) => e => {
-      selectPackageAction(listActivePackages.findIndex(item => item.id === e.target.value));
     }
   })
 )(DashboardMember);

@@ -44,22 +44,22 @@ export default compose(
   ),
   withHandlers({
     removeAlert: ({ setAlert }) => () => setAlert(ALERT_STATUS.HIDDEN),
-    onRemovePackage: ({ removePackage, setAlertContent, setAlert }) => async id => {
+    onRemovePackage: ({ removePackage, setAlertContent, setAlert }) => async packageId => {
       const result = confirm('Do you want to remove this package?');
       if (result) {
         try {
           await removePackage({
-            variables: { id },
+            variables: { packageId },
             optimisticResponse: {
               __typename: 'Mutation',
               removeUser: {
                 __typename: 'String',
-                id
+                packageId
               }
             },
             update(cache, { data: { removePackage } }) {
               let { packages } = cache.readQuery({ query: GET_ALL_PACKAGES });
-              packages = packages.filter(item => item.id !== removePackage);
+              packages = packages.filter(item => item.packageId !== removePackage);
               cache.writeQuery({ query: GET_ALL_PACKAGES, data: { packages } });
             }
           });
@@ -73,19 +73,19 @@ export default compose(
         }
       }
     },
-    onDeactivePackage: ({ editPackage, setAlertContent, setAlert }) => async id => {
+    onDeactivePackage: ({ editPackage, setAlertContent, setAlert }) => async packageId => {
       const result = confirm('Do you want to deactive this package?');
       if (result) {
         try {
           await editPackage({
             variables: {
-              id,
+              packageId,
               status: getKeyAsString(PACKAGE_STATUS.EXPIRED, PACKAGE_STATUS)
             },
             update(cache, { data: { editPackage } }) {
               try {
                 const { packages } = cache.readQuery({ query: GET_ALL_PACKAGES });
-                const index = packages.findIndex(item => item.id === id);
+                const index = packages.findIndex(item => item.packageId === packageId);
                 packages[index] = editPackage;
                 cache.writeQuery({ query: GET_ALL_PACKAGES, data: { packages } });
               }
@@ -104,19 +104,19 @@ export default compose(
         }
       }
     },
-    onActivePackage: ({ editPackage, setAlertContent, setAlert }) => async id => {
+    onActivePackage: ({ editPackage, setAlertContent, setAlert }) => async packageId => {
       const result = confirm('Do you want to active this package?');
       if (result) {
         try {
           await editPackage({
             variables: {
-              id,
+              packageId,
               status: getKeyAsString(PACKAGE_STATUS.ACTIVE, PACKAGE_STATUS)
             },
             update(cache, { data: { editPackage } }) {
               try {
                 const { packages } = cache.readQuery({ query: GET_ALL_PACKAGES });
-                const index = packages.findIndex(item => item.id === id);
+                const index = packages.findIndex(item => item.packageId === packageId);
                 packages[index] = editPackage;
                 cache.writeQuery({ query: GET_ALL_PACKAGES, data: { packages } });
               }
@@ -135,19 +135,19 @@ export default compose(
         }
       }
     },
-    onUpgradePackage: ({ editPackage, setAlertContent, setAlert }) => async id => {
+    onUpgradePackage: ({ editPackage, setAlertContent, setAlert }) => async packageId => {
       const result = confirm('Do you want to upgrade this package duration to 12 months?');
       if (result) {
         try {
           await editPackage({
             variables: {
-              id,
+              packageId,
               duration: getKeyAsString(DURATION_TYPE.MONTH_12, DURATION_TYPE)
             },
             update(cache, { data: { editPackage } }) {
               try {
                 const { packages } = cache.readQuery({ query: GET_ALL_PACKAGES });
-                const index = packages.findIndex(item => item.id === id);
+                const index = packages.findIndex(item => item.packageId === packageId);
                 packages[index] = editPackage;
                 cache.writeQuery({ query: GET_ALL_PACKAGES, data: { packages } });
               }
@@ -179,7 +179,7 @@ export default compose(
             update(cache, { data: { editPackageProgress } }) {
               try {
                 const { packages } = cache.readQuery({ query: GET_ALL_PACKAGES });
-                const index = packages.findIndex(item => item.id === editPackageProgress.id);
+                const index = packages.findIndex(item => item.packageId === editPackageProgress.packageId);
                 packages[index] = editPackageProgress;
                 cache.writeQuery({ query: GET_ALL_PACKAGES, data: { packages } });
               }
