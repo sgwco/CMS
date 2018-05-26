@@ -1,5 +1,6 @@
 import { graphql } from 'react-apollo';
 import { compose, withHandlers, withProps, withState, branch, renderNothing } from 'recompose';
+import { injectIntl } from 'react-intl';
 import _ from 'lodash';
 
 import AdminContentRolesComponent from '../../../components/admin/admin-content/admin-content-roles';
@@ -18,16 +19,17 @@ export default compose(
   graphql(REMOVE_ROLE, { name: 'removeRole' }),
   withProps(() => ({
     breadcrumbItems: [
-      { url: '/admin/dashboard', icon: 'home', text: 'Home' },
-      { text: 'Roles' }
+      { url: '/admin/dashboard', icon: 'home', text: 'categories.home' },
+      { text: 'categories.roles' }
     ]
   })),
+  injectIntl,
   withState('alertVisible', 'setAlert', ALERT_STATUS.HIDDEN),
   withState('alertContent', 'setAlertContent', ''),
   withHandlers({
     removeAlert: ({ setAlert }) => () => setAlert(ALERT_STATUS.HIDDEN),
-    onRemoveRole: ({ removeRole, setAlert, setAlertContent }) => async id => {
-      const result = confirm('Do you want to remove this role?');
+    onRemoveRole: ({ removeRole, setAlert, setAlertContent, intl }) => async id => {
+      const result = confirm(intl.messages['question.remove']);
       if (result) {
         try {
           await removeRole({
@@ -45,11 +47,11 @@ export default compose(
               cache.writeQuery({ query: GET_ROLES(['id', 'name', 'accessPermission']), data: { roles } });
             }
           });
-          setAlertContent('Remove role successfully');
+          setAlertContent('success.remove');
           setAlert(ALERT_STATUS.SUCCESS);
         }
         catch (e) {
-          setAlertContent('Error: ' + e.graphQLErrors[0].message);
+          setAlertContent(e.graphQLErrors[0].message);
           setAlert(ALERT_STATUS.ERROR);
         }
       }

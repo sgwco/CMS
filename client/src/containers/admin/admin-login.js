@@ -26,7 +26,7 @@ export default compose(
         window.location = '/admin';
       }
       else {
-        setAlertContent('Login failed. Please check username or password');
+        setAlertContent('error.login_failed');
         setAlert(ALERT_STATUS.ERROR);
       }
     }

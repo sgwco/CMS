@@ -2,6 +2,7 @@ import React from 'react';
 import { compose, withHandlers } from 'recompose';
 import { Row, Col, Form as BootstrapForm, Button, Alert } from 'reactstrap';
 import { Form } from 'react-form';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 import { ContentHeaderTitleStyled } from '../../../shared/components';
 import { BootstrapSelectField, BootstrapTextField } from '../../../shared/formFields';
@@ -19,18 +20,19 @@ const AdminContentDashboardComponent = ({
   initValue,
   alertVisible,
   removeAlert,
-  alertContent
+  alertContent,
+  intl
 }) => (
   <ContentContainer>
     <ContentHeader>
       <ContentHeaderTitleStyled>
-        <span>Setting</span>
+        <FormattedMessage id='categories.settings' />
       </ContentHeaderTitleStyled>
       <Breadcrumb items={breadcrumbItems} />
     </ContentHeader>
     <ContentBody>
       <Alert color={alertVisible} isOpen={alertVisible !== ALERT_STATUS.HIDDEN} toggle={removeAlert}>
-        {alertContent}
+        <FormattedMessage id={alertContent} />
       </Alert>
       <Form onSubmit={submitForm} getApi={initValue}>
         {formApi => (
@@ -41,12 +43,12 @@ const AdminContentDashboardComponent = ({
                   <Col sm={{ size: 6, offset: 3 }}>
                     <BootstrapSelectField
                       field="language"
-                      label="Language"
+                      label={intl.messages['fields.language']}
                       data={[ ...languages.map(languageMapper) ]}
                     />
                     <BootstrapTextField
                       field="company_name"
-                      label="Company Name"
+                      label={intl.messages['fields.company_name']}
                       type="text"
                       validate={requiredValidation}
                     />
@@ -54,7 +56,9 @@ const AdminContentDashboardComponent = ({
                 </Row>
               </BoxBody>
               <BoxFooter>
-                <Button color="primary" type="submit" className="float-right">Save</Button>
+                <Button color="primary" type="submit" className="float-right">
+                  <FormattedMessage id='save' />
+                </Button>
               </BoxFooter>
             </BoxWrapper>
           </BootstrapForm>
@@ -65,9 +69,10 @@ const AdminContentDashboardComponent = ({
 );
 
 export default compose(
+  injectIntl,
   withHandlers({
-    languageMapper: () => item => ({
-      text: item.title,
+    languageMapper: ({ intl }) => item => ({
+      text: intl.messages[item.title],
       value: item.key
     })
   })

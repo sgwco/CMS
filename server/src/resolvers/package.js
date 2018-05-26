@@ -100,7 +100,7 @@ export const Mutation = {
       catch (error) {
         switch (error.code) {
           case 'ER_DUP_ENTRY':
-            throw new GraphQLError('Package existed');
+            throw new GraphQLError('error.package_exist');
         }
       }
 
@@ -160,7 +160,7 @@ export const Mutation = {
       }
 
       if (args.price && args.price < 0) {
-        throw new GraphQLError('Price invalid');
+        throw new GraphQLError('error.price_invalid');
       }
 
       if (args.duration && args.duration === PackageDuration.getValue('MONTH_12').value) {

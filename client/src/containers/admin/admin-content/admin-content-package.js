@@ -1,21 +1,16 @@
 import { compose, withHandlers, withState, withStateHandlers, withProps, branch, renderNothing } from 'recompose';
 import { graphql } from 'react-apollo';
 import moment from 'moment';
+import { injectIntl } from 'react-intl';
 import _ from 'lodash';
 
 import AdminContentPackageComponent from '../../../components/admin/admin-content/admin-content-package';
-import { ALERT_STATUS, PACKAGE_STATUS, DURATION_TYPE, ROLE_CAPABILITIES, SETTING_KEYS } from '../../../utils/enum';
-import { GET_ALL_PACKAGES, REMOVE_PACKAGE, EDIT_PACKAGE, EDIT_PACKAGE_PROGRESS, GET_USER_TOKEN, GET_SETTINGS } from '../../../utils/graphql';
+import { ALERT_STATUS, PACKAGE_STATUS, DURATION_TYPE, ROLE_CAPABILITIES } from '../../../utils/enum';
+import { GET_ALL_PACKAGES, REMOVE_PACKAGE, EDIT_PACKAGE, EDIT_PACKAGE_PROGRESS, GET_USER_TOKEN } from '../../../utils/graphql';
 import { getKeyAsString, checkRoleIsAllowed } from '../../../utils/utils';
-import lang from '../../../languages';
 
 export default compose(
   graphql(GET_USER_TOKEN, { name: 'getUserToken' }),
-  graphql(GET_SETTINGS, { name: 'getSettings' }),
-  branch(
-    ({ getSettings: { settings }}) => !settings,
-    renderNothing
-  ),
   branch(
     ({getUserToken: { loggedInUser = {} }}) =>
       _.isEmpty(loggedInUser) || !checkRoleIsAllowed(loggedInUser.role.accessPermission, ROLE_CAPABILITIES.read_packages.value),
@@ -25,13 +20,11 @@ export default compose(
   graphql(EDIT_PACKAGE, { name: 'editPackage' }),
   graphql(REMOVE_PACKAGE, { name: 'removePackage' }),
   graphql(EDIT_PACKAGE_PROGRESS, { name: 'editPackageProgress' }),
-  withProps(({ getSettings: { settings = [] }}) => ({
-    language: (settings.find(item => item.settingKey === SETTING_KEYS.LANGUAGE) || {}).settingValue
-  })),
-  withProps(({ language }) => ({
+  injectIntl,
+  withProps(() => ({
     breadcrumbItems: [
-      { url: '/admin/dashboard', icon: 'home', text: lang('home', language) },
-      { text: lang('packages', language) }
+      { url: '/admin/dashboard', icon: 'home', text: 'categories.home' },
+      { text: 'categories.packages' }
     ]
   })),
   withState('alertVisible', 'setAlert', ALERT_STATUS.HIDDEN),
@@ -44,8 +37,8 @@ export default compose(
   ),
   withHandlers({
     removeAlert: ({ setAlert }) => () => setAlert(ALERT_STATUS.HIDDEN),
-    onRemovePackage: ({ removePackage, setAlertContent, setAlert }) => async packageId => {
-      const result = confirm('Do you want to remove this package?');
+    onRemovePackage: ({ removePackage, setAlertContent, setAlert, intl }) => async packageId => {
+      const result = confirm(intl.messages['question.remove']);
       if (result) {
         try {
           await removePackage({
@@ -64,17 +57,17 @@ export default compose(
             }
           });
 
-          setAlertContent('Remove package successfully');
+          setAlertContent('success.remove');
           setAlert(ALERT_STATUS.SUCCESS);
         }
         catch (e) {
-          setAlertContent('Error: ' + e.graphQLErrors[0].message);
+          setAlertContent(e.graphQLErrors[0].message);
           setAlert(ALERT_STATUS.ERROR);
         }
       }
     },
-    onDeactivePackage: ({ editPackage, setAlertContent, setAlert }) => async packageId => {
-      const result = confirm('Do you want to deactive this package?');
+    onDeactivePackage: ({ editPackage, setAlertContent, setAlert, intl }) => async packageId => {
+      const result = confirm(intl.messages['question.deactive_package']);
       if (result) {
         try {
           await editPackage({
@@ -95,17 +88,17 @@ export default compose(
             }
           });
 
-          setAlertContent('Deactive package successfully');
+          setAlertContent('success.deactive_package');
           setAlert(ALERT_STATUS.SUCCESS);
         }
         catch (e) {
-          setAlertContent('Error: ' + e.graphQLErrors[0].message);
+          setAlertContent(e.graphQLErrors[0].message);
           setAlert(ALERT_STATUS.ERROR);
         }
       }
     },
-    onActivePackage: ({ editPackage, setAlertContent, setAlert }) => async packageId => {
-      const result = confirm('Do you want to active this package?');
+    onActivePackage: ({ editPackage, setAlertContent, setAlert, intl }) => async packageId => {
+      const result = confirm(intl.messages['question.active_package']);
       if (result) {
         try {
           await editPackage({
@@ -126,17 +119,17 @@ export default compose(
             }
           });
 
-          setAlertContent('Active package successfully');
+          setAlertContent('success.active_package');
           setAlert(ALERT_STATUS.SUCCESS);
         }
         catch (e) {
-          setAlertContent('Error: ' + e.graphQLErrors[0].message);
+          setAlertContent(e.graphQLErrors[0].message);
           setAlert(ALERT_STATUS.ERROR);
         }
       }
     },
     onUpgradePackage: ({ editPackage, setAlertContent, setAlert }) => async packageId => {
-      const result = confirm('Do you want to upgrade this package duration to 12 months?');
+      const result = confirm('question.upgrade_package');
       if (result) {
         try {
           await editPackage({
@@ -157,17 +150,17 @@ export default compose(
             }
           });
 
-          setAlertContent('Upgrade package successfully');
+          setAlertContent('success.upgrade_package');
           setAlert(ALERT_STATUS.SUCCESS);
         }
         catch (e) {
-          setAlertContent('Error: ' + e.graphQLErrors[0].message);
+          setAlertContent(e.graphQLErrors[0].message);
           setAlert(ALERT_STATUS.ERROR);
         }
       }
     },
-    onWithdraw: ({ editPackageProgress }) => async (progressItem) => {
-      const result = confirm(`Do you want to withdraw this package at ${moment(progressItem.date).format('DD/MM/YYYY')}?`);
+    onWithdraw: ({ editPackageProgress, intl }) => async (progressItem) => {
+      const result = confirm(intl.messages['question.withdraw']);
       if (result) {
         try {
           await editPackageProgress({
@@ -189,10 +182,10 @@ export default compose(
             }
           });
 
-          alert('Withdraw successfully!');
+          alert('success.withdraw');
         }
         catch (e) {
-          alert('Error: ' + e.graphQLErrors[0].message);
+          alert(e.graphQLErrors[0].message);
         }
       }
     },

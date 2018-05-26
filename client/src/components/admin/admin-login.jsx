@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { Form as BootstrapForm, FormGroup, Input, Label, Button, Alert } from 'reactstrap';
 import styled from 'styled-components';
 import { Form } from 'react-form';
@@ -13,7 +14,8 @@ const AdminLoginComponent = ({
   onLogin,
   alertVisible,
   removeAlert,
-  alertContent
+  alertContent,
+  intl
 }) => (
   <Form onSubmit={onLogin}>
     {(formApi) => (
@@ -23,34 +25,34 @@ const AdminLoginComponent = ({
             <LogoStyled src={logo} alt="logo" />
             <div className="login-form">
               <LoginHeaderStyled>
-                <h3 className="text-center">Đăng nhập</h3>
+                <h3 className="text-center"><FormattedMessage id='login' /></h3>
               </LoginHeaderStyled>
               <Alert color={alertVisible} isOpen={alertVisible !== ALERT_STATUS.HIDDEN} toggle={removeAlert}>
-                {alertContent}
+                <FormattedMessage id={alertContent} />
               </Alert>
               <div className="login-form">
                 <BootstrapTextField
                   field="username"
-                  label="Username"
+                  label={intl.messages['fields.username']}
                   type="text"
                   validate={requiredValidation}
                 />
                 <BootstrapTextField
                   field="password"
-                  label="Password"
+                  label={intl.messages['fields.password']}
                   type="password"
                   validate={requiredValidation}
                 />
                 <FormGroup check>
                   <Label check>
-                    <Input type="checkbox" /> Remember?
+                    <Input type="checkbox" /> <FormattedMessage id='remember' />?
                   </Label>
                 </FormGroup>
                 <div className="text-center">
-                  <Button color="primary" type="submit">Login</Button>
+                  <Button color="primary" type="submit"><FormattedMessage id='login' /></Button>
                 </div>
                 <LoginForgetPasswordStyled className="text-center">
-                  <a href="#">Forgot password?</a>
+                  <a href="#"><FormattedMessage id='forgot_password' /></a>
                 </LoginForgetPasswordStyled>
               </div>
             </div>
@@ -90,4 +92,4 @@ const LoginForgetPasswordStyled = styled.div`
   margin-top: 15px;
 `;
 
-export default AdminLoginComponent;
+export default injectIntl(AdminLoginComponent);

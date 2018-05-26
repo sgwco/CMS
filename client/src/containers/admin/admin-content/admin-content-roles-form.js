@@ -27,13 +27,13 @@ export default compose(
     graphql(CREATE_ROLE, { name: 'createRole' })
   ),
   withHandlers({
-    renderTopTitle: ({ isEditedUser }) => () => isEditedUser ? 'Edit Role' : 'Add New Role',
+    renderTopTitle: ({ isEditedUser }) => () => isEditedUser ? 'edit_role.edit' : 'edit_role.add_new',
   }),
   withProps(({ renderTopTitle }) => ({
     listRoles: Object.keys(ROLE_CAPABILITIES),
     breadcrumbItems: [
-      { url: '/admin/dashboard', icon: 'home', text: 'Home' },
-      { url: '/admin/role', icon: 'users', text: 'Roles' },
+      { url: '/admin/dashboard', icon: 'home', text: 'categories.home' },
+      { url: '/admin/role', icon: 'users', text: 'categories.roles' },
       { text: renderTopTitle() }
     ]
   })),
@@ -91,7 +91,7 @@ export default compose(
             }
           });
 
-          setAlertContent('Edit role successfully');
+          setAlertContent('success.edit');
           setAlert(ALERT_STATUS.SUCCESS);
         }
         else {
@@ -117,12 +117,12 @@ export default compose(
               }
             }
           });
-          setAlertContent('Add role successfully');
+          setAlertContent('success.create');
           setAlert(ALERT_STATUS.SUCCESS);
         }
       }
       catch (e) {
-        setAlertContent('Error: ' + e.graphQLErrors[0].message);
+        setAlertContent(e.graphQLErrors[0].message);
         setAlert(ALERT_STATUS.ERROR);
       }
     },
@@ -131,7 +131,7 @@ export default compose(
         try {
           const { roles } = client.cache.readQuery({ query: GET_ROLES(['id', 'name', 'accessPermission']) });
           const selectedRole = roles.find(item => item.id === match.params.id);
-          if (!selectedRole) throw new Error('Role does not exist');
+          if (!selectedRole) throw new Error('error.role_not_exist');
 
           listRoles.forEach((item, index) => {
             if (checkRoleAllowed(selectedRole.accessPermission, ROLE_CAPABILITIES[listRoles[index]].value)) {

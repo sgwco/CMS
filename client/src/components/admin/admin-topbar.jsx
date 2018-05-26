@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import FontAwesome from '@fortawesome/react-fontawesome';
 import moment from 'moment';
+import { FormattedMessage } from 'react-intl';
 import { DropdownToggle, DropdownItem, Nav, Navbar, NavItem, UncontrolledDropdown, DropdownMenu } from 'reactstrap';
 
 import avatar from '../../assets/img/user.png';
@@ -20,11 +21,11 @@ const AdminTopbarProfileComponent = ({
         <img src={avatar} className="rounded-circle" alt="User Image" />
         <p>
           {loggedInUser && (loggedInUser.fullname || loggedInUser.username)}<br/>
-          <small>Member since {loggedInUser && moment(loggedInUser.registrationDate).format('MMM. YYYY')}</small>
+          <small><FormattedMessage id='member_since' values={{ date: moment(loggedInUser.registrationDate).format('DD/MM/YYYY') }} /></small>
         </p>
       </DropdownItem>
       <LogoutStyled onClick={logout}>
-        <FontAwesome icon="sign-out-alt" /> Logout
+        <FontAwesome icon="sign-out-alt" /> <FormattedMessage id='logout' />
       </LogoutStyled>
     </DropdownMenuStyled>
   </UncontrolledDropdownStyled>

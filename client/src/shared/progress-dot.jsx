@@ -3,9 +3,10 @@ import Steps, { Step } from 'rc-steps';
 import { Button } from 'reactstrap';
 import styled from 'styled-components';
 import moment from 'moment';
+import { FormattedMessage } from 'react-intl';
+
 import 'rc-steps/assets/index.css';
 import 'rc-steps/assets/iconfont.css';
-import lang from '../languages';
 
 const ProgressDotWrapped = styled.div`
   margin-top: 10px;
@@ -21,22 +22,24 @@ const ProgressStepWrapper = styled.div`
   text-align: center;
 `;
 
-const ProgressStep = ({ progressItem, onWithdraw, currency, language }) => (
+const ProgressStep = ({ progressItem, onWithdraw, currency }) => (
   <ProgressStepWrapper>
-    <div><strong>{lang('interest_rate', language)}:</strong> {progressItem.interestRate}%</div>
-    <div><strong>{lang('payment', language)}:</strong> {progressItem.amount.toLocaleString('vi')}.000 {currency}</div>
+    <div><strong><FormattedMessage id='interest_rate' />:</strong> {progressItem.interestRate}%</div>
+    <div><strong><FormattedMessage id='payment' />:</strong> {progressItem.amount.toLocaleString('vi')}.000 {currency}</div>
     {moment() >= moment(progressItem.date) && !progressItem.status && onWithdraw && (
       <div>
-        <Button color='primary' size='sm' onClick={() => onWithdraw(progressItem)}>{lang('withdraw', language)}</Button>
+        <Button color='primary' size='sm' onClick={() => onWithdraw(progressItem)}>
+          <FormattedMessage id='withdraw' />
+        </Button>
       </div>
     )}
     {progressItem.status && (
-      <div>{lang('paid_at', language)} {moment(progressItem.withdrawDate).format('DD/MM/YYYY')}</div>
+      <div><FormattedMessage id='paid_at' /> {moment(progressItem.withdrawDate).format('DD/MM/YYYY')}</div>
     )}
   </ProgressStepWrapper>
 );
 
-const ProgressDot = ({ selectedPackage, onWithdraw, language }) => (
+const ProgressDot = ({ selectedPackage, onWithdraw }) => (
   <ProgressDotWrapped>
     <Steps labelPlacement="vertical" current={(selectedPackage.transferMoney || []).filter(item => item.status).length + 1}>
       <StepStyled
@@ -46,7 +49,7 @@ const ProgressDot = ({ selectedPackage, onWithdraw, language }) => (
         <StepStyled
           key={item.id} id={`id_${item.id}`}
           title={moment(item.date).format('DD/MM/YYYY')}
-          description={<ProgressStep currency={selectedPackage.currency} progressItem={item} onWithdraw={onWithdraw} language={language} />}
+          description={<ProgressStep currency={selectedPackage.currency} progressItem={item} onWithdraw={onWithdraw} />}
         />
       ))}
     </Steps>

@@ -86,7 +86,7 @@ export default compose(
               }
             }
           });
-          setAlertContent('Edit user successfully!');
+          setAlertContent('success.edit');
           setAlert(ALERT_STATUS.SUCCESS);
         }
         else {
@@ -119,12 +119,12 @@ export default compose(
               }
             }
           });
-          setAlertContent('Create user successfully!');
+          setAlertContent('success.create');
           setAlert(ALERT_STATUS.SUCCESS);
         }
       }
       catch (e) {
-        setAlertContent('Error: ' + e.graphQLErrors[0].message);
+        setAlertContent(e.graphQLErrors[0].message);
         setAlert(ALERT_STATUS.ERROR);
       }
     },

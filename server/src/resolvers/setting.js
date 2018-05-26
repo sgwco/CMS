@@ -70,7 +70,7 @@ export const Mutation = {
           setting_value: settingValue
         };
       }
-      else throw new GraphQLError('Cannot insert new setting.');
+      else throw new GraphQLError('error.cannot_insert');
     }
   },
   editSetting: {
@@ -97,7 +97,7 @@ export const Mutation = {
         return settings.map(item => dataloaders.settingsByKeys.load(item.settingKey));
       }
       catch (error) {
-        throw new GraphQLError('Data invalid.');
+        throw new GraphQLError('error.data_invalid');
       }
     }
   },

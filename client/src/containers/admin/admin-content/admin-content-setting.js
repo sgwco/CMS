@@ -14,12 +14,12 @@ export default compose(
   ),
   withProps(() => ({
     breadcrumbItems: [
-      { url: '/admin/dashboard', icon: 'home', text: 'Home' },
-      { text: 'Setting' }
+      { url: '/admin/dashboard', icon: 'home', text: 'categories.home' },
+      { text: 'categories.settings' }
     ],
     languages: [
-      { key: 'en', title: 'English' },
-      { key: 'vi', title: 'Vietnamese' }
+      { key: 'en', title: 'languages.english' },
+      { key: 'vi', title: 'languages.vietnamese' }
     ]
   })),
   withState('alertVisible', 'setAlert', ALERT_STATUS.HIDDEN),
@@ -27,25 +27,32 @@ export default compose(
   withHandlers({
     removeAlert: ({ setAlert }) => () => setAlert(ALERT_STATUS.HIDDEN),
     initValue: ({ getSettings: { settings = [] } }) => (formApi) => {
-      const listSettings = ['language', 'company_name'];
+      const listSettings = ['company_name'];
+
+      if (!localStorage.getItem('language')) localStorage.setItem('language', 'vi');
+      const language = localStorage.getItem('language');
+
       for (const setting of listSettings) {
         formApi.setValue(setting, (settings.find(item => item.settingKey === setting) || {}).settingValue);
       }
+      formApi.setValue('language', language);
     },
     submitForm: ({ editSettings, setAlertContent, setAlert }) => async data => {
-      const dataParsed = Object.keys(data).map(item => ({
+      const dataParsed = Object.keys(data).filter(item => item !== 'language').map(item => ({
         settingKey: item,
         settingValue: data[item]
       }));
 
+      localStorage.setItem('language', data.language);
+
       try {
         await editSettings({ variables: { listSettings: JSON.stringify(dataParsed) } });
 
-        setAlertContent('Edit settings successfully. Please refresh this page to apply settings.');
+        setAlertContent('success.save_settings');
         setAlert(ALERT_STATUS.SUCCESS);
       }
       catch (e) {
-        setAlertContent('Error: ' + e.graphQLErrors[0].message);
+        setAlertContent(e.graphQLErrors[0].message);
         setAlert(ALERT_STATUS.ERROR);
       }
     }

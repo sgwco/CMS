@@ -35,14 +35,12 @@ const AdminContentUsersFormComponent = ({
       {formApi => (
         <BootstrapForm onSubmit={formApi.submitForm}>
           <ContentHeader>
-            <h1>
-              <FormattedMessage id={renderTopTitle()} />
-            </h1>
+            <h1><FormattedMessage id={renderTopTitle()} /></h1>
             <Breadcrumb items={breadcrumbItems} />
           </ContentHeader>
           <ContentBody>
             <Alert color={alertVisible} isOpen={alertVisible !== ALERT_STATUS.HIDDEN} toggle={removeAlert}>
-              {alertContent}
+              <FormattedMessage id={alertContent} />
             </Alert>
             <BoxWrapper color="primary" title={intl.messages['edit_user.basic_information']} isLoading={formIsLoading}>
               <BoxBody>

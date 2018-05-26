@@ -1,6 +1,7 @@
 import React from 'react';
 import { Field } from 'react-form';
 import { FormGroup, Label, Input, FormFeedback } from 'reactstrap';
+import { FormattedMessage } from 'react-intl';
 import { compose, withHandlers } from 'recompose';
 import moment from 'moment';
 import writtenNumber from 'written-number';
@@ -43,7 +44,11 @@ export const BootstrapTextField = ({ validate, field, onChange, onBlur, label, r
           {...rest}
           invalid={error !== undefined}
         />
-        <FormFeedback>{error}</FormFeedback>
+        {error && (
+          <FormFeedback>
+            <FormattedMessage id={error} />
+          </FormFeedback>
+        )}
       </FormGroup>
     )}
   </Field>
@@ -75,13 +80,17 @@ export const BootstrapMoneyAmountField = ({ validate, field, onChange, onBlur, l
           {...rest}
           invalid={error !== undefined}
         />
-        <FormFeedback>{error}</FormFeedback>
+        {error && (
+          <FormFeedback>
+            <FormattedMessage id={error} />
+          </FormFeedback>
+        )}
         <MoneyAmountStyled>
           x 1000
         </MoneyAmountStyled>
         {value && (
           <MoneyAmountStyled>
-            As word: {writtenNumber(value * 1000, { lang: 'vi' })} đồng
+            <FormattedMessage id='as_word' />: {writtenNumber(value * 1000, { lang: 'vi' })} đồng
           </MoneyAmountStyled>
         )}
       </FormGroup>
@@ -123,7 +132,11 @@ export const BootstrapSelectField = compose(
         >
           {data.map(renderOptionItem)}
         </Input>
-        <FormFeedback>{error}</FormFeedback>
+        {error && (
+          <FormFeedback>
+            <FormattedMessage id={error} />
+          </FormFeedback>
+        )}
       </FormGroup>
     )}
   </Field>
@@ -154,7 +167,9 @@ export const BootstrapDatepickerField = ({ validate, field, label, required }) =
           invalid={error !== undefined}
         />
         {error && (
-          <FormFeedbackAlwaysShow>{error}</FormFeedbackAlwaysShow>
+          <FormFeedbackAlwaysShow>
+            <FormattedMessage id={error} />
+          </FormFeedbackAlwaysShow>
         )}
       </FormGroup>
     )}

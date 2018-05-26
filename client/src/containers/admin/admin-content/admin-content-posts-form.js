@@ -105,7 +105,7 @@ export default compose(
         }
       } 
       catch (e) {
-        setAlertContent('Error: ' + e.graphQLErrors[0].message);
+        setAlertContent(e.graphQLErrors[0].message);
         setAlert(ALERT_STATUS.ERROR);
       }
     },

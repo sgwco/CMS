@@ -33,7 +33,7 @@ export const Query = {
       if (rows.length > 0) {
         return rows[0];
       }
-      throw new GraphQLError('User does not exist');
+      throw new GraphQLError('error.user_not_exist');
     }
   },
   loggedInUser: {
@@ -69,19 +69,19 @@ export const Mutation = {
       const { username, password, email, role, address, phone, fullname } = args;
 
       if (!username) {
-        throw new GraphQLError('Username cannot be null');
+        throw new GraphQLError('error.username_null');
       }
 
       if (!password) {
-        throw new GraphQLError('Password cannot be null');
+        throw new GraphQLError('error.password_null');
       }
 
       if (email && !isEmail(email)) {
-        throw new GraphQLError('Email invalid');
+        throw new GraphQLError('error.email_invalid');
       }
 
       if (!role) {
-        throw new GraphQLError('Role cannot be null');
+        throw new GraphQLError('error.role_null');
       }
 
       const registrationDate = moment().format('YYYY-MM-DD HH:MM');
@@ -104,9 +104,9 @@ export const Mutation = {
       catch (e) {
         switch (e.code) {
           case 'ER_DUP_ENTRY':
-            throw new GraphQLError('User existed');
+            throw new GraphQLError('error.user_exist');
           case 'ER_NO_REFERENCED_ROW_2':
-            throw new GraphQLError('User data invalid');
+            throw new GraphQLError('error.data_invalid');
         }
       }
 
@@ -114,7 +114,7 @@ export const Mutation = {
       if (lastId.length > 0) {
         id = lastId[0]['LAST_INSERT_ID()'];
       }
-      else throw new GraphQLError('Cannot insert new role.');
+      else throw new GraphQLError('error.cannot_insert');
 
       if (args.userMeta) {
         const userMeta = JSON.parse(args.userMeta);
@@ -158,11 +158,11 @@ export const Mutation = {
     },
     async resolve(source, args, context) {
       if (!args.id) {
-        throw new GraphQLError('Id cannot be null');
+        throw new GraphQLError('error.id_null');
       }
 
       if (args.email && !isEmail(args.email)) {
-        throw new GraphQLError('Email invalid');
+        throw new GraphQLError('error.email_invalid');
       }
 
       const setStatement = Object.keys(args)
@@ -176,9 +176,9 @@ export const Mutation = {
       catch (e) {
         switch (e.code) {
           case 'ER_DUP_ENTRY':
-            throw new GraphQLError('User existed');
+            throw new GraphQLError('error.user_exist');
           case 'ER_NO_REFERENCED_ROW_2':
-            throw new GraphQLError('User data invalid');
+            throw new GraphQLError('error.data_invalid');
         }
       }
 
@@ -216,7 +216,7 @@ export const Mutation = {
       const { id } = args;
 
       if (!id) {
-        throw new GraphQLError('Id cannot be null');
+        throw new GraphQLError('error.id_null');
       }
 
       promiseQuery(`DELETE FROM ${PREFIX}user WHERE id='${args.id}'`);
@@ -231,11 +231,11 @@ export const Mutation = {
     },
     async resolve(source, args, context) {
       if (!args.username) {
-        throw new GraphQLError('Username cannot be null');
+        throw new GraphQLError('error.username_null');
       }
 
       if (!args.password) {
-        throw new GraphQLError('Password cannot be null');
+        throw new GraphQLError('error.password_null');
       }
 
       args.password = sha1(args.password);

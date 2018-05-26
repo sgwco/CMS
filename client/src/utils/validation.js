@@ -4,10 +4,10 @@ import moment from 'moment';
 
 export const requiredValidation = value => {
   if (!value || typeof value === 'undefined') {
-    return { error: 'This field is required' };
+    return { error: 'error.required_field' };
   }
   else if (value.trim && value.trim() === '') {
-    return { error: 'This field is required' };
+    return { error: 'error.required_field' };
   }
   return null;
 };
@@ -18,7 +18,7 @@ export const numberValidation = value => {
   if (required && required.error) return required;
 
   if (!isFloat(strValue)) {
-    return { error: 'This field contains non-numeric letter' };
+    return { error: 'error.non_numeric' };
   }
 
   return null;
@@ -29,7 +29,7 @@ export const passwordMatchValidation = (currentPassword, abovePassword) => {
   if (required && required.error) return required;
   
   if (currentPassword !== abovePassword) {
-    return { error: 'Password mismatch' };
+    return { error: 'error.password_mismatch' };
   }
 
   return null;
@@ -38,7 +38,7 @@ export const passwordMatchValidation = (currentPassword, abovePassword) => {
 export const emailValidation = (value = '') => {
   if (value && value.length > 0) {
     if (!isEmail(value)) {
-      return { error: 'Email invalid' };
+      return { error: 'error.email_invalid' };
     }
   }
   return null;
@@ -50,7 +50,7 @@ export const dateValidation = value => {
 
   const parsedFormat = moment(value, 'DD/MM/YYYY');
   if (!parsedFormat.isValid()) {
-    return { error: 'Date invalid' };
+    return { error: 'error.date_invalid' };
   }
 
   return null;

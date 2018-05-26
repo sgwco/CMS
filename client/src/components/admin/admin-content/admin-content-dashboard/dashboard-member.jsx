@@ -1,5 +1,6 @@
 import React from 'react';
 import { Row, Col, Button } from 'reactstrap';
+import { FormattedMessage } from 'react-intl';
 
 import { BoxWrapper, BoxBody, BoxFooter } from '../../../../shared/boxWrapper';
 import ProgressDot from '../../../../shared/progress-dot';
@@ -19,7 +20,7 @@ const DashboardMember = ({
         <Col md={3}>
           <CardboardItem
             color='yellow'
-            title='Package(s)'
+            title={<FormattedMessage id="categories.packages" />}
             content={activePackage.length}
             icon='briefcase'
           />
@@ -27,7 +28,7 @@ const DashboardMember = ({
         <Col md={3}>
           <CardboardItem
             color='green'
-            title='Total Price'
+            title={<FormattedMessage id="dashboard_page.total_price" />}
             content={`${(activePackage.reduce((total, item) => total + item.price, 0) * 1000).toLocaleString('vi')} VND`}
             icon='money-bill-alt'
           />
@@ -35,7 +36,7 @@ const DashboardMember = ({
         <Col md={3}>
           <CardboardItem
             color='aqua'
-            title='Active Package(s)'
+            title={<FormattedMessage id="active_package" />}
             content={activePackage.filter(item => item.status === 'ACTIVE').length}
             icon='briefcase'
           />
@@ -43,7 +44,7 @@ const DashboardMember = ({
         <Col md={3}>
           <CardboardItem
             color='red'
-            title='Total Price of Active Package(s)'
+            title={<FormattedMessage id="dashboard_page.total_active_price" />}
             content={`${(activePackage.filter(item => item.status === 'ACTIVE').reduce((total, item) => total + item.price, 0) * 1000).toLocaleString('vi')} VND`}
             icon='money-bill-alt'
           />
@@ -65,7 +66,7 @@ const DashboardMember = ({
                     onClick={() => onWithdrawPackage(packageItem.packageId)}
                     disabled={packageItem.status !== getKeyAsString(PACKAGE_STATUS.ACTIVE, PACKAGE_STATUS)}
                   >
-                    Withdraw Package
+                    <FormattedMessage id="withdraw" />
                   </Button>
                 </BoxFooter>
               )}

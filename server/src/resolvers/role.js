@@ -57,7 +57,7 @@ export const Mutation = {
           access_permission: args.accessPermission
         };
       }
-      else throw new GraphQLError('Cannot insert new role.');
+      else throw new GraphQLError('error.cannot_insert');
     }
   },
   editRole: {

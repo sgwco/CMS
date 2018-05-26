@@ -3,6 +3,7 @@ import { Row, Col, Form as BootstrapForm, Input, FormGroup, Label, Button, Alert
 import styled from 'styled-components';
 import { Form, Checkbox } from 'react-form';
 import { withHandlers, compose } from 'recompose';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
 
 import { BootstrapTextField } from '../../../shared/formFields';
@@ -22,21 +23,22 @@ const AdminContentRolesFormComponent = ({
   selectAllRoles,
   listRoles,
   saveRole,
-  initValue
+  initValue,
+  intl
 }) => (
   <Form onSubmit={saveRole} getApi={initValue}>
     {(formApi) => (
       <BootstrapForm onSubmit={formApi.submitForm}>
         <ContentContainer>
           <ContentHeader>
-            <h1>{renderTopTitle()}</h1>
+            <h1><FormattedMessage id={renderTopTitle()} /></h1>
             <Breadcrumb items={breadcrumbItems} />
           </ContentHeader>
           <ContentBody>
             <Alert color={alertVisible} isOpen={alertVisible !== ALERT_STATUS.HIDDEN} toggle={removeAlert}>
-              {alertContent}
+              <FormattedMessage id={alertContent} />
             </Alert>
-            <BoxWrapper color="primary" title="Role Capabilities">
+            <BoxWrapper color="primary" title={intl.messages['edit_role.role_capabilities']}>
               <BoxBody>
                 <Row>
                   <Col sm={{ size: 6, offset: 3 }}>
@@ -47,7 +49,9 @@ const AdminContentRolesFormComponent = ({
                       validate={requiredValidation}
                     />
                     <FormGroup row>
-                      <Label sm={3}>Role Capabilities</Label>
+                      <Label sm={3}>
+                        <FormattedMessage id='edit_role.role_capabilities' />
+                      </Label>
                       <Col sm={9}>
                         <SelectAllRowStyled>
                           <Col sm={12}>
@@ -57,7 +61,7 @@ const AdminContentRolesFormComponent = ({
                                 checked={Object.keys(_.pickBy(formApi.values, value => value === true)).length === listRoles.length}
                                 onClick={(e) => selectAllRoles(e, formApi)}
                               />
-                              Select all
+                              <FormattedMessage id='edit_role.select_all' />
                             </Label>
                           </Col>
                         </SelectAllRowStyled>
@@ -70,7 +74,9 @@ const AdminContentRolesFormComponent = ({
                 </Row>
               </BoxBody>
               <BoxFooter>
-                <Button color="primary" type="submit" className="float-right">Save</Button>
+                <Button color="primary" type="submit" className="float-right">
+                  <FormattedMessage id='save' />
+                </Button>
               </BoxFooter>
             </BoxWrapper>
           </ContentBody>
@@ -85,6 +91,7 @@ const SelectAllRowStyled = styled(Row)`
 `;
 
 export default compose(
+  injectIntl,
   withHandlers({
     renderRole: () => (item, index) => {
       const roleComponent = (

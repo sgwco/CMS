@@ -5,6 +5,7 @@ import { Alert, Badge, Button } from 'reactstrap';
 import styled from 'styled-components';
 import { compose, withHandlers } from 'recompose';
 import { TableHeaderColumn } from 'react-bootstrap-table';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 import { ALERT_STATUS, ROLE_CAPABILITIES } from '../../../utils/enum';
 import Breadcrumb from '../../../shared/breadcrumb';
@@ -29,15 +30,17 @@ const AdminContentRolesComponent = ({
   breadcrumbItems,
   getRoles: { roles = [] },
   accessPermissionFormatter,
-  functionFormatter
+  functionFormatter,
+  intl
 }) => (
   <ContentContainer>
     <ContentHeader>
       <ContentHeaderTitleStyled>
-        <span>Roles</span>
+        <FormattedMessage id='categories.roles' />
         <Link to={`${match.url}/add-new`}>
           <MarginLeftButtonStyled color="primary" size="sm">
-            <FontAwesome icon="plus" /> Add new role
+            <FontAwesome icon="plus" />{'  '}
+            <FormattedMessage id='add_new' />
           </MarginLeftButtonStyled>
         </Link>
       </ContentHeaderTitleStyled>
@@ -45,9 +48,9 @@ const AdminContentRolesComponent = ({
     </ContentHeader>
     <ContentBody>
       <Alert color={alertVisible} isOpen={alertVisible !== ALERT_STATUS.HIDDEN} toggle={removeAlert}>
-        {alertContent}
+        <FormattedMessage id={alertContent} />
       </Alert>
-      <BoxWrapper color="primary" title="List Roles">
+      <BoxWrapper color="primary" title={intl.messages['list']}>
         <BoxBody>
           <BootstrapTableStyled
             data={roles}
@@ -63,14 +66,14 @@ const AdminContentRolesComponent = ({
               width='250'
               filter={{ type: 'TextFilter', delay: 1 }}
             >
-              Role Name
+              {intl.messages['fields.role_name']}
             </TableHeaderColumn>
             <TableHeaderColumn
               dataField='accessPermission'
               dataFormat={accessPermissionFormatter}
               tdStyle={{ whiteSpace: 'normal' }}
             >
-              Access Permission
+              {intl.messages['fields.access_permission']}
             </TableHeaderColumn>
             <TableHeaderColumn
               dataFormat={functionFormatter}
@@ -90,6 +93,7 @@ const RoleBadgesStyled = styled(Badge)`
 
 export default compose(
   withRouter,
+  injectIntl,
   withHandlers({
     nameFormatter: () => (cell, row) => {
       if (typeof row.id === 'number' && row.id < 0) {

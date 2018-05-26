@@ -5,10 +5,10 @@ import { compose, withHandlers, withProps } from 'recompose';
 import { Alert, Badge, Button, Modal, ModalHeader, ModalBody } from 'reactstrap';
 import moment from 'moment';
 import _ from 'lodash';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { TableHeaderColumn } from 'react-bootstrap-table';
 
 import Breadcrumb from '../../../shared/breadcrumb';
-import lang from '../../../languages';
 import {
   ContentHeaderTitleStyled,
   MarginLeftButtonStyled,
@@ -31,32 +31,34 @@ const AdminPackageModal = ({
   onUpgradePackage,
   packageStatusCardButton,
   onWithdraw,
-  language
+  intl
 }) => (
   <Modal isOpen={detailModalVisible} toggle={() => toggleDetailModal()} size="lg">
-    <ModalHeader toggle={() => toggleDetailModal()}>{lang('package_detail', language)}</ModalHeader>
+    <ModalHeader toggle={() => toggleDetailModal()}>
+      <FormattedMessage id='package_detail' />
+    </ModalHeader>
     <ModalBody>
-      <CardViewListStyled color='#6ab04c' icon='id-badge' label={lang('package_id', language)}>
+      <CardViewListStyled color='#6ab04c' icon='id-badge' label={intl.messages['fields.package_id']}>
         {selectedPackage.packageId}
       </CardViewListStyled>
-      <CardViewListStyled color='#e74c3c' icon='user' label={lang('username', language)}>
+      <CardViewListStyled color='#e74c3c' icon='user' label={intl.messages['fields.username']}>
         {selectedPackage.user.username + (selectedPackage.user.fullname && ` (${selectedPackage.user.fullname})`)}
       </CardViewListStyled>
       {selectedPackage.introducer && (
-        <CardViewListStyled color='#22a6b3' icon='user' label={lang('introducer', language)}>
+        <CardViewListStyled color='#22a6b3' icon='user' label={intl.messages['fields.introducer']}>
           {selectedPackage.introducer.username + (selectedPackage.introducer.fullname && ` (${selectedPackage.introducer.fullname})`)}
         </CardViewListStyled>
       )}
-      <CardViewListStyled color='#00b894' icon='money-bill-alt' label={lang('package_price', language)}>
-        {`${(selectedPackage.price * 1000).toLocaleString('vi')} ${selectedPackage.currency}`}
+      <CardViewListStyled color='#00b894' icon='money-bill-alt' label={intl.messages['fields.package_price']}>
+        {`${intl.formatNumber(selectedPackage.price * 1000)} ${selectedPackage.currency}`}
       </CardViewListStyled>
-      <CardViewListStyled color='#fd79a8' icon='clock' label={lang('register_date', language)}>
+      <CardViewListStyled color='#fd79a8' icon='clock' label={intl.messages['fields.register_date']}>
         {moment(selectedPackage.registerDate).format('DD/MM/YYYY')}
       </CardViewListStyled>
       <CardViewListStyled
         color='#a29bfe'
         icon='briefcase'
-        label={lang('package_type', language)}
+        label={intl.messages['fields.package_type']}
         buttonIcon={
           (selectedPackage.duration === getKeyAsString(DURATION_TYPE.MONTH_6, DURATION_TYPE) &&
           selectedPackage.status === getKeyAsString(PACKAGE_STATUS.ACTIVE, PACKAGE_STATUS) &&
@@ -65,20 +67,20 @@ const AdminPackageModal = ({
         }
         buttonFunc={() => onUpgradePackage(selectedPackage.packageId)}
       >
-        {`${DURATION_TYPE[selectedPackage.duration]} ${lang('months', language)}`}
+        {`${DURATION_TYPE[selectedPackage.duration]} ${intl.messages['month.months']}`}
       </CardViewListStyled>
       <CardViewListStyled
         color='#00cec9'
         icon='angle-double-right'
-        label={lang('status', language)}
+        label={intl.messages['fields.status']}
         buttonIcon={(packageStatusCardButton[selectedPackage.status] || {}).icon}
         buttonFunc={() => (packageStatusCardButton[selectedPackage.status] || {}).func(selectedPackage.packageId)}
       >
-        {lang(_.toLower(selectedPackage.status), language)}
+        <FormattedMessage id={`package_status.${_.toLower(selectedPackage.status)}`} />
       </CardViewListStyled>
       {selectedPackage.status !== getKeyAsString(PACKAGE_STATUS.PENDING, PACKAGE_STATUS) && (
-        <CardViewListStyled color='#00b894' icon='spinner' label={lang('progress', language)}>
-          <ProgressDot selectedPackage={selectedPackage} onWithdraw={onWithdraw} language={language} />
+        <CardViewListStyled color='#00b894' icon='spinner' label={intl.messages['progress']}>
+          <ProgressDot selectedPackage={selectedPackage} onWithdraw={onWithdraw} />
         </CardViewListStyled>
       )}
     </ModalBody>
@@ -91,7 +93,6 @@ const AdminContentPackageComponent = ({
   alertContent,
   alertVisible,
   removeAlert,
-  nothingFormatted,
   getPackages: { packages = [] },
   packagesNormalizer,
   selectedPackageIndex,
@@ -101,15 +102,16 @@ const AdminContentPackageComponent = ({
   packageStatusCardButton,
   functionFormatter,
   packageStatusFormatter,
-  language
+  intl
 }) => (
   <ContentContainer>
     <ContentHeader>
       <ContentHeaderTitleStyled>
-        <span>{lang('packages', language)}</span>
+        <FormattedMessage id='categories.package' />
         <Link to={`${match.url}/add-new`}>
           <MarginLeftButtonStyled color="primary" size="sm">
-            <FontAwesome icon="plus" /> {`${lang('add_new', language)} ${lang('package', language).toLowerCase()}`}
+            <FontAwesome icon="plus" />{'  '}
+            <FormattedMessage id='add_new' />
           </MarginLeftButtonStyled>
         </Link>
       </ContentHeaderTitleStyled>
@@ -117,9 +119,9 @@ const AdminContentPackageComponent = ({
     </ContentHeader>
     <ContentBody>
       <Alert color={alertVisible} isOpen={alertVisible !== ALERT_STATUS.HIDDEN} toggle={removeAlert}>
-        {alertContent}
+        <FormattedMessage id={alertContent} />
       </Alert>
-      <BoxWrapper color="primary" title="List Packages">
+      <BoxWrapper color="primary" title={intl.messages['list']}>
         <BoxBody>
           <BootstrapTableStyled
             data={packagesNormalizer()}
@@ -129,50 +131,49 @@ const AdminContentPackageComponent = ({
             hover
           >
             <TableHeaderColumn
-              dataField='username'
+              dataField='packageId'
               isKey
               dataSort
               filter={{ type: 'TextFilter', delay: 1 }}
             >
-              {lang('username', language)}
+              {intl.messages['fields.package_id']}
             </TableHeaderColumn>
             <TableHeaderColumn
-              dataField='fullname'
+              dataField='username'
               dataSort
               filter={{ type: 'TextFilter', delay: 1 }}
-              dataFormat={nothingFormatted}
             >
-              {lang('fullname', language)}
+              {intl.messages['fields.username']}
             </TableHeaderColumn>
             <TableHeaderColumn
               dataField='price'
               dataSort
               filter={{ type: 'TextFilter', delay: 1 }}
-              dataFormat={(cell, row) => `${cell.toLocaleString('vi')}.000 ${row.currency}`}
+              dataFormat={(cell, row) => `${intl.formatNumber(cell * 1000)} ${row.currency}`}
             >
-              {lang('package_price', language)}
+              {intl.messages['fields.package_price']}
             </TableHeaderColumn>
             <TableHeaderColumn
               dataField='duration'
               dataSort
-              dataFormat={cell => DURATION_TYPE[cell] + ` ${lang('months', language)}`}
-              filter={{ type: 'SelectFilter', options: concatObjectEnum(DURATION_TYPE, ` ${lang('months', language)}`) }}
+              dataFormat={cell => DURATION_TYPE[cell] + ` ${intl.messages['month.months']}`}
+              filter={{ type: 'SelectFilter', options: concatObjectEnum(DURATION_TYPE, ` ${intl.messages['month.months']}`) }}
             >
-              {lang('package_type', language)}
+              {intl.messages['fields.package_type']}
             </TableHeaderColumn>
             <TableHeaderColumn
               dataField='registerDate'
               dataFormat={cell => moment(cell).format('DD/MM/YYYY')}
               filter={{ type: 'TextFilter', delay: 1 }}
             >
-              {lang('register_date', language)}
+              {intl.messages['fields.register_date']}
             </TableHeaderColumn>
             <TableHeaderColumn
               dataField='status'
               filter={{ type: 'SelectFilter', options: uppercaseObjectValue(PACKAGE_STATUS) }}
               dataFormat={packageStatusFormatter}
             >
-              {lang('status', language)}
+              {intl.messages['fields.status']}
             </TableHeaderColumn>
             <TableHeaderColumn
               dataFormat={functionFormatter}
@@ -181,7 +182,7 @@ const AdminContentPackageComponent = ({
           </BootstrapTableStyled>
           {selectedPackageIndex > -1 && (
             <AdminPackageModal
-              language={language}
+              intl={intl}
               selectedPackage={packages[selectedPackageIndex]}
               detailModalVisible={selectedPackageIndex > -1}
               toggleDetailModal={toggleDetailModal}
@@ -198,6 +199,7 @@ const AdminContentPackageComponent = ({
 
 export default compose(
   withRouter,
+  injectIntl,
   withHandlers({
     functionFormatter: ({ onRemovePackage, toggleDetailModal, getPackages: { packages = [] } }) => (cell, row) => {
       const functionCell = (
@@ -217,8 +219,8 @@ export default compose(
       
       return functionCell;
     },
-    packageStatusFormatter: ({ language }) => cell => {
-      const cellFormatted = lang(_.toLower(cell), language);
+    packageStatusFormatter: () => cell => {
+      const cellFormatted = <FormattedMessage id={`package_status.${_.toLower(cell)}`} />;
 
       const COLOR_TYPE = {
         ACTIVE: 'success',

@@ -4,19 +4,13 @@ import { graphql, withApollo } from 'react-apollo';
 import moment from 'moment';
 import _ from 'lodash';
 
-import { EDIT_PACKAGE, GET_ALL_PACKAGES, CREATE_PACKAGE, GET_FULL_USERS, GET_USER_TOKEN, GET_SETTINGS } from '../../../utils/graphql';
-import { ALERT_STATUS, ROLE_CAPABILITIES, SETTING_KEYS } from '../../../utils/enum';
+import { EDIT_PACKAGE, GET_ALL_PACKAGES, CREATE_PACKAGE, GET_FULL_USERS, GET_USER_TOKEN } from '../../../utils/graphql';
+import { ALERT_STATUS, ROLE_CAPABILITIES } from '../../../utils/enum';
 import AdminContentPackageFormComponent from '../../../components/admin/admin-content/admin-content-package-form';
 import { checkRoleIsAllowed } from '../../../utils/utils';
-import lang from '../../../languages';
 
 export default compose(
   graphql(GET_USER_TOKEN, { name: 'getUserToken' }),
-  graphql(GET_SETTINGS, { name: 'getSettings' }),
-  branch(
-    ({ getSettings: { settings }}) => !settings,
-    renderNothing
-  ),
   branch(
     ({getUserToken: { loggedInUser = {} }}) =>
       _.isEmpty(loggedInUser) || !checkRoleIsAllowed(loggedInUser.role.accessPermission, ROLE_CAPABILITIES.read_packages.value),
@@ -30,17 +24,14 @@ export default compose(
     graphql(CREATE_PACKAGE, { name: 'createPackage' })
   ),
   graphql(GET_FULL_USERS, { name: 'getUsers' }),
-  withProps(({ getSettings: { settings = [] }}) => ({
-    language: (settings.find(item => item.settingKey === SETTING_KEYS.LANGUAGE) || {}).settingValue
-  })),
   withHandlers({
-    renderTopTitle: ({ isEditedPackage, language }) => () =>
-      isEditedPackage ? `${lang('edit', language)} ${lang('package', language)}` : `${lang('add_new', language)} ${lang('package', language)}`
+    renderTopTitle: ({ isEditedPackage }) => () =>
+      isEditedPackage ? 'edit_package.edit' : 'edit_package.add_new',
   }),
-  withProps(({ renderTopTitle, language }) => ({
+  withProps(({ renderTopTitle }) => ({
     breadcrumbItems: [
-      { url: '/admin/dashboard', icon: 'home', text: lang('home', language) },
-      { url: '/admin/package', icon: 'briefcase', text: lang('packages', language) },
+      { url: '/admin/dashboard', icon: 'home', text: 'categories.home' },
+      { url: '/admin/package', icon: 'briefcase', text: 'categories.packages' },
       { text: renderTopTitle() }
     ]
   })),
@@ -90,7 +81,7 @@ export default compose(
             }
           });
 
-          setAlertContent('Edit package successfully');
+          setAlertContent('success.edit');
           setAlert(ALERT_STATUS.SUCCESS);
         }
         else {
@@ -111,12 +102,12 @@ export default compose(
               }
             }
           });
-          setAlertContent('Add package successfully');
+          setAlertContent('success.create');
           setAlert(ALERT_STATUS.SUCCESS);
         }
       }
       catch (e) {
-        setAlertContent('Error: ' + e.graphQLErrors[0].message || e.message);
+        setAlertContent(e.graphQLErrors[0].message || e.message);
         setAlert(ALERT_STATUS.ERROR);
       }
     },

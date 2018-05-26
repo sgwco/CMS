@@ -55,7 +55,7 @@ const AdminContentUsersComponent = ({
     </ContentHeader>
     <ContentBody>
       <Alert color={alertVisible} isOpen={alertVisible !== ALERT_STATUS.HIDDEN} toggle={removeAlert}>
-        {alertContent}
+        <FormattedMessage id={alertContent} />
       </Alert>
       <BoxWrapper color="primary" title={<FormattedMessage id='list' />}>
         <BoxBody>
