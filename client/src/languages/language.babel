@@ -214,6 +214,23 @@
                     </concept_node>
                 </children>
             </folder_node>
+            <concept_node>
+                <name>choose_image</name>
+                <definition_loaded>false</definition_loaded>
+                <description></description>
+                <comment></comment>
+                <default_text></default_text>
+                <translations>
+                    <translation>
+                        <language>en-US</language>
+                        <approved>false</approved>
+                    </translation>
+                    <translation>
+                        <language>vi-VN</language>
+                        <approved>false</approved>
+                    </translation>
+                </translations>
+            </concept_node>
             <folder_node>
                 <name>dashboard_page</name>
                 <children>
@@ -1756,6 +1773,79 @@
                 </translations>
             </concept_node>
             <folder_node>
+                <name>progress_dot</name>
+                <children>
+                    <concept_node>
+                        <name>expiration_date</name>
+                        <definition_loaded>false</definition_loaded>
+                        <description></description>
+                        <comment></comment>
+                        <default_text></default_text>
+                        <translations>
+                            <translation>
+                                <language>en-US</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>vi-VN</language>
+                                <approved>false</approved>
+                            </translation>
+                        </translations>
+                    </concept_node>
+                    <concept_node>
+                        <name>package_type</name>
+                        <definition_loaded>false</definition_loaded>
+                        <description></description>
+                        <comment></comment>
+                        <default_text></default_text>
+                        <translations>
+                            <translation>
+                                <language>en-US</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>vi-VN</language>
+                                <approved>false</approved>
+                            </translation>
+                        </translations>
+                    </concept_node>
+                    <concept_node>
+                        <name>package_value</name>
+                        <definition_loaded>false</definition_loaded>
+                        <description></description>
+                        <comment></comment>
+                        <default_text></default_text>
+                        <translations>
+                            <translation>
+                                <language>en-US</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>vi-VN</language>
+                                <approved>false</approved>
+                            </translation>
+                        </translations>
+                    </concept_node>
+                    <concept_node>
+                        <name>effective_date</name>
+                        <definition_loaded>false</definition_loaded>
+                        <description></description>
+                        <comment></comment>
+                        <default_text></default_text>
+                        <translations>
+                            <translation>
+                                <language>en-US</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>vi-VN</language>
+                                <approved>false</approved>
+                            </translation>
+                        </translations>
+                    </concept_node>
+                </children>
+            </folder_node>
+            <folder_node>
                 <name>question</name>
                 <children>
                     <concept_node>
@@ -1864,23 +1954,6 @@
             </concept_node>
             <concept_node>
                 <name>save</name>
-                <definition_loaded>false</definition_loaded>
-                <description></description>
-                <comment></comment>
-                <default_text></default_text>
-                <translations>
-                    <translation>
-                        <language>en-US</language>
-                        <approved>false</approved>
-                    </translation>
-                    <translation>
-                        <language>vi-VN</language>
-                        <approved>false</approved>
-                    </translation>
-                </translations>
-            </concept_node>
-            <concept_node>
-                <name>choose_image</name>
                 <definition_loaded>false</definition_loaded>
                 <description></description>
                 <comment></comment>

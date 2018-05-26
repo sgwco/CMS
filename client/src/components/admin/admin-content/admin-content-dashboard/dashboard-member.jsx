@@ -1,12 +1,13 @@
 import React from 'react';
 import { Row, Col, Button } from 'reactstrap';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, FormattedNumber } from 'react-intl';
+import moment from 'moment';
 
 import { BoxWrapper, BoxBody, BoxFooter } from '../../../../shared/boxWrapper';
 import ProgressDot from '../../../../shared/progress-dot';
 import { CardboardItem } from '../../../../shared/components';
 import { getKeyAsString } from '../../../../utils/utils';
-import { PACKAGE_STATUS } from '../../../../utils/enum';
+import { PACKAGE_STATUS, DURATION_TYPE } from '../../../../utils/enum';
 
 const DashboardMember = ({
   listActivePackages,
@@ -55,6 +56,30 @@ const DashboardMember = ({
           <Col lg={6} key={packageItem.packageId}>
             <BoxWrapper color="primary" title={packageItem.packageId}>
               <BoxBody>
+                <Row>
+                  <Col lg={6}>
+                    <div>
+                      <FormattedMessage tagName='strong' id="progress_dot.package_value" />{': '}
+                      <FormattedNumber value={packageItem.price * 1000} /> VND
+                    </div>
+                    <div>
+                      <FormattedMessage tagName='strong' id="progress_dot.package_type" />{': '}
+                      {DURATION_TYPE[packageItem.duration]} <FormattedMessage id='month.months' />
+                    </div>
+                  </Col>
+                  {packageItem.transferMoney && packageItem.transferMoney.length > 0 && (
+                    <Col lg={6}>
+                      <div>
+                        <FormattedMessage tagName='strong' id="progress_dot.effective_date" />{': '}
+                        {moment(packageItem.transferMoney[0].date).format('DD/MM/YYYY')}
+                      </div>
+                      <div>
+                        <FormattedMessage tagName='strong' id="progress_dot.expiration_date" />{': '}
+                        {moment(packageItem.transferMoney[packageItem.transferMoney.length - 1].date).format('DD/MM/YYYY')}
+                      </div>
+                    </Col>
+                  )}
+                </Row>
                 <ProgressDot selectedPackage={packageItem} language={language} />
               </BoxBody>
               {packageItem.status === getKeyAsString(PACKAGE_STATUS.ACTIVE, PACKAGE_STATUS) && (

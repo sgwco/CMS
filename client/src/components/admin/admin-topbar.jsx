@@ -40,9 +40,9 @@ const AdminTopbarComponent = ({
 }) => (
   <header className="main-header">
     <a href="#" className="logo">
-      <span className="logo-mini">
+      <LogoMiniStyled className="logo-mini">
         <LogoImageStyled src={logo} alt="logo" className="logo-img-mini" />
-      </span>
+      </LogoMiniStyled>
       <span className="logo-lg">
         <LogoImageStyled src={logo} alt="logo" className="logo-img-lg" /> {(settings.find(item => item.settingKey === 'company_name') || {}).settingValue}
       </span>
@@ -89,6 +89,10 @@ export const LogoutStyled = styled(DropdownItem)`
   &:hover {
     cursor: pointer;
   }
+`;
+
+export const LogoMiniStyled = styled.span`
+  margin-top: 10px;
 `;
 
 export default AdminTopbarComponent;
