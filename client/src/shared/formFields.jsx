@@ -175,3 +175,25 @@ export const BootstrapDatepickerField = ({ validate, field, label, required }) =
     )}
   </Field>
 );
+
+export const BootstrapFileField = ({ validate, field, label }) => (
+  <Field validate={validate} field={field}>
+    {({ error, setValue, setTouched }) => (
+      <FormGroup>
+        <Label for={field}>{label}</Label>
+        <Input
+          id={field}
+          type='file'
+          onChange={e => {
+            console.log(e.target.value);
+            setValue(e.target.value);
+          }}
+          onBlur={() => {
+            setTouched();
+          }}
+          invalid={error !== undefined}
+        />
+      </FormGroup>
+    )}
+  </Field>
+);

@@ -52,6 +52,13 @@ const AdminContentDashboardComponent = ({
                       type="text"
                       validate={requiredValidation}
                     />
+                    {/* <BootstrapFileField
+                      field="logo"
+                      label={intl.messages['fields.logo']}
+                      buttonLabel={intl.messages['choose_image']}
+                      acceptedExtension={['.jpg', '.png', '.jpeg', '.gif']}
+                      maxFileSize={2097152}
+                    /> */}
                   </Col>
                 </Row>
               </BoxBody>
