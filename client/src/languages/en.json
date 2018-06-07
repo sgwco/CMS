@@ -108,6 +108,7 @@
 	"question.deactive_package": "Do you want to deactive this package?",
 	"question.remove": "Do you want to remove?",
 	"question.upgrade_package": "Do you want to upgrade this package duration to 12 months?",
+	"question.withdraw_warning": "The refund value will be based on the content specified in the contract and at the time you place a request to stop the contract. Do you want to terminate this cooperation contract?",
 	"question.withdraw": "Do you want to withdraw?",
 	"remember": "Remember",
 	"save": "Save",
@@ -120,5 +121,6 @@
 	"success.upgrade_package": "Upgrade package successfully",
 	"success.withdraw": "Withdraw successfully",
 	"total_price": "Total Price",
-	"withdraw": "Withdraw"
+	"withdraw": "Withdraw",
+	"stop_package": "Stop package"
 }

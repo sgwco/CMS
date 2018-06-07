@@ -77,22 +77,25 @@ var initDatabase = exports.initDatabase = function () {
 
                         promiseQuery('CREATE TABLE IF NOT EXISTS ' + PREFIX + 'user_meta (\n      id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,\n      user_id INT UNSIGNED NOT NULL,\n      meta_key VARCHAR(50) NOT NULL,\n      meta_value VARCHAR(200) NOT NULL,\n      CONSTRAINT FK_USER FOREIGN KEY (user_id) REFERENCES ' + PREFIX + 'user(id) ON DELETE CASCADE ON UPDATE CASCADE\n    )');
 
+                        // Media table
+                        promiseQuery('CREATE TABLE IF NOT EXISTS ' + PREFIX + 'media (\n      id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,\n      url VARCHAR(200) NOT NULL,\n      upload_date DATETIME NOT NULL,\n      upload_by INT UNSIGNED NOT NULL,\n      CONSTRAINT FK_MEDIA_USER FOREIGN KEY (upload_by) REFERENCES ' + PREFIX + 'user(id) ON DELETE CASCADE ON UPDATE CASCADE\n    )');
+
                         // Package table
-                        _context2.next = 7;
-                        return promiseQuery('CREATE TABLE IF NOT EXISTS ' + PREFIX + 'package (\n      id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,\n      user_id INT UNSIGNED NOT NULL,\n      price BIGINT UNSIGNED NOT NULL,\n      currency VARCHAR(10) NOT NULL,\n      duration INT(10) UNSIGNED NOT NULL,\n      register_date DATE NOT NULL,\n      status VARCHAR(50) NOT NULL,\n      CONSTRAINT FK_PACKAGE FOREIGN KEY (user_id) REFERENCES ' + PREFIX + 'user(id) ON DELETE CASCADE ON UPDATE CASCADE\n    )');
+                        _context2.next = 8;
+                        return promiseQuery('CREATE TABLE IF NOT EXISTS ' + PREFIX + 'package (\n      package_id VARCHAR(50) NOT NULL PRIMARY KEY,\n      user_id INT UNSIGNED NOT NULL,\n      price BIGINT UNSIGNED NOT NULL,\n      currency VARCHAR(10) NOT NULL,\n      duration INT(10) UNSIGNED NOT NULL,\n      introducer INT UNSIGNED NULL,\n      register_date DATE NOT NULL,\n      status VARCHAR(50) NOT NULL,\n      CONSTRAINT FK_PACKAGE FOREIGN KEY (user_id) REFERENCES ' + PREFIX + 'user(id) ON DELETE CASCADE ON UPDATE CASCADE,\n      CONSTRAINT FK_INTRODUCER FOREIGN KEY (introducer) REFERENCES ' + PREFIX + 'user(id) ON DELETE CASCADE ON UPDATE CASCADE\n    )');
 
-                      case 7:
+                      case 8:
 
-                        promiseQuery('CREATE TABLE IF NOT EXISTS ' + PREFIX + 'package_progress (\n      id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,\n      package_id INT UNSIGNED NOT NULL,\n      amount FLOAT(10, 2) UNSIGNED NOT NULL,\n      interest_rate INT UNSIGNED NOT NULL,\n      date DATE NOT NULL,\n      status BOOLEAN NOT NULL,\n      withdraw_date DATE,\n      CONSTRAINT FK_PACKAGE_PROGRESS FOREIGN KEY (package_id) REFERENCES ' + PREFIX + 'package(id) ON DELETE CASCADE ON UPDATE CASCADE\n    )');
+                        promiseQuery('CREATE TABLE IF NOT EXISTS ' + PREFIX + 'package_progress (\n      id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,\n      package_id VARCHAR(50) NOT NULL,\n      amount FLOAT(10, 2) UNSIGNED NOT NULL,\n      interest_rate INT UNSIGNED NOT NULL,\n      date DATE NOT NULL,\n      status BOOLEAN NOT NULL,\n      withdraw_date DATE,\n      CONSTRAINT FK_PACKAGE_PROGRESS FOREIGN KEY (package_id) REFERENCES ' + PREFIX + 'package(package_id) ON DELETE CASCADE ON UPDATE CASCADE\n    )');
 
-                        _context2.next = 10;
+                        _context2.next = 11;
                         return promiseQuery('CREATE TABLE IF NOT EXISTS ' + PREFIX + 'setting (\n      id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,\n      setting_key VARCHAR(100) NOT NULL UNIQUE,\n      setting_value VARCHAR(200) NOT NULL\n    )');
 
-                      case 10:
+                      case 11:
 
                         initData();
 
-                      case 11:
+                      case 12:
                       case 'end':
                         return _context2.stop();
                     }

@@ -18,7 +18,7 @@ const DashboardMember = ({
   Object.keys(activePackage).length > 0 && (
     <div>
       <Row>
-        <Col md={3}>
+        <Col md={4}>
           <CardboardItem
             color='yellow'
             title={<FormattedMessage id="categories.packages" />}
@@ -26,15 +26,7 @@ const DashboardMember = ({
             icon='briefcase'
           />
         </Col>
-        <Col md={3}>
-          <CardboardItem
-            color='green'
-            title={<FormattedMessage id="dashboard_page.total_price" />}
-            content={`${(activePackage.reduce((total, item) => total + item.price, 0) * 1000).toLocaleString('vi')} VND`}
-            icon='money-bill-alt'
-          />
-        </Col>
-        <Col md={3}>
+        <Col md={4}>
           <CardboardItem
             color='aqua'
             title={<FormattedMessage id="active_package" />}
@@ -42,7 +34,7 @@ const DashboardMember = ({
             icon='briefcase'
           />
         </Col>
-        <Col md={3}>
+        <Col md={4}>
           <CardboardItem
             color='red'
             title={<FormattedMessage id="dashboard_page.total_active_price" />}
@@ -59,7 +51,7 @@ const DashboardMember = ({
                 <Row>
                   <Col lg={6}>
                     <div>
-                      <FormattedMessage tagName='strong' id="progress_dot.package_value" />{': '}
+                      <FormattedMessage tagName='strong' id="progress_dot.package_value" />{': '}<br/>
                       <FormattedNumber value={packageItem.price * 1000} /> VND
                     </div>
                     <div>
@@ -91,7 +83,7 @@ const DashboardMember = ({
                     onClick={() => onWithdrawPackage(packageItem.packageId)}
                     disabled={packageItem.status !== getKeyAsString(PACKAGE_STATUS.ACTIVE, PACKAGE_STATUS)}
                   >
-                    <FormattedMessage id="withdraw" />
+                    <FormattedMessage id="stop_package" />
                   </Button>
                 </BoxFooter>
               )}

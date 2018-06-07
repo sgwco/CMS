@@ -29,10 +29,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var Query = exports.Query = new _graphql.GraphQLObjectType({
   name: 'SGW_Queries',
-  fields: _extends({}, _user.Query, _role.Query, _media2.default, _category.Query, _post.Query, _package.Query, _setting.Query)
+  fields: _extends({}, _user.Query, _role.Query, _media2.default, _category.Query, _post.Query, _package.Query, _setting.Query, _media.Query)
 });
 
 var Mutation = exports.Mutation = new _graphql.GraphQLObjectType({
   name: 'SGW_Mutations',
-  fields: _extends({}, _user.Mutation, _role.Mutation, _post.Mutation, _category.Mutation, _package.Mutation, _setting.Mutation)
+  fields: _extends({}, _user.Mutation, _role.Mutation, _post.Mutation, _category.Mutation, _package.Mutation, _setting.Mutation, _media.Mutation)
 });

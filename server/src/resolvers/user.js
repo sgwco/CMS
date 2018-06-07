@@ -104,6 +104,7 @@ export const Mutation = {
       catch (e) {
         switch (e.code) {
           case 'ER_DUP_ENTRY':
+            console.log(e);
             throw new GraphQLError('error.user_exist');
           case 'ER_NO_REFERENCED_ROW_2':
             throw new GraphQLError('error.data_invalid');

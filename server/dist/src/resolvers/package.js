@@ -63,12 +63,12 @@ var Query = exports.Query = {
   package: {
     type: _models.Package,
     args: {
-      id: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLID) }
+      packageId: { type: new _graphql.GraphQLNonNull(_graphql.GraphQLID) }
     },
     resolve: function resolve(source, _ref2, _ref3) {
       var _this2 = this;
 
-      var id = _ref2.id;
+      var packageId = _ref2.packageId;
       var payload = _ref3.payload;
       return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
         var rows;
@@ -85,7 +85,7 @@ var Query = exports.Query = {
 
               case 2:
                 _context2.next = 4;
-                return (0, _database.promiseQuery)('SELECT * FROM ' + _database.PREFIX + 'package WHERE id=\'' + id + '\'');
+                return (0, _database.promiseQuery)('SELECT * FROM ' + _database.PREFIX + 'package WHERE package_id=\'' + packageId + '\'');
 
               case 4:
                 rows = _context2.sent;
@@ -160,7 +160,9 @@ var Mutation = exports.Mutation = {
   createPackage: {
     type: _models.Package,
     args: {
+      packageId: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLString) },
       userId: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLID) },
+      introducer: { type: _graphql.GraphQLID },
       price: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLInt) },
       duration: { type: (0, _graphql.GraphQLNonNull)(_models.PackageDuration) },
       registerDate: { type: _graphql.GraphQLString }
@@ -171,7 +173,7 @@ var Mutation = exports.Mutation = {
       var payload = _ref5.payload,
           dataloaders = _ref5.dataloaders;
       return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
-        var now, registerDate, status, id, lastId, transferMoneyProgresses, duration, paymentDate, index;
+        var now, registerDate, status, transferMoneyProgresses, duration, paymentDate, index;
         return regeneratorRuntime.wrap(function _callee4$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
@@ -184,57 +186,60 @@ var Mutation = exports.Mutation = {
                 throw new _graphql.GraphQLError('Unauthorized');
 
               case 2:
-                if (args.userId) {
+                if (args.packageId) {
                   _context4.next = 4;
+                  break;
+                }
+
+                throw new _graphql.GraphQLError('Package cannot be null');
+
+              case 4:
+                if (args.userId) {
+                  _context4.next = 6;
                   break;
                 }
 
                 throw new _graphql.GraphQLError('User cannot be null');
 
-              case 4:
+              case 6:
                 if (!(!args.price || args.price < 0)) {
-                  _context4.next = 6;
+                  _context4.next = 8;
                   break;
                 }
 
                 throw new _graphql.GraphQLError('Price invalid');
 
-              case 6:
+              case 8:
                 if (args.duration) {
-                  _context4.next = 8;
+                  _context4.next = 10;
                   break;
                 }
 
                 throw new _graphql.GraphQLError('Duration cannot be null');
 
-              case 8:
+              case 10:
                 now = (0, _moment2.default)();
                 registerDate = args.registerDate ? (0, _moment2.default)(args.registerDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : now.format('YYYY-MM-DD');
                 status = _models.PackageStatus.getValue('PENDING').value;
-                id = null;
-                _context4.next = 14;
-                return (0, _database.promiseQuery)('INSERT INTO ' + _database.PREFIX + 'package VALUES (\n        NULL,\n        \'' + args.userId + '\',\n        \'' + args.price + '\',\n        \'' + _enum.CURRENCY.VND + '\',\n        \'' + args.duration + '\',\n        \'' + registerDate + '\',\n        \'' + status + '\'\n      )');
-
-              case 14:
+                _context4.prev = 13;
                 _context4.next = 16;
-                return (0, _database.promiseQuery)('SELECT LAST_INSERT_ID()');
+                return (0, _database.promiseQuery)('INSERT INTO ' + _database.PREFIX + 'package VALUES (\n          \'' + args.packageId + '\',\n          \'' + args.userId + '\',\n          \'' + args.price + '\',\n          \'' + _enum.CURRENCY.VND + '\',\n          \'' + args.duration + '\',\n          ' + (args.introducer || null) + ',\n          \'' + registerDate + '\',\n          \'' + status + '\'\n        )');
 
               case 16:
-                lastId = _context4.sent;
-
-                if (!(lastId.length > 0)) {
-                  _context4.next = 21;
-                  break;
-                }
-
-                id = lastId[0]['LAST_INSERT_ID()'];
-                _context4.next = 22;
+                _context4.next = 24;
                 break;
 
-              case 21:
-                throw new _graphql.GraphQLError('Cannot insert new role.');
+              case 18:
+                _context4.prev = 18;
+                _context4.t0 = _context4['catch'](13);
+                _context4.t1 = _context4.t0.code;
+                _context4.next = _context4.t1 === 'ER_DUP_ENTRY' ? 23 : 24;
+                break;
 
-              case 22:
+              case 23:
+                throw new _graphql.GraphQLError('error.package_exist');
+
+              case 24:
                 transferMoneyProgresses = {
                   '6': { interestRate: 6, step: 2 },
                   '12': { interestRate: 8, step: 4 }
@@ -243,48 +248,50 @@ var Mutation = exports.Mutation = {
                 paymentDate = (0, _moment2.default)(registerDate, 'YYYY-MM-DD');
                 index = 0;
 
-              case 26:
+              case 28:
                 if (!(index < duration.step)) {
-                  _context4.next = 33;
+                  _context4.next = 35;
                   break;
                 }
 
                 paymentDate = paymentDate.add(3, 'months');
-                _context4.next = 30;
-                return (0, _database.promiseQuery)('INSERT INTO ' + _database.PREFIX + 'package_progress VALUES (\n          NULL,\n          \'' + id + '\',\n          \'' + args.price * duration.interestRate / 100 + '\',\n          \'' + duration.interestRate + '\',\n          \'' + paymentDate.format('YYYY-MM-DD') + '\',\n          0,\n          NULL\n        )');
+                _context4.next = 32;
+                return (0, _database.promiseQuery)('INSERT INTO ' + _database.PREFIX + 'package_progress VALUES (\n          NULL,\n          \'' + args.packageId + '\',\n          \'' + args.price * duration.interestRate / 100 + '\',\n          \'' + duration.interestRate + '\',\n          \'' + paymentDate.format('YYYY-MM-DD') + '\',\n          0,\n          NULL\n        )');
 
-              case 30:
+              case 32:
                 index += 1;
-                _context4.next = 26;
+                _context4.next = 28;
                 break;
 
-              case 33:
+              case 35:
                 return _context4.abrupt('return', {
-                  id: id,
                   status: status,
+                  package_id: args.packageId,
                   user_id: args.userId,
+                  introducer: args.introducer,
                   name: args.name,
                   price: args.price,
                   currency: _enum.CURRENCY.VND,
                   duration: args.duration,
                   register_date: args.registerDate || now.format('DD/MM/YYYY'),
-                  transferMoney: id
+                  transferMoney: args.packageId
                 });
 
-              case 34:
+              case 36:
               case 'end':
                 return _context4.stop();
             }
           }
-        }, _callee4, _this4);
+        }, _callee4, _this4, [[13, 18]]);
       }))();
     }
   },
   editPackage: {
     type: _models.Package,
     args: {
-      id: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLID) },
+      packageId: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLString) },
       userId: { type: _graphql.GraphQLID },
+      introducer: { type: _graphql.GraphQLID },
       price: { type: _graphql.GraphQLInt },
       duration: { type: _models.PackageDuration },
       registerDate: { type: _graphql.GraphQLString },
@@ -309,7 +316,7 @@ var Mutation = exports.Mutation = {
                 throw new _graphql.GraphQLError('Unauthorized');
 
               case 2:
-                if (args.id) {
+                if (args.packageId) {
                   _context5.next = 4;
                   break;
                 }
@@ -322,7 +329,7 @@ var Mutation = exports.Mutation = {
                   break;
                 }
 
-                throw new _graphql.GraphQLError('Price invalid');
+                throw new _graphql.GraphQLError('error.price_invalid');
 
               case 6:
                 if (!(args.duration && args.duration === _models.PackageDuration.getValue('MONTH_12').value)) {
@@ -331,7 +338,7 @@ var Mutation = exports.Mutation = {
                 }
 
                 _context5.next = 9;
-                return dataloaders.packagesByIds.load(args.id);
+                return dataloaders.packagesByIds.load(args.packageId);
 
               case 9:
                 currentPackage = _context5.sent;
@@ -341,16 +348,14 @@ var Mutation = exports.Mutation = {
 
                 for (index = 0; index < 2; index += 1) {
                   withdrawDate = withdrawDate.add(3, 'months');
-                  packageProgressPromises.push((0, _database.promiseQuery)('INSERT INTO ' + _database.PREFIX + 'package_progress VALUES(\n              NULL,\n              \'' + args.id + '\',\n              \'' + currentPackage.price * 0.08 + '\',\n              \'8\',\n              \'' + withdrawDate.format('YYYY-MM-DD') + '\',\n              \'0\',\n              NULL\n            )'));
+                  packageProgressPromises.push((0, _database.promiseQuery)('INSERT INTO ' + _database.PREFIX + 'package_progress VALUES(\n              NULL,\n              \'' + args.packageId + '\',\n              \'' + currentPackage.price * 0.08 + '\',\n              \'8\',\n              \'' + withdrawDate.format('YYYY-MM-DD') + '\',\n              \'0\',\n              NULL\n            )'));
                 }
 
                 _context5.next = 15;
                 return Promise.all(packageProgressPromises);
 
               case 15:
-                listArgs = Object.keys(args).filter(function (item) {
-                  return item !== 'id';
-                });
+                listArgs = Object.keys(args);
 
                 if (args.registerDate) args.registerDate = (0, _moment2.default)(args.registerDate, 'DD/MM/YYYY').format('YYYY-MM-DD');
 
@@ -358,20 +363,20 @@ var Mutation = exports.Mutation = {
                   return (0, _utils.convertCamelCaseToSnakeCase)(item) + '=\'' + args[item] + '\'';
                 }).join(',');
                 _context5.next = 20;
-                return (0, _database.promiseQuery)('UPDATE ' + _database.PREFIX + 'package SET ' + setStatement + ' WHERE id=\'' + args.id + '\'');
+                return (0, _database.promiseQuery)('UPDATE ' + _database.PREFIX + 'package SET ' + setStatement + ' WHERE package_id=\'' + args.packageId + '\'');
 
               case 20:
-                dataloaders.packagesByIds.clear(args.id);
+                dataloaders.packagesByIds.clear(args.packageId);
 
                 _context5.t0 = _extends;
                 _context5.t1 = {};
                 _context5.next = 25;
-                return dataloaders.packagesByIds.load(args.id);
+                return dataloaders.packagesByIds.load(args.packageId);
 
               case 25:
                 _context5.t2 = _context5.sent;
                 _context5.t3 = {
-                  transferMoney: args.id
+                  transferMoney: args.packageId
                 };
                 return _context5.abrupt('return', (0, _context5.t0)(_context5.t1, _context5.t2, _context5.t3));
 
@@ -387,7 +392,7 @@ var Mutation = exports.Mutation = {
   removePackage: {
     type: _graphql.GraphQLID,
     args: {
-      id: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLID) }
+      packageId: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLID) }
     },
     resolve: function resolve(source, args, _ref7) {
       var _this6 = this;
@@ -406,7 +411,7 @@ var Mutation = exports.Mutation = {
                 throw new _graphql.GraphQLError('Unauthorized');
 
               case 2:
-                if (args.id) {
+                if (args.packageId) {
                   _context6.next = 4;
                   break;
                 }
@@ -415,8 +420,8 @@ var Mutation = exports.Mutation = {
 
               case 4:
 
-                (0, _database.promiseQuery)('DELETE FROM ' + _database.PREFIX + 'package WHERE id=\'' + args.id + '\'');
-                return _context6.abrupt('return', args.id);
+                (0, _database.promiseQuery)('DELETE FROM ' + _database.PREFIX + 'package WHERE package_id=\'' + args.packageId + '\'');
+                return _context6.abrupt('return', args.packageId);
 
               case 6:
               case 'end':

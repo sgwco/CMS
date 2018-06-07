@@ -46,11 +46,17 @@ var Package = exports.Package = new _graphql.GraphQLObjectType({
   name: 'Package',
   fields: function fields() {
     return {
-      id: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLID) },
+      packageId: {
+        type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLString),
+        resolve: function resolve(_ref) {
+          var package_id = _ref.package_id;
+          return package_id;
+        }
+      },
       user: {
         type: (0, _graphql.GraphQLNonNull)(_user.User),
-        resolve: function resolve(_ref, _, context) {
-          var user_id = _ref.user_id;
+        resolve: function resolve(_ref2, _, context) {
+          var user_id = _ref2.user_id;
 
           return context.dataloaders.usersByIds.load(user_id);
         }
@@ -58,10 +64,19 @@ var Package = exports.Package = new _graphql.GraphQLObjectType({
       price: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLFloat) },
       currency: { type: (0, _graphql.GraphQLNonNull)(PackageCurrency) },
       duration: { type: (0, _graphql.GraphQLNonNull)(PackageDuration) },
+      introducer: {
+        type: _user.User,
+        resolve: function resolve(_ref3, _, context) {
+          var introducer = _ref3.introducer;
+
+          if (!introducer) return null;
+          return context.dataloaders.usersByIds.load(introducer);
+        }
+      },
       registerDate: {
         type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLString),
-        resolve: function resolve(_ref2) {
-          var register_date = _ref2.register_date;
+        resolve: function resolve(_ref4) {
+          var register_date = _ref4.register_date;
 
           return register_date;
         }
@@ -69,8 +84,8 @@ var Package = exports.Package = new _graphql.GraphQLObjectType({
       status: { type: (0, _graphql.GraphQLNonNull)(PackageStatus) },
       transferMoney: {
         type: (0, _graphql.GraphQLNonNull)((0, _graphql.GraphQLList)(PackageTransferMoneyProgress)),
-        resolve: function resolve(_ref3, _, context) {
-          var id = _ref3.id;
+        resolve: function resolve(_ref5, _, context) {
+          var package_id = _ref5.package_id;
 
           var _this = this;
 
@@ -79,7 +94,7 @@ var Package = exports.Package = new _graphql.GraphQLObjectType({
               while (1) {
                 switch (_context.prev = _context.next) {
                   case 0:
-                    return _context.abrupt('return', (0, _database.promiseQuery)('SELECT * FROM ' + _database.PREFIX + 'package_progress WHERE package_id=\'' + id + '\''));
+                    return _context.abrupt('return', (0, _database.promiseQuery)('SELECT * FROM ' + _database.PREFIX + 'package_progress WHERE package_id=\'' + package_id + '\''));
 
                   case 2:
                   case 'end':
@@ -102,8 +117,8 @@ var PackageTransferMoneyProgress = exports.PackageTransferMoneyProgress = new _g
       amount: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLFloat) },
       interestRate: {
         type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLInt),
-        resolve: function resolve(_ref4) {
-          var interest_rate = _ref4.interest_rate;
+        resolve: function resolve(_ref6) {
+          var interest_rate = _ref6.interest_rate;
 
           return interest_rate;
         }
@@ -112,8 +127,8 @@ var PackageTransferMoneyProgress = exports.PackageTransferMoneyProgress = new _g
       status: { type: (0, _graphql.GraphQLNonNull)(_graphql.GraphQLBoolean) },
       withdrawDate: {
         type: _graphql.GraphQLString,
-        resolve: function resolve(_ref5) {
-          var withdraw_date = _ref5.withdraw_date;
+        resolve: function resolve(_ref7) {
+          var withdraw_date = _ref7.withdraw_date;
 
           return withdraw_date;
         }

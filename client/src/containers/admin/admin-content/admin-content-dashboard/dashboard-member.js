@@ -1,5 +1,6 @@
 import { compose, withProps, withHandlers, branch, renderNothing } from 'recompose';
 import { graphql } from 'react-apollo';
+import { injectIntl } from 'react-intl';
 
 import DashboardMember from '../../../../components/admin/admin-content/admin-content-dashboard/dashboard-member';
 import { ACTIVE_PACKAGE, EDIT_PACKAGE, GET_USER_TOKEN, GET_SETTINGS } from '../../../../utils/graphql';
@@ -18,6 +19,7 @@ export default compose(
       Object.keys(loggedInUser).length === 0 || checkRoleIsAllowed(loggedInUser.role.accessPermission, ROLE_CAPABILITIES.write_packages.value),
     renderNothing
   ),
+  injectIntl,
   graphql(ACTIVE_PACKAGE, { name: 'listPackages' }),
   graphql(EDIT_PACKAGE, { name: 'editPackage' }),
   withProps(({ getSettings: { settings = [] }}) => ({
@@ -31,8 +33,8 @@ export default compose(
     listActivePackages: activePackage.filter(item => item.status !== 'EXPIRED' && item.status !== 'PENDING')
   })),
   withHandlers({
-    onWithdrawPackage: ({ editPackage }) => async packageId => {
-      const result = confirm('Do you want to withdraw this package?');
+    onWithdrawPackage: ({ editPackage, intl }) => async packageId => {
+      const result = confirm(intl.messages['question.withdraw_warning']);
       if (result) {
         try {
           await editPackage({

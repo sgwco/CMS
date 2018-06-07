@@ -96,7 +96,7 @@ export async function initDatabase(conn) {
       username VARCHAR(50) NOT NULL UNIQUE,
       password VARCHAR(50) NOT NULL,
       fullname VARCHAR(100),
-      email VARCHAR(200) UNIQUE,
+      email VARCHAR(200),
       registration_date DATETIME NOT NULL,
       role INT UNSIGNED NOT NULL,
       address VARCHAR(200),

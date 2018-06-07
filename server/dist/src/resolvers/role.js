@@ -147,7 +147,7 @@ var Mutation = exports.Mutation = {
                 });
 
               case 13:
-                throw new _graphql.GraphQLError('Cannot insert new role.');
+                throw new _graphql.GraphQLError('error.cannot_insert');
 
               case 14:
               case 'end':

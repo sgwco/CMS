@@ -108,6 +108,7 @@
 	"question.deactive_package": "Bạn có muốn ngừng gói này?",
 	"question.remove": "Bạn chắc chắn muốn xoá?",
 	"question.upgrade_package": "Bạn có muốn nâng cấp gói lên 12 tháng?",
+	"question.withdraw_warning": "Giá trị hoàn trã sẽ dựa trên nội dung được quy định trong hợp đồng và thời điểm quý khách đưa ra yêu cầu dừng hợp đồng. Quý khách có muốn chấm dứt hợp đồng hợp tác này?",
 	"question.withdraw": "Bạn có muốn rút tiền?",
 	"remember": "Ghi nhớ",
 	"save": "Lưu",
@@ -120,5 +121,7 @@
 	"success.upgrade_package": "Nâng cấp gói thành công",
 	"success.withdraw": "Rút tiền thành công",
 	"total_price": "Tổng tiền",
-	"withdraw": "Rút tiền"
+	"withdraw": "Rút tiền",
+	"stop_package": "Dừng hợp đồng"
 }
+

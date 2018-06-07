@@ -44,7 +44,7 @@ var getPackagesByIds = function getPackagesByIds(packageIds) {
   var params = packageIds.map(function (id) {
     return '\'' + id + '\'';
   }).join(', ');
-  return (0, _database.promiseQuery)('SELECT * FROM ' + _database.PREFIX + 'package WHERE id IN (' + params + ')');
+  return (0, _database.promiseQuery)('SELECT * FROM ' + _database.PREFIX + 'package WHERE package_id IN (' + params + ')');
 };
 
 var getPackageProgressesByIds = function getPackageProgressesByIds(packageProgressIds) {

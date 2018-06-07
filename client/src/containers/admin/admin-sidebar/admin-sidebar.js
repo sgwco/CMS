@@ -36,7 +36,7 @@ export default compose(
       { separator: true },
       { title: 'categories.users', href: 'user', icon: 'user', readPermission: ROLE_CAPABILITIES.read_user.value },
       { title: 'categories.packages', href: 'package', icon: 'briefcase', readPermission: ROLE_CAPABILITIES.write_packages.value },
-      { title: 'categories.roles', href: 'role', icon: 'users', readPermission: ROLE_CAPABILITIES.read_roles.value },
+      // { title: 'categories.roles', href: 'role', icon: 'users', readPermission: ROLE_CAPABILITIES.read_roles.value },
       { separator: true },
       { title: 'categories.settings', href: 'setting', icon: 'cog', readPermission: ROLE_CAPABILITIES.setting.value }
     ],

@@ -177,7 +177,7 @@ var Mutation = exports.Mutation = {
                 });
 
               case 15:
-                throw new _graphql.GraphQLError('Cannot insert new setting.');
+                throw new _graphql.GraphQLError('error.cannot_insert');
 
               case 16:
               case 'end':
@@ -276,7 +276,7 @@ var Mutation = exports.Mutation = {
               case 29:
                 _context4.prev = 29;
                 _context4.t1 = _context4['catch'](2);
-                throw new _graphql.GraphQLError('Data invalid.');
+                throw new _graphql.GraphQLError('error.data_invalid');
 
               case 32:
               case 'end':

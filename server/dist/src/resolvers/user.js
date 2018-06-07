@@ -80,7 +80,7 @@ var Query = exports.Query = {
                 return _context.abrupt('return', rows[0]);
 
               case 7:
-                throw new _graphql.GraphQLError('User does not exist');
+                throw new _graphql.GraphQLError('error.user_not_exist');
 
               case 8:
               case 'end':
@@ -165,7 +165,7 @@ var Mutation = exports.Mutation = {
                   break;
                 }
 
-                throw new _graphql.GraphQLError('Username cannot be null');
+                throw new _graphql.GraphQLError('error.username_null');
 
               case 5:
                 if (password) {
@@ -173,7 +173,7 @@ var Mutation = exports.Mutation = {
                   break;
                 }
 
-                throw new _graphql.GraphQLError('Password cannot be null');
+                throw new _graphql.GraphQLError('error.password_null');
 
               case 7:
                 if (!(email && !(0, _isEmail2.default)(email))) {
@@ -181,7 +181,7 @@ var Mutation = exports.Mutation = {
                   break;
                 }
 
-                throw new _graphql.GraphQLError('Email invalid');
+                throw new _graphql.GraphQLError('error.email_invalid');
 
               case 9:
                 if (role) {
@@ -189,7 +189,7 @@ var Mutation = exports.Mutation = {
                   break;
                 }
 
-                throw new _graphql.GraphQLError('Role cannot be null');
+                throw new _graphql.GraphQLError('error.role_null');
 
               case 11:
                 registrationDate = (0, _moment2.default)().format('YYYY-MM-DD HH:MM');
@@ -210,10 +210,10 @@ var Mutation = exports.Mutation = {
                 break;
 
               case 23:
-                throw new _graphql.GraphQLError('User existed');
+                throw new _graphql.GraphQLError('error.user_exist');
 
               case 24:
-                throw new _graphql.GraphQLError('User data invalid');
+                throw new _graphql.GraphQLError('error.data_invalid');
 
               case 25:
                 _context3.next = 27;
@@ -232,7 +232,7 @@ var Mutation = exports.Mutation = {
                 break;
 
               case 32:
-                throw new _graphql.GraphQLError('Cannot insert new role.');
+                throw new _graphql.GraphQLError('error.cannot_insert');
 
               case 33:
                 if (!args.userMeta) {
@@ -299,7 +299,7 @@ var Mutation = exports.Mutation = {
                   break;
                 }
 
-                throw new _graphql.GraphQLError('Id cannot be null');
+                throw new _graphql.GraphQLError('error.id_null');
 
               case 2:
                 if (!(args.email && !(0, _isEmail2.default)(args.email))) {
@@ -307,7 +307,7 @@ var Mutation = exports.Mutation = {
                   break;
                 }
 
-                throw new _graphql.GraphQLError('Email invalid');
+                throw new _graphql.GraphQLError('error.email_invalid');
 
               case 4:
                 setStatement = Object.keys(args).filter(function (item) {
@@ -331,10 +331,10 @@ var Mutation = exports.Mutation = {
                 break;
 
               case 15:
-                throw new _graphql.GraphQLError('User existed');
+                throw new _graphql.GraphQLError('error.user_exist');
 
               case 16:
-                throw new _graphql.GraphQLError('User data invalid');
+                throw new _graphql.GraphQLError('error.data_invalid');
 
               case 17:
                 if (!args.userMeta) {
@@ -431,7 +431,7 @@ var Mutation = exports.Mutation = {
 
 
       if (!id) {
-        throw new _graphql.GraphQLError('Id cannot be null');
+        throw new _graphql.GraphQLError('error.id_null');
       }
 
       (0, _database.promiseQuery)('DELETE FROM ' + _database.PREFIX + 'user WHERE id=\'' + args.id + '\'');
@@ -458,7 +458,7 @@ var Mutation = exports.Mutation = {
                   break;
                 }
 
-                throw new _graphql.GraphQLError('Username cannot be null');
+                throw new _graphql.GraphQLError('error.username_null');
 
               case 2:
                 if (args.password) {
@@ -466,7 +466,7 @@ var Mutation = exports.Mutation = {
                   break;
                 }
 
-                throw new _graphql.GraphQLError('Password cannot be null');
+                throw new _graphql.GraphQLError('error.password_null');
 
               case 4:
 
