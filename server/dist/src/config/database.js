@@ -71,7 +71,7 @@ var initDatabase = exports.initDatabase = function () {
 
                       case 2:
                         _context2.next = 4;
-                        return promiseQuery('CREATE TABLE IF NOT EXISTS ' + PREFIX + 'user (\n      id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,\n      username VARCHAR(50) NOT NULL UNIQUE,\n      password VARCHAR(50) NOT NULL,\n      fullname VARCHAR(100),\n      email VARCHAR(200) UNIQUE,\n      registration_date DATETIME NOT NULL,\n      role INT UNSIGNED NOT NULL,\n      address VARCHAR(200),\n      phone VARCHAR(50),\n      user_status VARCHAR(20) NOT NULL DEFAULT \'active\',\n      CONSTRAINT FK_ROLE FOREIGN KEY (role) REFERENCES ' + PREFIX + 'role(id) ON DELETE CASCADE ON UPDATE CASCADE\n    )');
+                        return promiseQuery('CREATE TABLE IF NOT EXISTS ' + PREFIX + 'user (\n      id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,\n      username VARCHAR(50) NOT NULL UNIQUE,\n      password VARCHAR(50) NOT NULL,\n      fullname VARCHAR(100),\n      email VARCHAR(200),\n      registration_date DATETIME NOT NULL,\n      role INT UNSIGNED NOT NULL,\n      address VARCHAR(200),\n      phone VARCHAR(50),\n      user_status VARCHAR(20) NOT NULL DEFAULT \'active\',\n      CONSTRAINT FK_ROLE FOREIGN KEY (role) REFERENCES ' + PREFIX + 'role(id) ON DELETE CASCADE ON UPDATE CASCADE\n    )');
 
                       case 4:
 

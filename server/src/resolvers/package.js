@@ -105,8 +105,8 @@ export const Mutation = {
       }
 
       const transferMoneyProgresses = {
-        '6': { interestRate: 6, step: 2 },
-        '12': { interestRate: 8, step: 4 }
+        '6': { interestRate: 6 * 3, step: 2 },
+        '12': { interestRate: 8 * 3, step: 4 }
       }
 
       const duration = transferMoneyProgresses[args.duration];
@@ -150,7 +150,7 @@ export const Mutation = {
       registerDate: { type: GraphQLString },
       status: { type: PackageStatus }
     },
-    async resolve(source, args, { payload, dataloaders }) {
+    async resolve(_, args, { payload, dataloaders }) {
       if (!payload) {
         throw new GraphQLError('Unauthorized');
       }
@@ -175,7 +175,7 @@ export const Mutation = {
               NULL,
               '${args.packageId}',
               '${currentPackage.price * 0.08}',
-              '8',
+              '${8 * 3}',
               '${withdrawDate.format('YYYY-MM-DD')}',
               '0',
               NULL

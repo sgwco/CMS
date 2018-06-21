@@ -199,44 +199,45 @@ var Mutation = exports.Mutation = {
                 return (0, _database.promiseQuery)('INSERT INTO ' + _database.PREFIX + 'user VALUES (\n          NULL,\n          \'' + username + '\',\n          \'' + password + '\',\n          \'' + (fullname || '') + '\',\n          \'' + (email || '') + '\',\n          \'' + registrationDate + '\',\n          \'' + role + '\',\n          \'' + (address || '') + '\',\n          \'' + (phone || '') + '\',\n          \'' + _models.UserStatus.getValue('ACTIVE').value + '\'\n        )');
 
               case 16:
-                _context3.next = 25;
+                _context3.next = 26;
                 break;
 
               case 18:
                 _context3.prev = 18;
                 _context3.t0 = _context3['catch'](13);
                 _context3.t1 = _context3.t0.code;
-                _context3.next = _context3.t1 === 'ER_DUP_ENTRY' ? 23 : _context3.t1 === 'ER_NO_REFERENCED_ROW_2' ? 24 : 25;
+                _context3.next = _context3.t1 === 'ER_DUP_ENTRY' ? 23 : _context3.t1 === 'ER_NO_REFERENCED_ROW_2' ? 25 : 26;
                 break;
 
               case 23:
+                console.log(_context3.t0);
                 throw new _graphql.GraphQLError('error.user_exist');
 
-              case 24:
+              case 25:
                 throw new _graphql.GraphQLError('error.data_invalid');
 
-              case 25:
-                _context3.next = 27;
+              case 26:
+                _context3.next = 28;
                 return (0, _database.promiseQuery)('SELECT LAST_INSERT_ID()');
 
-              case 27:
+              case 28:
                 lastId = _context3.sent;
 
                 if (!(lastId.length > 0)) {
-                  _context3.next = 32;
+                  _context3.next = 33;
                   break;
                 }
 
                 id = lastId[0]['LAST_INSERT_ID()'];
-                _context3.next = 33;
+                _context3.next = 34;
                 break;
 
-              case 32:
+              case 33:
                 throw new _graphql.GraphQLError('error.cannot_insert');
 
-              case 33:
+              case 34:
                 if (!args.userMeta) {
-                  _context3.next = 39;
+                  _context3.next = 40;
                   break;
                 }
 
@@ -246,10 +247,10 @@ var Mutation = exports.Mutation = {
                 for (index in userMeta) {
                   userMetaPromises.push((0, _database.promiseQuery)('INSERT INTO ' + _database.PREFIX + 'user_meta VALUES (\n            NULL,\n            \'' + id + '\',\n            \'' + userMeta[index].metaKey + '\',\n            \'' + userMeta[index].metaValue + '\'\n          )'));
                 }
-                _context3.next = 39;
+                _context3.next = 40;
                 return Promise.all(userMetaPromises);
 
-              case 39:
+              case 40:
                 return _context3.abrupt('return', {
                   id: lastId[0]['LAST_INSERT_ID()'],
                   username: username,
@@ -263,7 +264,7 @@ var Mutation = exports.Mutation = {
                   user_status: _models.UserStatus.getValue('ACTIVE').value
                 });
 
-              case 40:
+              case 41:
               case 'end':
                 return _context3.stop();
             }
