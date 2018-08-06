@@ -147,15 +147,15 @@ export default compose(
           formApi.setValue('bankingOwner', (user.userMeta.find(item => item.metaKey === 'bankingOwner') || {}).metaValue);
         }
         catch (e) {
-          history.push('/admin/user');
+          history.push('/user');
         }
       }
     }
   }),
   withProps(({ renderTopTitle }) => ({
     breadcrumbItems: [
-      { url: '/admin/dashboard', icon: 'home', text: 'categories.home' },
-      { url: '/admin/user', icon: 'user', text: 'categories.users' },
+      { url: '/dashboard', icon: 'home', text: 'categories.home' },
+      { url: '/user', icon: 'user', text: 'categories.users' },
       { text: renderTopTitle() }
     ]
   }))

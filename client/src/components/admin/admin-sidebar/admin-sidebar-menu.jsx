@@ -30,7 +30,7 @@ const MenuItemSeparator = styled.li`
 
 const AdminSidebarMenuComponent = ({ menuItem, match, isActiveMenu, isActiveSubmenu }) => (
   <MenuLiStyled className="treeview" isActive={isActiveMenu(menuItem.href)}>
-    <Link to={`${match.url}/${menuItem.href}`}>
+    <Link to={`${match.url}${menuItem.href}`}>
       <MenuIconStyled icon={menuItem.icon} />
       <MenuTitleStyled>
         <FormattedMessage id={menuItem.title} />

@@ -1,16 +1,31 @@
 import mysql from 'mysql';
 import moment from 'moment';
 import sha1 from 'sha1';
-const { HOSTING, USER, PASSWORD, DATABASE } = require(process.env.NODE_ENV === 'production' ? '../../../config.json' : '../../config.json');
 
 import { ROLE_CAPABILITIES } from '../enum';
 
 export const PREFIX = 'sgw_';
+export const CONFIG = {
+  production: {
+    "HOSTING": "127.0.0.1",
+    "USER": "alphawh_admin",
+    "PASSWORD": "alphawh_admin",
+    "DATABASE": "alphawh_admin"
+  },
+  development: {
+    "HOSTING": "127.0.0.1",
+    "USER": "root",
+    "PASSWORD": "password",
+    "DATABASE": "sgw_cms"
+  }
+}
+const env = process.env.NODE_ENV || 'development';
+const CONFIG_ENV = CONFIG[env]
 
 export const connection = mysql.createConnection({
-  host: HOSTING,
-  user: USER,
-  password: PASSWORD
+  host: CONFIG_ENV.HOSTING,
+  user: CONFIG_ENV.USER,
+  password: CONFIG_ENV.PASSWORD
 });
 
 export function promiseQuery(query) {
@@ -48,9 +63,9 @@ async function initData() {
 }
 
 export async function initDatabase(conn) {
-  await promiseQuery(`CREATE DATABASE IF NOT EXISTS ${DATABASE}`);
+  await promiseQuery(`CREATE DATABASE IF NOT EXISTS ${CONFIG_ENV.DATABASE}`);
   conn.changeUser({
-    database: DATABASE
+    database: CONFIG_ENV.DATABASE
   }, async err => {
     // Role table
     await promiseQuery(`CREATE TABLE IF NOT EXISTS ${PREFIX}role (

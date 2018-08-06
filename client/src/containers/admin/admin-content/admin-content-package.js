@@ -23,7 +23,7 @@ export default compose(
   injectIntl,
   withProps(() => ({
     breadcrumbItems: [
-      { url: '/admin/dashboard', icon: 'home', text: 'categories.home' },
+      { url: '/dashboard', icon: 'home', text: 'categories.home' },
       { text: 'categories.packages' }
     ]
   })),

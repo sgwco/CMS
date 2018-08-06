@@ -7,8 +7,8 @@ import AdminLoginContainer from './containers/admin/admin-login';
 const RouterComponent = () => (
   <BrowserRouter>
     <Switch>
-      <Route exact path='/admin/login' component={AdminLoginContainer} />
-      <Route path='/admin' component={AdminContainer} />
+      <Route exact path='/login' component={AdminLoginContainer} />
+      <Route path='/' component={AdminContainer} />
     </Switch>
   </BrowserRouter>
 );

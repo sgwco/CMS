@@ -9,7 +9,7 @@ export default compose(
   graphql(REMOVE_CATEGORY, { name: 'removeCategory' }),
   withProps(() => ({
     breadcrumbItems: [
-      { url: '/admin/dashboard', icon: 'home', text: 'Home' },
+      { url: '/dashboard', icon: 'home', text: 'Home' },
       { text: 'Posts' }
     ]
   })),

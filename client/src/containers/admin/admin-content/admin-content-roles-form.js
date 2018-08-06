@@ -32,8 +32,8 @@ export default compose(
   withProps(({ renderTopTitle }) => ({
     listRoles: Object.keys(ROLE_CAPABILITIES),
     breadcrumbItems: [
-      { url: '/admin/dashboard', icon: 'home', text: 'categories.home' },
-      { url: '/admin/role', icon: 'users', text: 'categories.roles' },
+      { url: '/dashboard', icon: 'home', text: 'categories.home' },
+      { url: '/role', icon: 'users', text: 'categories.roles' },
       { text: renderTopTitle() }
     ]
   })),
@@ -142,7 +142,7 @@ export default compose(
           formApi.setValue('roleName', selectedRole.name);
         }
         catch (e) {
-          history.push('/admin/role');
+          history.push('/role');
         }
       }
     }

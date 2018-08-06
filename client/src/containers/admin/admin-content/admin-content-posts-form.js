@@ -126,15 +126,15 @@ export default compose(
 
         }
         catch (e) {
-          history.push('/admin/post');
+          history.push('/post');
         }
       }
     }
   }),
   withProps(({ renderTopTitle }) => ({
     breadcrumbItems: [
-      { url: '/admin/dashboard', icon: 'home', text: 'Home' },
-      { url: '/admin/post', icon: 'file', text: 'Posts' },
+      { url: '/dashboard', icon: 'home', text: 'Home' },
+      { url: '/post', icon: 'file', text: 'Posts' },
       { text: renderTopTitle() }
     ]
   }))

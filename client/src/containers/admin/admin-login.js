@@ -23,7 +23,7 @@ export default compose(
 
       if (data.login) {
         localStorage.setItem('token', data.login);
-        window.location = '/admin';
+        window.location = '/';
       }
       else {
         setAlertContent('error.login_failed');
@@ -35,7 +35,7 @@ export default compose(
     componentWillMount() {
       const token = localStorage.getItem('token');
       if (token) {
-        window.location = '/admin';
+        window.location = '/';
       }
     }
   })

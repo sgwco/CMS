@@ -122,7 +122,7 @@ const AdminContentUsersComponent = ({
               </ModalHeader>
               <ModalBody>
                 <CardViewListStyled color='#e74c3c' icon='user' label={intl.messages['fields.username']}>
-                  {selectedUser.username + (selectedUser.fullname && ` (${selectedUser.fullname})`)}
+                  {selectedUser.username}{(selectedUser.fullname && ` (${selectedUser.fullname})`)}
                 </CardViewListStyled>
                 {selectedUser.phone && (
                   <CardViewListStyled color='#00b894' icon='phone' label={intl.messages['fields.phone']}>
@@ -149,25 +149,27 @@ const AdminContentUsersComponent = ({
                     {selectedUser.role}
                   </CardViewListStyled>
                 )}
-                {selectedUser.userMeta && [
-                  <CardViewListStyled color='#6ab04c' icon='id-card' label={intl.messages['fields.identity_card']} key={1}>
-                    {selectedUser.userMeta.find(item => item.metaKey === 'identityCard').metaValue}
-                  </CardViewListStyled>,
-                  <CardViewListStyled color='#7ed6df' icon='university' label={intl.messages['fields.banking']} key={2}>
-                    <div>
-                      <FormattedMessage id='fields.banking' />{': '}
-                      <strong>{selectedUser.userMeta.find(item => item.metaKey === 'banking').metaValue || 'Unknown'}</strong>
-                    </div>
-                    <div>
-                      <FormattedMessage id='fields.banking_number' />{': '}
-                      <strong>{selectedUser.userMeta.find(item => item.metaKey === 'bankingNumber').metaValue || 'Unknown'}</strong>
-                    </div>
-                    <div>
-                      <FormattedMessage id='fields.banking_owner' />{': '}
-                      <strong>{selectedUser.userMeta.find(item => item.metaKey === 'bankingOwner').metaValue || 'Unknown'}</strong>
-                    </div>
-                  </CardViewListStyled>
-                ]}
+                {selectedUser.userMeta.length > 0 && (
+                  <div>
+                    <CardViewListStyled color='#6ab04c' icon='id-card' label={intl.messages['fields.identity_card']} key={1}>
+                      {selectedUser.userMeta.find(item => item.metaKey === 'identityCard').metaValue}
+                    </CardViewListStyled>
+                    <CardViewListStyled color='#7ed6df' icon='university' label={intl.messages['fields.banking']} key={2}>
+                      <div>
+                        <FormattedMessage id='fields.banking' />{': '}
+                        <strong>{selectedUser.userMeta.find(item => item.metaKey === 'banking').metaValue || 'Unknown'}</strong>
+                      </div>
+                      <div>
+                        <FormattedMessage id='fields.banking_number' />{': '}
+                        <strong>{selectedUser.userMeta.find(item => item.metaKey === 'bankingNumber').metaValue || 'Unknown'}</strong>
+                      </div>
+                      <div>
+                        <FormattedMessage id='fields.banking_owner' />{': '}
+                        <strong>{selectedUser.userMeta.find(item => item.metaKey === 'bankingOwner').metaValue || 'Unknown'}</strong>
+                      </div>
+                    </CardViewListStyled>
+                  </div>
+                )}
               </ModalBody>
             </Modal>
           )}

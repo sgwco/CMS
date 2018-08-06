@@ -24,7 +24,7 @@ import { ROLE_CAPABILITIES } from '../../../utils/enum';
 const AdminContentComponent = ({ match, getUserToken: { loggedInUser = {} } }) => (
   !_.isEmpty(loggedInUser) && (
     <Switch>
-      <Route exact path={`${match.url}/dashboard`} component={AdminContentDashboardContainer} />
+      <Route exact path={`${match.url}dashboard`} component={AdminContentDashboardContainer} />
 
       {/* <Route exact path={`${match.url}/post`} component={AdminContentPostsContainer} />
       <Route exact path={`${match.url}/post/add-new`} component={AdminContentPostsFormContainer} />
@@ -35,19 +35,19 @@ const AdminContentComponent = ({ match, getUserToken: { loggedInUser = {} } }) =
       <Route exact path={`${match.url}/post/category/edit/:id`} render={props => <AdminContentPostCategoryFormContainer {...props} isEditedUser={true}  />} /> */}
 
       {checkRoleIsAllowed(loggedInUser.role.accessPermission, ROLE_CAPABILITIES.read_packages.value) && (
-        <Route exact path={`${match.url}/package`} component={AdminContentPackageContainer} />
+        <Route exact path={`${match.url}package`} component={AdminContentPackageContainer} />
       )}
       {checkRoleIsAllowed(loggedInUser.role.accessPermission, ROLE_CAPABILITIES.write_packages.value) && (
-        <Route exact path={`${match.url}/package/add-new`} component={AdminContentPackageFormContainer} />
+        <Route exact path={`${match.url}package/add-new`} component={AdminContentPackageFormContainer} />
       )}
       {/* <Route exact path={`${match.url}/package/edit/:id`} render={props => <AdminContentPackageFormContainer {...props} isEditedPackage={true}  />} /> */}
       
       {checkRoleIsAllowed(loggedInUser.role.accessPermission, ROLE_CAPABILITIES.read_user.value) && (
-        <Route exact path={`${match.url}/user`} component={AdminContentUsersContainer} />
+        <Route exact path={`${match.url}user`} component={AdminContentUsersContainer} />
       )}
       {checkRoleIsAllowed(loggedInUser.role.accessPermission, ROLE_CAPABILITIES.write_user.value) && ([
-        <Route exact path={`${match.url}/user/add-new`} component={AdminContentUsersFormContainer} key={1} />,
-        <Route exact path={`${match.url}/user/edit/:id`} render={props => <AdminContentUsersFormContainer {...props} isEditedUser={true} />} key={2} />
+        <Route exact path={`${match.url}user/add-new`} component={AdminContentUsersFormContainer} key={1} />,
+        <Route exact path={`${match.url}user/edit/:id`} render={props => <AdminContentUsersFormContainer {...props} isEditedUser={true} />} key={2} />
       ])}
       
       {/* {checkRoleIsAllowed(loggedInUser.role.accessPermission, ROLE_CAPABILITIES.read_roles.value) && (
@@ -59,7 +59,7 @@ const AdminContentComponent = ({ match, getUserToken: { loggedInUser = {} } }) =
       ])} */}
 
       {checkRoleIsAllowed(loggedInUser.role.accessPermission, ROLE_CAPABILITIES.setting.value) && (
-        <Route exact path={`${match.url}/setting`} component={AdminContentSettingContainer} />
+        <Route exact path={`${match.url}setting`} component={AdminContentSettingContainer} />
       )}
     </Switch>
   )
@@ -69,8 +69,8 @@ export default compose(
   withRouter,
   lifecycle({
     componentWillMount() {
-      if (this.props.location.pathname === '/admin') {
-        this.props.history.push('/admin/dashboard');
+      if (this.props.location.pathname === '/') {
+        this.props.history.push('/dashboard');
       }
     }
   })

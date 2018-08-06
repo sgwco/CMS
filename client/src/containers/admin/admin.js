@@ -15,7 +15,7 @@ export default compose(
     componentWillMount() {
       const token = localStorage.getItem('token');
       if (!token) {
-        this.props.history.push('/admin/login');
+        this.props.history.push('/login');
       }
     }
   })

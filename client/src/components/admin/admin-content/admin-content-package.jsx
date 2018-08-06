@@ -42,11 +42,11 @@ const AdminPackageModal = ({
         {selectedPackage.packageId}
       </CardViewListStyled>
       <CardViewListStyled color='#e74c3c' icon='user' label={intl.messages['fields.username']}>
-        {selectedPackage.user.username + (selectedPackage.user.fullname && ` (${selectedPackage.user.fullname})`)}
+        {selectedPackage.user.username}{(selectedPackage.user.fullname && ` (${selectedPackage.user.fullname})`)}
       </CardViewListStyled>
       {selectedPackage.introducer && (
         <CardViewListStyled color='#22a6b3' icon='user' label={intl.messages['fields.introducer']}>
-          {selectedPackage.introducer.username + (selectedPackage.introducer.fullname && ` (${selectedPackage.introducer.fullname})`)}
+          {selectedPackage.introducer.username}{(selectedPackage.introducer.fullname && ` (${selectedPackage.introducer.fullname})`)}
         </CardViewListStyled>
       )}
       <CardViewListStyled color='#00b894' icon='money-bill-alt' label={intl.messages['fields.package_price']}>

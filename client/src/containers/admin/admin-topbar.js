@@ -16,7 +16,7 @@ export default compose(
   withHandlers({
     logout: ({ history }) => () => {
       localStorage.removeItem('token');
-      history.push('/admin/login');
+      history.push('/login');
     }
   })
 )(AdminTopbarComponent);

@@ -30,8 +30,8 @@ export default compose(
   }),
   withProps(({ renderTopTitle }) => ({
     breadcrumbItems: [
-      { url: '/admin/dashboard', icon: 'home', text: 'categories.home' },
-      { url: '/admin/package', icon: 'briefcase', text: 'categories.packages' },
+      { url: '/dashboard', icon: 'home', text: 'categories.home' },
+      { url: '/package', icon: 'briefcase', text: 'categories.packages' },
       { text: renderTopTitle() }
     ]
   })),
@@ -123,7 +123,7 @@ export default compose(
           formApi.setValue('registerDate', moment(packageItem.registerDate).format('DD/MM/YYYY'));
         }
         catch (e) {
-          history.push('/admin/package');
+          history.push('/package');
         }
       }
     }
